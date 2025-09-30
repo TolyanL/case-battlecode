@@ -4,7 +4,7 @@
 1. [Start](#start)
 2. [Установка WSL](#установка-wsl)
 3. [Docker Desktop](#установка-docker-desktop)
-4. [](#установка-visual-studio-code)
+4. [Установка Visual Studio Code](#установка-visual-studio-code)
 
 
 ## Start
@@ -102,6 +102,3 @@ Ai-помощник
 
 + [Django](https://marketplace.visualstudio.com/items?itemName=batisteo.vscode-django)
 Плагин для подсказки template-функций для Django html
-
-
-
