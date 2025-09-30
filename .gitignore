@@ -3,6 +3,10 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Django related
+logs/*
+media/*
+
 # C extensions
 *.so
 
