@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "tests",
 ]
 
 MIDDLEWARE = [
@@ -43,12 +44,21 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+if DEBUG:
+    INSTALLED_APPS += [
+        "debug_toolbar",
+    ]
+    MIDDLEWARE += [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ]
+
+
 ROOT_URLCONF = "battlecode.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR.parent.joinpath("templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -69,9 +79,9 @@ WSGI_APPLICATION = "battlecode.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", default="bc_db"),
-        "USER": os.environ.get("DB_USER", default="bc_db"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", default=12345),  # 12345,
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD": os.environ.get("DB_PASSWORD"),  # 12345,
         "HOST": os.environ.get("DB_HOST", default="localhost"),  # "localhost",
         "PORT": os.environ.get("DB_PORT", default=5432),  # 5432,
     }
@@ -112,7 +122,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR.parent.joinpath("collected_static")
+STATICFILES_DIRS = [
+    BASE_DIR.parent / "static",
+]
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR.parent.joinpath("media")
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
