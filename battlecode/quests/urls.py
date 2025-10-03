@@ -1,7 +1,8 @@
 from django.urls import path
 
-from .views import all_quests
+from .views import quests_all, quests_check
 
 urlpatterns = [
-    path("", all_quests, name="quests_all"),
+    path("", quests_all, name="quests_all"),
+    path("check", quests_check, name="quests_check"),
 ]
