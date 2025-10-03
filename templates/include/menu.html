@@ -12,10 +12,36 @@
     <div class="hidden md:block">
         <nav>
             <ul class="flex space-x-8">
-                <li><a href="#" class="font-medium text-primary border-b-2 border-primary pb-1">Dashboard</a></li>
-                <li><a href="#" class="font-medium text-gray-400 hover:text-white transition">Quests</a></li>
-                <li><a href="#" class="font-medium text-gray-400 hover:text-white transition">Leaderboard</a></li>
-                <li><a href="#" class="font-medium text-gray-400 hover:text-white transition">Profile</a></li>
+                <li>
+                    <a href="{% url 'index' %}"
+                    class="font-medium {% if pd.curr_page == 'index' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'dashboard' %}"
+                    class="font-medium {% if pd.curr_page == 'dashboard' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'quests_all' %}"
+                    class="font-medium {% if pd.curr_page == 'quests' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
+                        Quests
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'leaderboard' %}"
+                    class="font-medium {% if pd.curr_page == 'leaderboard' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
+                        Leaderboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'user_profile' username='me' %}"
+                    class="font-medium {% if pd.curr_page == 'profile' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
+                        Profile
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

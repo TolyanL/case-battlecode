@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Задание BattleCode{% endblock title %}
+
+{% block description %}
+BattleCode - это образовательная игровая платформа, где студенты учатся программировать, соревнуются, проверяют работы друг друга и растут в рейтинге.
+{% endblock description %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-dark-light rounded-lg shadow-lg p-6 md:p-8">
+        <h1 class="text-3xl font-bold text-primary mb-4">
+            BattleCode
+        </h1>
+        <p class="text-lg leading-relaxed mb-6">
+            Это образовательная игровая платформа, где студенты учатся программировать, соревнуются, проверяют работы друг друга и растут в рейтинге.
+        </p>
+
+        <div class="border-t border-gray-700 pt-6">
+            <h2 class="text-2xl font-semibold text-accent mb-4">
+                Задача: собрать рабочую версию за две недели
+            </h2>
+
+            <p class="mb-4">Необходимый функционал:</p>
+            <ul class="list-disc list-inside space-y-2 mb-6">
+                <li>Регистрация с двухфакторной защитой</li>
+
+                <li>Личный кабинет с прогрессом</li>
+                <li>Хотя бы один курс с заданиями</li>
+
+                <li>Система взаимной проверки</li>
+                <li>Календарь с напоминаниями</li>
+                <li>Админка для управления контентом</li>
+            </ul>
+
+
+            <p class="text-md font-semibold text-light leading-relaxed p-4 bg-dark rounded-md">
+                <strong>Ключевые требования:</strong> всё это должно легко запускаться, выглядеть аккуратно на любом устройстве и успешно работать на демо перед жюри.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
