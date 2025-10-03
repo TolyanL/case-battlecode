@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Профиль пользователя - {{ user.username|default:"JohnDoe" }}{% endblock title %}
+{% block description %}Страница профиля пользователя с его статистикой, достижениями и активностью.{% endblock description %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-1 space-y-6">
+        <div class="bg-gray-800 rounded-lg p-6 text-center shadow-lg">
+            <div class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-gray-700 bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+                <span class="text-4xl font-bold text-white">{{ user.profile.initials|default:"JD" }}</span>
+            </div>
+
+            <h2 class="text-2xl font-bold">{{ user.username|default:"JohnDoe" }}</h2>
+            <p class="text-primary">{{ user.profile.title|default:"Level 12 Explorer" }}</p>
+            <p class="text-sm text-gray-400 mt-2">Присоединился: {{ user.date_joined|date:"d M Y"|default:"01 Oct 2025" }}</p>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h3 class="text-lg font-semibold border-b border-gray-700 pb-3 mb-4">Достижения</h3>
+            <div class="flex flex-wrap gap-4 justify-center">
+                <span class="bg-yellow-500 text-gray-900 text-xs font-bold px-3 py-1 rounded-full" title="Мастер языка Python">Python Мастер</span>
+                <span class="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full" title="Выполнено 100 заданий">100 Заданий</span>
+                <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full" title="Все тесты пройдены с первой попытки">Перфекционист</span>
+                <span class="bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full" title="Гуру сложных алгоритмов">Гуру Алгоритмов</span>
+                <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full" title="Участвовал в 5 турнирах">Ветеран Турниров</span>
+                <span class="bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full" title="Помог 10 пользователям">Помощник</span>
+                <span class="bg-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full" title="Написал первую статью">Автор</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2 space-y-8">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="bg-gray-800 rounded-lg p-5 text-center shadow-lg">
+                <p class="text-sm text-gray-400">Место в рейтинге</p>
+                <p class="text-3xl font-bold text-primary">#12</p>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-5 text-center shadow-lg">
+                <p class="text-sm text-gray-400">Всего очков</p>
+                <p class="text-3xl font-bold">15,780</p>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-5 text-center shadow-lg">
+                <p class="text-sm text-gray-400">Заданий выполнено</p>
+                <p class="text-3xl font-bold">124</p>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h3 class="text-lg font-semibold mb-4">История квестов</h3>
+            <div class="relative border-l-2 border-gray-700 ml-3">
+                <div class="mb-8 ml-6">
+                    <span class="absolute flex items-center justify-center w-6 h-6 bg-green-500 rounded-full -left-3 ring-8 ring-gray-800">
+                        <i data-feather="check" class="w-4 h-4 text-white"></i>
+                    </span>
+                    <h4 class="flex items-center mb-1 text-base font-semibold text-light">Победа в квесте "Битва за 'Быструю сортировку'" <span class="text-green-400 text-sm font-medium ml-3">+50 очков</span></h4>
+                    <time class="block mb-2 text-xs font-normal leading-none text-gray-400">Вчера</time>
+                </div>
+                <div class="mb-8 ml-6">
+                    <span class="absolute flex items-center justify-center w-6 h-6 bg-red-500 rounded-full -left-3 ring-8 ring-gray-800">
+                        <i data-feather="x" class="w-4 h-4 text-white"></i>
+                    </span>
+                    <h4 class="flex items-center mb-1 text-base font-semibold text-light">Поражение в квесте "Древовидный обход" <span class="text-red-400 text-sm font-medium ml-3">-15 очков</span></h4>
+                    <time class="block mb-2 text-xs font-normal leading-none text-gray-400">2 дня назад</time>
+                </div>
+                <div class="ml-6">
+                    <span class="absolute flex items-center justify-center w-6 h-6 bg-green-500 rounded-full -left-3 ring-8 ring-gray-800">
+                        <i data-feather="check" class="w-4 h-4 text-white"></i>
+                    </span>
+                    <h4 class="flex items-center mb-1 text-base font-semibold text-light">Победа в квесте "Оптимизация памяти" <span class="text-green-400 text-sm font-medium ml-3">+75 очков</span></h4>
+                    <time class="block mb-2 text-xs font-normal leading-none text-gray-400">4 дня назад</time>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h3 class="text-lg font-semibold mb-4">Предпочитаемые языки</h3>
+            <div class="flex items-center justify-around flex-wrap gap-6">
+                <div class="w-40 h-40 relative">
+                    <svg viewBox="0 0 36 36" class="w-full h-full">
+                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#4a5568" stroke-width="3"></circle>
+                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#4299e1" stroke-width="3.8" stroke-dasharray="60 40" stroke-dashoffset="25"></circle>
+                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#f6e05e" stroke-width="3.8" stroke-dasharray="25 75" stroke-dashoffset="-35"></circle>
+                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#9f7aea" stroke-width="3.8" stroke-dasharray="15 85" stroke-dashoffset="-60"></circle>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <i data-feather="code" class="w-10 h-10 text-gray-500"></i>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-blue-500 mr-2"></span><span>Python - 60%</span></div>
+                    <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-yellow-400 mr-2"></span><span>JavaScript - 25%</span></div>
+                    <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-purple-500 mr-2"></span><span>C++ - 15%</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h3 class="text-lg font-semibold mb-4">Недавняя активность</h3>
+            <ul class="space-y-4">
+                <li class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-700/50 transition-colors">
+                    <div class="flex items-center space-x-4">
+                        <div class="p-2 bg-gray-700 rounded-full"><i data-feather="check-circle" class="w-5 h-5 text-green-400"></i></div>
+                        <div>
+                            <p class="font-semibold">Решена задача <a href="#" class="text-primary hover:underline">"Два Сумма"</a></p>
+                            <span class="text-xs text-gray-400">Сложность: <span class="font-bold text-yellow-400">Средняя</span></span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-medium">Python</p>
+                        <p class="text-xs text-gray-400">Сегодня</p>
+                    </div>
+                </li>
+                 <li class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-700/50 transition-colors">
+                    <div class="flex items-center space-x-4">
+                        <div class="p-2 bg-gray-700 rounded-full"><i data-feather="check-circle" class="w-5 h-5 text-green-400"></i></div>
+                        <div>
+                            <p class="font-semibold">Решена задача <a href="#" class="text-primary hover:underline">"Перевернуть строку"</a></p>
+                            <span class="text-xs text-gray-400">Сложность: <span class="font-bold text-green-400">Легкая</span></span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-medium">JavaScript</p>
+                        <p class="text-xs text-gray-400">Вчера</p>
+                    </div>
+                </li>
+                 <li class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-700/50 transition-colors">
+                    <div class="flex items-center space-x-4">
+                        <div class="p-2 bg-gray-700 rounded-full"><i data-feather="check-circle" class="w-5 h-5 text-green-400"></i></div>
+                        <div>
+                            <p class="font-semibold">Решена задача <a href="#" class="text-primary hover:underline">"Поиск медианы"</a></p>
+                            <span class="text-xs text-gray-400">Сложность: <span class="font-bold text-red-400">Сложная</span></span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-medium">C++</p>
+                        <p class="text-xs text-gray-400">3 дня назад</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock content %}

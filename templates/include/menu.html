@@ -1,8 +1,31 @@
-<nav>
-    <ul class="flex space-x-8">
-        <li><a href="#" class="font-medium text-primary border-b-2 border-primary pb-1">Dashboard</a></li>
-        <li><a href="#" class="font-medium text-gray-400 hover:text-white transition">Quests</a></li>
-        <li><a href="#" class="font-medium text-gray-400 hover:text-white transition">Leaderboard</a></li>
-        <li><a href="#" class="font-medium text-gray-400 hover:text-white transition">Profile</a></li>
-    </ul>
-</nav>
+<header class="bg-gray-900 border-b border-gray-800 py-4 px-6 flex items-center justify-between">
+    <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+            <span class="font-bold text-white">{{ user.profile.initials|default:"JD" }}</span>
+        </div>
+        <div>
+            <a href="#" class="font-semibold">{{ user.username|default:"JohnDoe" }}</a>
+            <p class="text-xs text-gray-400">{{ user.profile.title|default:"Level 12 Explorer" }}</p>
+        </div>
+    </div>
+
+    <div class="hidden md:block">
+        <nav>
+            <ul class="flex space-x-8">
+                <li><a href="#" class="font-medium text-primary border-b-2 border-primary pb-1">Dashboard</a></li>
+                <li><a href="#" class="font-medium text-gray-400 hover:text-white transition">Quests</a></li>
+                <li><a href="#" class="font-medium text-gray-400 hover:text-white transition">Leaderboard</a></li>
+                <li><a href="#" class="font-medium text-gray-400 hover:text-white transition">Profile</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="flex items-center space-x-4">
+        <button class="p-2 rounded-full hover:bg-gray-800 transition">
+            <i data-feather="bell" class="w-5 h-5"></i>
+        </button>
+        <button class="p-2 rounded-full hover:bg-gray-800 transition">
+            <i data-feather="settings" class="w-5 h-5"></i>
+        </button>
+    </div>
+</header>
