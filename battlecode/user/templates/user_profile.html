@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Профиль пользователя - {{ user.username|default:"JohnDoe" }}{% endblock title %}
+{% block title %}Профиль пользователя - {{ user.username }}{% endblock title %}
 {% block description %}Страница профиля пользователя с его статистикой, достижениями и активностью.{% endblock description %}
 
 {% block content %}

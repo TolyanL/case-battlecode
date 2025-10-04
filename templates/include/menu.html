@@ -1,11 +1,19 @@
 <header class="bg-gray-900 border-b border-gray-800 py-4 px-6 flex items-center justify-between relative">
     <div class="flex items-center space-x-4">
         <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
-            <span class="font-bold text-white">{{ user.profile.initials|default:"JD" }}</span>
+            {% if user.is_authenticated %}
+            <span class="font-bold text-white">{{ user.username|slice:":1"|title }}</span>
+            {% else %}
+            <span class="font-bold text-white">?</span>
+            {% endif %}
         </div>
         <div>
-            <a href="{% url 'user_profile' username='me' %}" class="font-semibold">{{ user.username|default:"JohnDoe" }}</a>
-            <p class="text-xs text-gray-400">{{ user.profile.title|default:"Level 12 Explorer" }}</p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'user_profile' username='me' %}" class="font-semibold">{{ user.username }}</a>
+            <p class="text-xs text-gray-400">{{ user.profile.rank|default:"Level 12 Explorer" }}</p>
+            {% else %}
+            <a href="{% url 'login' %}" class="font-semibold">Login</a>
+            {% endif %}
         </div>
     </div>
 
