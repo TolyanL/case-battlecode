@@ -9,181 +9,33 @@
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300">
-        <div class="flex-grow">
-            <div class="flex justify-between items-center mb-4">
-                <span class="bg-green-500/10 text-green-400 text-xs font-semibold px-3 py-1 rounded-full">1500 опыта</span>
-                <span class="text-sm text-gray-400">Интенсивный</span>
+    {% for quest in quests %}
+        <a href="{% url 'quest_detail' quest.pk %}" class="block w-full bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300 text-left">
+            <div class="flex-grow">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="bg-green-500/10 text-green-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.created_at|timesince }} назад</span>
+                    <span class="text-sm text-gray-400">Индивидуальный</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">{{ quest.title }}</h3>
+                <p class="text-gray-400 text-sm mb-6">{{ quest.description|truncatewords:20 }}</p>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">Учебный лагерь по науке о данных</h3>
-            <p class="text-gray-400 text-sm mb-6">Введение в Python, Pandas, науку о данных и машинное обучение.</p>
-        </div>
-        <div class="border-t border-gray-800 pt-4 flex justify-between items-center text-gray-400">
-            <div class="flex items-center space-x-2">
-                <i data-feather="bar-chart-2" class="w-4 h-4 text-red-500"></i>
-                <span class="text-xs">Сложный</span>
+            <div class="border-t border-gray-800 pt-4 flex justify-between items-center text-gray-400">
+                <div class="flex items-center space-x-2">
+                    <i data-feather="minus" class="w-4 h-4 text-yellow-500"></i>
+                    <span class="text-xs">Средний</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-feather="terminal" class="w-4 h-4 text-gray-300"></i>
+                    <span class="text-xs">Shell</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-feather="clock" class="w-4 h-4"></i>
+                    <span class="text-xs">60 часов</span>
+                </div>
             </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="code" class="w-4 h-4 text-blue-500"></i>
-                <span class="text-xs">Python</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="clock" class="w-4 h-4"></i>
-                <span class="text-xs">104 часа</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300">
-        <div class="flex-grow">
-            <div class="flex justify-between items-center mb-4">
-                <span class="bg-green-500/10 text-green-400 text-xs font-semibold px-3 py-1 rounded-full">600 опыта</span>
-                <span class="text-sm text-gray-400">Индивидуальный</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">BSA00_Разложение</h3>
-            <p class="text-gray-400 text-sm mb-6">BSA00_Разложение.</p>
-        </div>
-        <div class="border-t border-gray-800 pt-4 flex justify-between items-center text-gray-400">
-            <div class="flex items-center space-x-2">
-                <i data-feather="minus" class="w-4 h-4 text-yellow-500"></i>
-                <span class="text-xs">Средний</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="terminal" class="w-4 h-4 text-gray-300"></i>
-                <span class="text-xs">Shell</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="clock" class="w-4 h-4"></i>
-                <span class="text-xs">60 часов</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300">
-        <div class="flex-grow">
-            <div class="flex justify-between items-center mb-4">
-                <span class="bg-green-500/10 text-green-400 text-xs font-semibold px-3 py-1 rounded-full">600 опыта</span>
-                <span class="text-sm text-gray-400">Индивидуальный</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">CbS1_Основы сетей. Часть 1</h3>
-            <p class="text-gray-400 text-sm mb-6">Данный проект включает в себя анализ основ сетей, модели OSI/TCP/IP на примере работы в...</p>
-        </div>
-        <div class="border-t border-gray-800 pt-4 flex justify-between items-center text-gray-400">
-            <div class="flex items-center space-x-2">
-                <i data-feather="minus" class="w-4 h-4 text-yellow-500"></i>
-                <span class="text-xs">Средний</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="share-2" class="w-4 h-4 text-purple-500"></i>
-                <span class="text-xs">Network</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="clock" class="w-4 h-4"></i>
-                <span class="text-xs">40 часов</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300">
-        <div class="flex-grow">
-            <div class="flex justify-between items-center mb-4">
-                <span class="bg-green-500/10 text-green-400 text-xs font-semibold px-3 py-1 rounded-full">200 опыта</span>
-                <span class="text-sm text-gray-400">Индивидуальный</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">DO1_Linux</h3>
-            <p class="text-gray-400 text-sm mb-6">Установка и обновления системы Linux. Основы администрирования.</p>
-        </div>
-        <div class="border-t border-gray-800 pt-4 flex justify-between items-center text-gray-400">
-            <div class="flex items-center space-x-2">
-                <i data-feather="chevrons-down" class="w-4 h-4 text-green-500"></i>
-                <span class="text-xs">Лёгкий</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="terminal" class="w-4 h-4 text-gray-300"></i>
-                <span class="text-xs">Linux</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="clock" class="w-4 h-4"></i>
-                <span class="text-xs">20 часов</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300">
-        <div class="flex-grow">
-            <div class="flex justify-between items-center mb-4">
-                <span class="bg-green-500/10 text-green-400 text-xs font-semibold px-3 py-1 rounded-full">3000 опыта</span>
-                <span class="text-sm text-gray-400">Стажировка</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">Стажировка</h3>
-            <p class="text-gray-400 text-sm mb-6">Стажировка в компании и подготовка отчета по результатам стажировки.</p>
-        </div>
-        <div class="border-t border-gray-800 pt-4 flex justify-between items-center text-gray-400">
-            <div class="flex items-center space-x-2">
-                <i data-feather="bar-chart-2" class="w-4 h-4 text-red-500"></i>
-                <span class="text-xs">Сложный</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="briefcase" class="w-4 h-4 text-blue-300"></i>
-                <span class="text-xs">Практика</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="clock" class="w-4 h-4"></i>
-                <span class="text-xs">2160 часов</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300">
-        <div class="flex-grow">
-            <div class="flex justify-between items-center mb-4">
-                <span class="bg-green-500/10 text-green-400 text-xs font-semibold px-3 py-1 rounded-full">200 опыта</span>
-                <span class="text-sm text-gray-400">Индивидуальный</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">QA1_Основание</h3>
-            <p class="text-gray-400 text-sm mb-6">В этом проекте вы изучите тестирование программного обеспечения, поймете ключевы...</p>
-        </div>
-        <div class="border-t border-gray-800 pt-4 flex justify-between items-center text-gray-400">
-            <div class="flex items-center space-x-2">
-                <i data-feather="chevrons-down" class="w-4 h-4 text-green-500"></i>
-                <span class="text-xs">Лёгкий</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="check-circle" class="w-4 h-4 text-teal-400"></i>
-                <span class="text-xs">QA</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="clock" class="w-4 h-4"></i>
-                <span class="text-xs">20 часов</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300">
-        <div class="flex-grow">
-            <div class="flex justify-between items-center mb-4">
-                <span class="bg-green-500/10 text-green-400 text-xs font-semibold px-3 py-1 rounded-full">450 опыта</span>
-                <span class="text-sm text-gray-400">Индивидуальный</span>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">SimpleBashUtils</h3>
-            <p class="text-gray-400 text-sm mb-6">В этом проекте вы изучите и разработаете базовые утилиты Bash для работы с текстами н...</p>
-        </div>
-        <div class="border-t border-gray-800 pt-4 flex justify-between items-center text-gray-400">
-            <div class="flex items-center space-x-2">
-                <i data-feather="minus" class="w-4 h-4 text-yellow-500"></i>
-                <span class="text-xs">Средний</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="file-text" class="w-4 h-4 text-green-300"></i>
-                <span class="text-xs">Bash</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i data-feather="clock" class="w-4 h-4"></i>
-                <span class="text-xs">44 часа</span>
-            </div>
-        </div>
-    </div>
-
+        </a>
+    {% empty %}
+        <p class="text-gray-400">Нет доступных квестов.</p>
+    {% endfor %}
 </div>
 {% endblock content %}
