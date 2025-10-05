@@ -19,6 +19,11 @@ db_migrate:
 db_dw:
   docker compose -f {{dev_db}} down
 
+@git-pull:
+  git pull
+  uv sync
+  echo "✅ pulled successfully"
+
 serve:
   uv run {{managepy}} makemigrations
   uv run {{managepy}} migrate
