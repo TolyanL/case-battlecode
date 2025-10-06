@@ -30,6 +30,11 @@ class Quest(models.Model):
         verbose_name="Язык",
         related_name="quests",
     )
+    details = models.OneToOneField(
+        "QuestDetail",
+        on_delete=models.CASCADE,
+        verbose_name="Задачи",
+    )
 
     active = models.BooleanField(default=True, verbose_name="Активен")
 
@@ -43,9 +48,13 @@ class Quest(models.Model):
     def get_absolute_url(self) -> str:
         return reverse("quest_detail", kwargs={"slug": self.slug})
 
+    # INFO: pts = base_pts + (MIN_PTS * (difficulty + (skill1_value * 0.1) + (skill2_value * 0.1) + ...))
     @property
     def get_pts(self) -> int:
-        pts = self.base_pts + count_quest_pts(self.difficulty, list(self.skills.all()))
+        pts = self.base_pts + count_quest_pts(
+            self.difficulty,
+            list(self.skills.all()),
+        )
         return pts
 
     def __str__(self):
@@ -54,6 +63,21 @@ class Quest(models.Model):
     class Meta:
         verbose_name = "Квест"
         verbose_name_plural = "Квесты"
+        ordering = ["-created_at"]
+
+
+class QuestDetail(models.Model):
+    task = models.TextField(verbose_name="Задача")
+
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    def __str__(self):
+        return self.task
+
+    class Meta:
+        verbose_name = "Квест - задача"
+        verbose_name_plural = "Квесты - задачи"
         ordering = ["-created_at"]
 
 
