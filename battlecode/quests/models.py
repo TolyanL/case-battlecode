@@ -1,8 +1,10 @@
-from django.db import models
-from django.urls import reverse
 from slugify import slugify
 
-from battlecode.quest_settings import DIFFICULTY_CHOICES, MIN_PTS
+from django.db import models
+from django.urls import reverse
+from django.contrib.auth.models import User
+
+from battlecode.quest_settings import DIFFICULTY_CHOICES, MIN_PTS, ASSIGNMENT_STATUS_CHOICES
 
 from .model_utils import count_quest_pts
 
@@ -126,3 +128,28 @@ class Skill(models.Model):
         verbose_name = "Навык"
         verbose_name_plural = "Навыки"
         ordering = ["-created_at"]
+
+
+class Assignment(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="assignments",
+        verbose_name="Пользователь",
+    )
+    quest = models.ForeignKey(
+        Quest,
+        on_delete=models.CASCADE,
+        verbose_name="Квест",
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=ASSIGNMENT_STATUS_CHOICES,
+        default="active",
+        verbose_name="Статус",
+    )
+
+    completed_at = models.DateTimeField(verbose_name="Дата завершения", null=True, blank=True)
+
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+    assigned_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата назначения")
