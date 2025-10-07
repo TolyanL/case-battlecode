@@ -38,6 +38,35 @@ def accept_quest(request: HttpRequest):
     return JsonResponse({"success": False, "message": "Empty request"})
 
 
+@login_required()
+def give_up_quest(request: HttpRequest):
+    if request.method == "POST":
+        user = request.user
+        try:
+            data = json.loads(request.body)
+
+            quest_slug = data.get("quest_slug")
+            if not quest_slug:
+                return JsonResponse({"success": False, "message": "Empty request"})
+
+            quest = Quest.objects.get(slug=quest_slug)
+            if not quest:
+                return JsonResponse({"success": False, "message": "Quest not found"})
+
+            items = Assignment.objects.filter(user=user, quest=quest, status="active")
+            if not items.exists():
+                return JsonResponse({"success": False, "message": "You have no active quests"})
+
+            Assignment.objects.filter(user=user, quest=quest, status="active").update(status="failed")
+
+            return JsonResponse({"success": True, "message": "Quest failed"})
+        except Exception as e:
+            print("err: ", e)
+            return JsonResponse({"success": False, "message": "Error has occurred"})
+
+    return JsonResponse({"success": False, "message": "Empty request"})
+
+
 @login_required
 def complete_quest(request: HttpRequest):
     if request.method == "POST":

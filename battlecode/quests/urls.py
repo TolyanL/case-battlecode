@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import quests_all, quests_check, QuestDetailView
-from .requests import accept_quest, complete_quest
+from .requests import accept_quest, give_up_quest, complete_quest
 
 
 urlpatterns = [
@@ -10,5 +10,6 @@ urlpatterns = [
     path("<str:slug>/", QuestDetailView.as_view(), name="quest_detail"),
     # requests routes
     path("accept", accept_quest, name="req_accept_quest"),
+    path("give-up", give_up_quest, name="req_give_up"),
     path("complete", complete_quest, name="req_complete_quest"),
 ]

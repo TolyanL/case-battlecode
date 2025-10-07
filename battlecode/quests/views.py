@@ -43,6 +43,8 @@ class QuestDetailView(DetailView):
             description="Details about the selected quest.",
             curr_page=current_page,
         )
+        accepted = Assignment.objects.filter(user=self.request.user, status="active").all()
+        context["accepted_list"] = [item.quest.slug for item in accepted]
         return context
 
 

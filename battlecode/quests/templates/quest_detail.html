@@ -1,83 +1,92 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Проект: Управление Солнечными Панелями (Minimal){% endblock title %}
-{% block description %}Описание минималистичного проекта по разработке программы на Python для управления солнечными панелями.{% endblock description %}
+{% block title %}Проект: {{ quest.title }}{% endblock title %}
+{% block description %}{{ quest.description }}{% endblock description %}
 
 {% block content %}
-    <div class="bg-gray-900 p-8 rounded-lg shadow-inner border border-gray-700 mb-10">
-        <div class="grid grid-cols-1 gap-6">
-            
+    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-8">
+        <div class="flex justify-between items-start mb-4">
             <div>
-                <h1 class="text-3xl font-light tracking-wide text-white flex items-center justify-between">
-                    УМНЫЙ ДОМ / УПРАВЛЕНИЕ СОЛНЕЧНЫМИ ПАНЕЛЯМИ 
-                    <span class="ml-4 px-3 py-1 bg-gray-700 text-white text-sm font-medium rounded-full">Python</span>
-                </h1>
-
-                <h2 class="text-xl font-semibold text-white mt-4">Задача:</h2>
-                
-                <div class="space-y-3 text-gray-400 text-base leading-relaxed mt-2">
-                    <p class="font-medium">
-                        Требуется написать программу, которая отвечает за функционирование солнечных панелей.
-                    </p>
-                    <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
-                        <li>Автоматическое **переворачивание панелей** при осадках (снег/дождь), определяемых датчиками.</li>
-                        <li>Обеспечение следования панелей **направлению солнца** для максимальной энергоэффективности.</li>
-                    </ul>
-                </div>
+                {% if quest.pts %}
+                    <span class="bg-cyan-500/20 text-cyan-400 text-sm font-semibold px-3 py-1 rounded-full">{{ quest.pts }} PTS</span>
+                {% endif %}
+                {% if quest.difficulty == "easy" %}
+                    <span class="bg-cyan-500/20 text-cyan-400 text-sm font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}</span>
+                {% elif quest.difficulty == "medium" %}
+                    <span class="bg-orange-500/20 text-orange-400 text-sm font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}</span>
+                {% else %}
+                    <span class="bg-red-500/20 text-red-400 text-sm font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}🔥</span>
+                {% endif %}
             </div>
+            <span class="bg-blue-500/20 text-blue-400 text-sm font-semibold px-3 py-1 rounded-full">{{ quest.language.name }}</span>
+        </div>
 
-            <div class="pt-6"> 
-                <h2 class="text-xl font-semibold mb-4 text-white">Ключевые характеристики:</h2>
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    
-                    <div class="p-2 bg-gray-800 rounded-lg border border-gray-600 flex flex-col justify-center items-center">
-                        <span class="text-xs font-light uppercase tracking-widest text-gray-500">Время на проверку</span>
-                        <h3 class="text-lg font-normal text-white">🕒 45 min</h3>
-                    </div>
+        <h1 class="font-bold text-white text-3xl mb-2">{{ quest.title }}</h1>
+        <p class="text-gray-400 text-base mb-6">{{ quest.description }}</p>
 
-                    <div class="p-2 bg-gray-800 rounded-lg border border-gray-600 flex flex-col justify-center items-center">
-                        <span class="text-xs font-light uppercase tracking-widest text-gray-500">Время на выполнение</span>
-                        <h3 class="text-lg font-normal text-white">🕒 30 hrs</h3>
-                    </div>
-
-                    <div class="p-2 bg-gray-800 rounded-lg border border-gray-600 flex flex-col justify-center items-center">
-                        <span class="text-xs font-light uppercase tracking-widest text-gray-500 block text-center mb-1">Награда (Очки)</span>
-                        <div class="space-y-1">
-                            <p class="text-xs text-green-400 font-bold">➕ 15 командных</p>
-                            <p class="text-xs text-green-400 font-bold">➕ 40 python</p>
-                        </div>
-                    </div>
-
-                    <div class="p-2 bg-gray-800 rounded-lg border border-gray-600 flex flex-col justify-center items-center">
-                        <span class="text-xs font-light uppercase tracking-widest text-gray-500 mb-1">Сложность</span>
-                        <div class="flex items-center space-x-1">
-                            <i data-feather="bar-chart-2" class="w-4 h-4 text-red-500"></i>
-                            <span class="text-base font-bold text-red-400">Сложный</span>
-                        </div>
+        <div class="mt-auto pt-6 border-t border-gray-700/50">
+            <h2 class="text-xl font-semibold mb-4 text-white">Ключевые характеристики:</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-400">
+                <div class="flex items-center bg-gray-800 p-3 rounded-lg">
+                    <i data-feather="clock" class="w-5 h-5 mr-3 text-cyan-400"></i>
+                    <div>
+                        <span class="text-xs text-gray-400">Время на выполнение</span>
+                        <p class="font-semibold text-white">{{ quest.work_time }} ч</p>
                     </div>
                 </div>
+                <div class="flex items-center bg-gray-800 p-3 rounded-lg">
+                     <i data-feather="check-circle" class="w-5 h-5 mr-3 text-cyan-400"></i>
+                     <div>
+                        <span class="text-xs text-gray-400">Время на проверку</span>
+                        <p class="font-semibold text-white">{{ quest.check_time }} ч</p>
+                    </div>
+                </div>
+                <div class="flex items-center bg-gray-800 p-3 rounded-lg">
+                    <i data-feather="award" class="w-5 h-5 mr-3 text-cyan-400"></i>
+                    <div>
+                        <span class="text-xs text-gray-400">Навыки</span>
+                        <p class="font-semibold text-white">
+                            {% for skill in quest.skills.all %}
+                                +{{ skill.points }} {{ skill.name|title }}
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center bg-gray-800 p-3 rounded-lg">
+                    <i data-feather="award" class="w-5 h-5 mr-3 text-cyan-400"></i>
+                     <div>
+                        <span class="text-xs text-gray-400">PTS</span>
+                        <p class="font-semibold text-white">{{ quest.pts }}</p>
+                    </div>
+                </div>
             </div>
-            
-            <div class="pt-6 flex justify-center">
-                <button class="flex items-center justify-center space-x-3 px-8 py-3.5 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transform hover:scale-105 transition duration-300 ease-in-out">
-                    <i data-feather="terminal" class="w-5 h-5"></i>
-                    <span>Начать Battle</span>
-                </button>
-            </div>
-            
+        </div>
+
+        <div class="mt-8 flex justify-center">
+            {% csrf_token %}
+            {% if quest.slug in accepted_list %}
+            <button data-action="give-up" data-quest-slug="{{ quest.slug }}" class="quest-btn w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-gray-600 text-white font-bold rounded-lg">
+                <span>💀 Give Up</span>
+            </button>
+            {% else %}
+            <button data-action="accept" data-quest-slug="{{ quest.slug }}" class="quest-btn w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
+                <span>⚔️ Start Code Battle</span>
+            </button>
+            {% endif %}
         </div>
     </div>
 
-    <div class="bg-gray-900 p-8 rounded-lg shadow-inner border border-gray-700">
-        <h2 class="text-xl font-semibold mb-4 text-white">Подробности</h2>
-        <div class="space-y-4 text-gray-400 text-base leading-relaxed">
-            <p>
-                Требуется составить программу, которая может переворачивать солнечные панели в зависимости наличия на ней осадков в виде снега или дождя. Она должна определять есть ли подобные вещи на панели при помощи датчиков. Также требуется чтобы панели следовали в направлении солнца для максимальной энергоэффективности.
-            </p>
+    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
+        <h2 class="text-2xl font-bold mb-4 text-white">Подробности Задания</h2>
+        <div class="prose prose-invert max-w-none text-gray-400">
+            {{ quest.details.task|safe }}
         </div>
     </div>
 
 {% endblock content %}
 
-{% block extra_js %}{% endblock extra_js %}
+{% block extra_js %}
+<script src="{% static "/js/quest-btn.js" %}"></script>
+{% endblock extra_js %}

@@ -51,7 +51,7 @@ class Quest(models.Model):
 
     # INFO: pts = base_pts + (MIN_PTS * (difficulty + (skill1_value * 0.1) + (skill2_value * 0.1) + ...))
     @property
-    def get_pts(self) -> int:
+    def pts(self) -> int:
         pts = self.base_pts + count_quest_pts(
             self.difficulty,
             list(self.skills.all()),
