@@ -1,13 +1,83 @@
 {% extends "base.html" %}
 
-{% block title %}{{ quest.title }}{% endblock %}
+{% block title %}Проект: Управление Солнечными Панелями (Minimal){% endblock title %}
+{% block description %}Описание минималистичного проекта по разработке программы на Python для управления солнечными панелями.{% endblock description %}
 
 {% block content %}
-<div class="mb-8">
-    <h1 class="text-3xl font-bold text-white">{{ quest.title }}</h1>
-    <p class="text-gray-400">{{ quest.description }}</p>
-</div>
-<div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
-    <p class="text-gray-300">{{ quest.details.task|safe }}</p>
-</div>
-{% endblock %}
+    <div class="bg-gray-900 p-8 rounded-lg shadow-inner border border-gray-700 mb-10">
+        <div class="grid grid-cols-1 gap-6">
+            
+            <div>
+                <h1 class="text-3xl font-light tracking-wide text-white flex items-center justify-between">
+                    УМНЫЙ ДОМ / УПРАВЛЕНИЕ СОЛНЕЧНЫМИ ПАНЕЛЯМИ 
+                    <span class="ml-4 px-3 py-1 bg-gray-700 text-white text-sm font-medium rounded-full">Python</span>
+                </h1>
+
+                <h2 class="text-xl font-semibold text-white mt-4">Задача:</h2>
+                
+                <div class="space-y-3 text-gray-400 text-base leading-relaxed mt-2">
+                    <p class="font-medium">
+                        Требуется написать программу, которая отвечает за функционирование солнечных панелей.
+                    </p>
+                    <ul class="list-disc list-inside space-y-1 ml-4 text-sm">
+                        <li>Автоматическое **переворачивание панелей** при осадках (снег/дождь), определяемых датчиками.</li>
+                        <li>Обеспечение следования панелей **направлению солнца** для максимальной энергоэффективности.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-6"> 
+                <h2 class="text-xl font-semibold mb-4 text-white">Ключевые характеристики:</h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    
+                    <div class="p-2 bg-gray-800 rounded-lg border border-gray-600 flex flex-col justify-center items-center">
+                        <span class="text-xs font-light uppercase tracking-widest text-gray-500">Время на проверку</span>
+                        <h3 class="text-lg font-normal text-white">🕒 45 min</h3>
+                    </div>
+
+                    <div class="p-2 bg-gray-800 rounded-lg border border-gray-600 flex flex-col justify-center items-center">
+                        <span class="text-xs font-light uppercase tracking-widest text-gray-500">Время на выполнение</span>
+                        <h3 class="text-lg font-normal text-white">🕒 30 hrs</h3>
+                    </div>
+
+                    <div class="p-2 bg-gray-800 rounded-lg border border-gray-600 flex flex-col justify-center items-center">
+                        <span class="text-xs font-light uppercase tracking-widest text-gray-500 block text-center mb-1">Награда (Очки)</span>
+                        <div class="space-y-1">
+                            <p class="text-xs text-green-400 font-bold">➕ 15 командных</p>
+                            <p class="text-xs text-green-400 font-bold">➕ 40 python</p>
+                        </div>
+                    </div>
+
+                    <div class="p-2 bg-gray-800 rounded-lg border border-gray-600 flex flex-col justify-center items-center">
+                        <span class="text-xs font-light uppercase tracking-widest text-gray-500 mb-1">Сложность</span>
+                        <div class="flex items-center space-x-1">
+                            <i data-feather="bar-chart-2" class="w-4 h-4 text-red-500"></i>
+                            <span class="text-base font-bold text-red-400">Сложный</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-6 flex justify-center">
+                <button class="flex items-center justify-center space-x-3 px-8 py-3.5 text-base font-semibold text-white bg-blue-600 rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transform hover:scale-105 transition duration-300 ease-in-out">
+                    <i data-feather="terminal" class="w-5 h-5"></i>
+                    <span>Начать Battle</span>
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="bg-gray-900 p-8 rounded-lg shadow-inner border border-gray-700">
+        <h2 class="text-xl font-semibold mb-4 text-white">Подробности</h2>
+        <div class="space-y-4 text-gray-400 text-base leading-relaxed">
+            <p>
+                Требуется составить программу, которая может переворачивать солнечные панели в зависимости наличия на ней осадков в виде снега или дождя. Она должна определять есть ли подобные вещи на панели при помощи датчиков. Также требуется чтобы панели следовали в направлении солнца для максимальной энергоэффективности.
+            </p>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block extra_js %}{% endblock extra_js %}
