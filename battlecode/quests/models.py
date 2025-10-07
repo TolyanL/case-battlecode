@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 from battlecode.quest_settings import DIFFICULTY_CHOICES, MIN_PTS, ASSIGNMENT_STATUS_CHOICES
-
 from .model_utils import count_quest_pts
 
 
@@ -76,6 +75,13 @@ class QuestDetail(models.Model):
 
     def __str__(self):
         return self.task
+
+    @property
+    def review_pool(self) -> list["Assignment"]:
+        q = Assignment.objects.filter(quest=self, status="completed")
+        if q.exists():
+            return list(q.all())
+        return []
 
     class Meta:
         verbose_name = "Квест - задача"
