@@ -84,6 +84,187 @@
             {{ quest.details.task|safe }}
         </div>
     </div>
+    <div class="container">
+        <div class="editor-container" id="editor-container">
+            <div class="editor-header">
+                <div class="timer-display" id="timer">08:00:00</div>
+                <select class="language-selector" id="language-selector">
+                    <option value="python">Python</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="htmlmixed">HTML/CSS</option>
+                </select>
+                <div class="editor-actions">
+                    <button class="editor-btn finish-btn" id="finish-btn">✅ Закончить</button>
+                    <button class="editor-btn surrender-btn" id="surrender-btn">💀 Сдаться</button>
+                </div>
+            </div>
+            <textarea id="code-editor"># Your code goes here
+def process_large_dataset(data_stream):
+    """
+    Process large dataset with minimal memory usage
+    Args:
+        data_stream: Iterable data source
+    Returns:
+        Processed results
+    """
+    # Implement your solution here
+    pass
+
+# Example usage
+if __name__ == "__main__":
+    # Test your implementation
+    pass
+</textarea>
+        </div>
+        
+        <!-- Finish Confirmation Modal -->
+        <div class="modal" id="finish-modal">
+            <div class="modal-content">
+                <h3 class="modal-title">Подтверждение завершения</h3>
+                <p class="modal-message">Вы уверены, что хотите закончить выполнение задания? Ваше решение будет отправлено на проверку.</p>
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-confirm" id="confirm-finish">Да, закончить</button>
+                    <button class="modal-btn modal-cancel" id="cancel-finish">Отмена</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Surrender Confirmation Modal -->
+        <div class="modal" id="surrender-modal">
+            <div class="modal-content">
+                <h3 class="modal-title">Подтверждение сдачи</h3>
+                <p class="modal-message">Вы уверены, что хотите сдаться? Вы не получите очки за это задание.</p>
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-confirm" id="confirm-surrender">Да, сдаться</button>
+                    <button class="modal-btn modal-cancel" id="cancel-surrender">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize variables
+        let editor = null;
+        let timerInterval = null;
+        let timeLeft = 8 * 60 * 60; // 8 hours in seconds
+        
+        // Format time as HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Start the timer
+        function startTimer() {
+            const timerDisplay = document.getElementById('timer');
+            timerDisplay.textContent = formatTime(timeLeft);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = formatTime(timeLeft);
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Time is up! Please submit your solution.');
+                }
+            }, 1000);
+        }
+        
+        // Function to show editor with animation
+        function showEditor() {
+            const editorContainer = document.getElementById('editor-container');
+            editorContainer.classList.add('show');
+            
+            // Initialize CodeMirror editor
+            if (!editor) {
+                editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+                    mode: 'python',
+                    theme: 'default',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    matchBrackets: true,
+                    autoCloseBrackets: true,
+                    extraKeys: {
+                        "Ctrl-Enter": function(cm) {
+                            console.log("Running code...");
+                        }
+                    }
+                });
+                
+                // Set theme for dark mode
+                const editorWrapper = document.querySelector('.CodeMirror');
+                if (editorWrapper) {
+                    editorWrapper.style.backgroundColor = '#0f172a';
+                }
+            }
+            
+            // Start the timer
+            startTimer();
+        }
+        
+        // Set initial language based on quest details
+        document.addEventListener('DOMContentLoaded', function() {
+            const languageSelector = document.getElementById('language-selector');
+            languageSelector.value = 'python';
+            
+            // Update editor mode when language changes
+            languageSelector.addEventListener('change', function() {
+                if (editor) {
+                    editor.setOption('mode', this.value);
+                }
+            });
+        });
+        
+        // Modal functionality
+        const finishModal = document.getElementById('finish-modal');
+        const surrenderModal = document.getElementById('surrender-modal');
+        const finishBtn = document.getElementById('finish-btn');
+        const surrenderBtn = document.getElementById('surrender-btn');
+        
+        // Show finish confirmation modal
+        finishBtn.addEventListener('click', function() {
+            finishModal.classList.add('show');
+        });
+        
+        // Show surrender confirmation modal
+        surrenderBtn.addEventListener('click', function() {
+            surrenderModal.classList.add('show');
+        });
+        
+        // Close modals when cancel buttons are clicked
+        document.getElementById('cancel-finish').addEventListener('click', function() {
+            finishModal.classList.remove('show');
+        });
+        
+        document.getElementById('cancel-surrender').addEventListener('click', function() {
+            surrenderModal.classList.remove('show');
+        });
+        
+        // Close modals when clicking outside the content
+        window.addEventListener('click', function(event) {
+            if (event.target === finishModal) {
+                finishModal.classList.remove('show');
+            }
+            if (event.target === surrenderModal) {
+                surrenderModal.classList.remove('show');
+            }
+        });
+        
+        // Confirm finish action
+        document.getElementById('confirm-finish').addEventListener('click', function() {
+            finishModal.classList.remove('show');
+            alert('Решение отправлено на проверку!');
+        });
+        
+        // Confirm surrender action
+        document.getElementById('confirm-surrender').addEventListener('click', function() {
+            surrenderModal.classList.remove('show');
+            alert('Вы сдались. Попробуйте другое задание!');
+        });
+    </script>
 
 {% endblock content %}
 

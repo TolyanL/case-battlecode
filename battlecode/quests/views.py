@@ -8,7 +8,6 @@ from quests.models import Quest, Assignment
 
 current_page = "quests"
 
-
 def quests_all(request):
     pd = PageData(
         title="Quests",
