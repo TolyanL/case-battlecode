@@ -1,7 +1,8 @@
+<!-- battlecode/user/templates/user_profile.html -->
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Профиль пользователя - {{ user.username }}{% endblock title %}
+{% block title %}Профиль пользователя - {{ profile_user.username }}{% endblock title %}
 {% block description %}Страница профиля пользователя с его статистикой, достижениями и активностью.{% endblock description %}
 
 {% block content %}
@@ -9,12 +10,12 @@
     <div class="lg:col-span-1 space-y-6">
         <div class="bg-gray-800 rounded-lg p-6 text-center shadow-lg">
             <div class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-gray-700 bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
-                <span class="text-4xl font-bold text-white">{{ user.profile.initials|default:"JD" }}</span>
+                <span class="text-4xl font-bold text-white">{{ profile_user.profile.initials|default:"JD" }}</span>
             </div>
 
-            <h2 class="text-2xl font-bold">{{ user.username|default:"JohnDoe" }}</h2>
-            <p class="text-primary">{{ user.profile.title|default:"Level 12 Explorer" }}</p>
-            <p class="text-sm text-gray-400 mt-2">Присоединился: {{ user.date_joined|date:"d M Y"|default:"01 Oct 2025" }}</p>
+            <h2 class="text-2xl font-bold">{{ profile_user.username|default:"JohnDoe" }}</h2>
+            <p class="text-primary">{{ profile_user.profile.title|default:"Level 12 Explorer" }}</p>
+            <p class="text-sm text-gray-400 mt-2">Присоединился: {{ profile_user.date_joined|date:"d M Y"|default:"01 Oct 2025" }}</p>
         </div>
 
         <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
@@ -35,111 +36,224 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div class="bg-gray-800 rounded-lg p-5 text-center shadow-lg">
                 <p class="text-sm text-gray-400">Место в рейтинге</p>
-                <p class="text-3xl font-bold text-primary">#12</p>
+                <p class="text-3xl font-bold text-primary">#{{ profile_user.profile.rank }}</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-5 text-center shadow-lg">
                 <p class="text-sm text-gray-400">Всего очков</p>
-                <p class="text-3xl font-bold">15,780</p>
+                <p class="text-3xl font-bold">{{ profile_user.profile.pts }}</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-5 text-center shadow-lg">
                 <p class="text-sm text-gray-400">Заданий выполнено</p>
-                <p class="text-3xl font-bold">124</p>
+                <p class="text-3xl font-bold">{{ assignments.count }}</p> <!-- Пример: общее количество назначенных квестов -->
             </div>
         </div>
 
         <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
             <h3 class="text-lg font-semibold mb-4">История квестов</h3>
-            <div class="relative border-l-2 border-gray-700 ml-3">
-                <div class="mb-8 ml-6">
-                    <span class="absolute flex items-center justify-center w-6 h-6 bg-green-500 rounded-full -left-3 ring-8 ring-gray-800">
-                        <i data-feather="check" class="w-4 h-4 text-white"></i>
-                    </span>
-                    <h4 class="flex items-center mb-1 text-base font-semibold text-light">Победа в квесте "Битва за 'Быструю сортировку'" <span class="text-green-400 text-sm font-medium ml-3">+50 очков</span></h4>
-                    <time class="block mb-2 text-xs font-normal leading-none text-gray-400">Вчера</time>
+            {% if assignments %}
+                <div class="relative border-l-2 border-gray-700 ml-3">
+                    {% for assignment in assignments %}
+                        <div class="mb-8 ml-6">
+                            <!-- Иконка статуса -->
+                            {% if assignment.status == 'completed' %}
+                                <span class="absolute flex items-center justify-center w-6 h-6 bg-green-500 rounded-full -left-3 ring-8 ring-gray-800">
+                                    <i data-feather="check" class="w-4 h-4 text-white"></i>
+                                </span>
+                                <h4 class="flex items-center mb-1 text-base font-semibold text-light">
+                                    Победа в квесте "{{ assignment.quest.title }}" <!-- Используем title квеста -->
+                                    <span class="text-green-400 text-sm font-medium ml-3">
+                                        +{{ assignment.quest.pts|default:"0" }} очков <!-- Используем pts квеста, если есть -->
+                                    </span>
+                                </h4>
+                            {% elif assignment.status == 'failed' %}
+                                <span class="absolute flex items-center justify-center w-6 h-6 bg-red-500 rounded-full -left-3 ring-8 ring-gray-800">
+                                    <i data-feather="x" class="w-4 h-4 text-white"></i>
+                                </span>
+                                <h4 class="flex items-center mb-1 text-base font-semibold text-light">
+                                    Поражение в квесте "{{ assignment.quest.title }}"
+                                    <span class="text-red-400 text-sm font-medium ml-3">
+                                        -{{ assignment.quest.penalty|default:"0" }} очков <!-- Используем penalty квеста, если есть -->
+                                    </span>
+                                </h4>
+                            {% elif assignment.status == 'in_progress' %}
+                                <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-500 rounded-full -left-3 ring-8 ring-gray-800"> <!-- Цвет изменён на синий -->
+                                    <i data-feather="clock" class="w-4 h-4 text-white"></i>
+                                </span>
+                                <h4 class="flex items-center mb-1 text-base font-semibold text-light">
+                                    В процессе: "{{ assignment.quest.title }}"
+                                    <span class="text-blue-400 text-sm font-medium ml-3">
+                                        Статус: {{ assignment.get_status_display|default:"Неизвестен" }} <!-- Используем отображение статуса -->
+                                    </span>
+                                </h4>
+                            {% else %}
+                                <span class="absolute flex items-center justify-center w-6 h-6 bg-gray-500 rounded-full -left-3 ring-8 ring-gray-800">
+                                    <i data-feather="info" class="w-4 h-4 text-white"></i>
+                                </span>
+                                <h4 class="flex items-center mb-1 text-base font-semibold text-light">
+                                    Квест: "{{ assignment.quest.title }}"
+                                    <span class="text-gray-400 text-sm font-medium ml-3">
+                                        Статус: {{ assignment.get_status_display|default:"Неизвестен" }}
+                                    </span>
+                                </h4>
+                            {% endif %}
+                            <!-- Отображаем PTS и сложность -->
+                            <div class="mt-1 flex flex-wrap gap-2">
+                                <span class="bg-cyan-500 text-black text-xs font-bold px-2 py-1 rounded-full">
+                                    {{ assignment.quest.pts }} PTS
+                                </span>
+                                <!-- Тег сложности -->
+                                <span class="{{ assignment.difficulty_color.bg }} {{ assignment.difficulty_color.text }} text-xs font-semibold px-3 py-1 rounded-full">
+                                    {{ assignment.quest.difficulty|upper }}
+                                </span>
+                                
+                            </div>
+                            <!-- Время назначения или завершения -->
+                            <time class="block mt-2 text-xs font-normal leading-none text-gray-400">
+                                {% if assignment.completed_at %}
+                                    Завершён: {{ assignment.completed_at|date:"d M Y H:i"|default:"-" }}
+                                {% else %}
+                                    Назначен: {{ assignment.assigned_at|date:"d M Y H:i"|default:"-" }}
+                                {% endif %}
+                            </time>
+                        </div>
+                    {% endfor %}
                 </div>
-                <div class="mb-8 ml-6">
-                    <span class="absolute flex items-center justify-center w-6 h-6 bg-red-500 rounded-full -left-3 ring-8 ring-gray-800">
-                        <i data-feather="x" class="w-4 h-4 text-white"></i>
-                    </span>
-                    <h4 class="flex items-center mb-1 text-base font-semibold text-light">Поражение в квесте "Древовидный обход" <span class="text-red-400 text-sm font-medium ml-3">-15 очков</span></h4>
-                    <time class="block mb-2 text-xs font-normal leading-none text-gray-400">2 дня назад</time>
-                </div>
-                <div class="ml-6">
-                    <span class="absolute flex items-center justify-center w-6 h-6 bg-green-500 rounded-full -left-3 ring-8 ring-gray-800">
-                        <i data-feather="check" class="w-4 h-4 text-white"></i>
-                    </span>
-                    <h4 class="flex items-center mb-1 text-base font-semibold text-light">Победа в квесте "Оптимизация памяти" <span class="text-green-400 text-sm font-medium ml-3">+75 очков</span></h4>
-                    <time class="block mb-2 text-xs font-normal leading-none text-gray-400">4 дня назад</time>
-                </div>
-            </div>
+            {% else %}
+                <p class="text-gray-400">Квестов пока нет.</p>
+            {% endif %}
         </div>
 
         <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
             <h3 class="text-lg font-semibold mb-4">Предпочитаемые языки</h3>
             <div class="flex items-center justify-around flex-wrap gap-6">
+                <!-- Диаграмма -->
                 <div class="w-40 h-40 relative">
+                    <!-- SVG круговая диаграмма -->
                     <svg viewBox="0 0 36 36" class="w-full h-full">
+                        <!-- Фоновый круг -->
                         <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#4a5568" stroke-width="3"></circle>
-                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#4299e1" stroke-width="3.8" stroke-dasharray="60 40" stroke-dashoffset="25"></circle>
-                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#f6e05e" stroke-width="3.8" stroke-dasharray="25 75" stroke-dashoffset="-35"></circle>
-                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#9f7aea" stroke-width="3.8" stroke-dasharray="15 85" stroke-dashoffset="-60"></circle>
+
+                        <!-- Сегменты диаграммы -->
+                        {% if preferred_languages %}
+                            {% for lang in preferred_languages %}
+                                <!-- Цвет сегмента -->
+                                {% if lang.name == 'Python' %}
+                                    {% with color='#4299e1' %}
+                                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="{{ color }}" stroke-width="3.8" stroke-dasharray="{{ lang.dash_array_length }} {{ lang.dash_array_gap }}" stroke-dashoffset="{{ lang.dash_offset|floatformat:2 }}"></circle>
+                                    {% endwith %}
+                                {% elif lang.name == 'JavaScript' %}
+                                    {% with color='#f6e05e' %}
+                                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="{{ color }}" stroke-width="3.8" stroke-dasharray="{{ lang.dash_array_length }} {{ lang.dash_array_gap }}" stroke-dashoffset="{{ lang.dash_offset|floatformat:2 }}"></circle>
+                                    {% endwith %}
+                                {% elif lang.name == 'C++' %}
+                                    {% with color='#9f7aea' %}
+                                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="{{ color }}" stroke-width="3.8" stroke-dasharray="{{ lang.dash_array_length }} {{ lang.dash_array_gap }}" stroke-dashoffset="{{ lang.dash_offset|floatformat:2 }}"></circle>
+                                    {% endwith %}
+                                {% else %}
+                                    {% with color='#4a5568' %} <!-- По умолчанию серый -->
+                                        <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="{{ color }}" stroke-width="3.8" stroke-dasharray="{{ lang.dash_array_length }} {{ lang.dash_array_gap }}" stroke-dashoffset="{{ lang.dash_offset|floatformat:2 }}"></circle>
+                                    {% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <!-- Если нет языков, показываем пустой круг -->
+                            <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#4a5568" stroke-width="3"></circle>
+                        {% endif %}
+
+                        <!-- Центральный значок -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i data-feather="code" class="w-10 h-10 text-gray-500"></i>
+                        </div>
                     </svg>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <i data-feather="code" class="w-10 h-10 text-gray-500"></i>
-                    </div>
                 </div>
+
+                <!-- Легенда -->
                 <div class="space-y-2">
-                    <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-blue-500 mr-2"></span><span>Python - 60%</span></div>
-                    <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-yellow-400 mr-2"></span><span>JavaScript - 25%</span></div>
-                    <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-purple-500 mr-2"></span><span>C++ - 15%</span></div>
+                    {% if preferred_languages %}
+                        {% for lang in preferred_languages %}
+                            <div class="flex items-center">
+                                <!-- Цветной квадратик -->
+                                {% if lang.name == 'Python' %}
+                                    <span class="w-4 h-4 rounded-full bg-blue-500 mr-2"></span>
+                                {% elif lang.name == 'JavaScript' %}
+                                    <span class="w-4 h-4 rounded-full bg-yellow-400 mr-2"></span>
+                                {% elif lang.name == 'C++' %}
+                                    <span class="w-4 h-4 rounded-full bg-purple-500 mr-2"></span>
+                                {% else %}
+                                    <span class="w-4 h-4 rounded-full bg-gray-500 mr-2"></span>
+                                {% endif %}
+                                <span>{{ lang.name }} - {{ lang.percentage }}%</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-gray-400">Нет данных о предпочтительных языках.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
         <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
             <h3 class="text-lg font-semibold mb-4">Недавняя активность</h3>
-            <ul class="space-y-4">
-                <li class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-700/50 transition-colors">
-                    <div class="flex items-center space-x-4">
-                        <div class="p-2 bg-gray-700 rounded-full"><i data-feather="check-circle" class="w-5 h-5 text-green-400"></i></div>
-                        <div>
-                            <p class="font-semibold">Решена задача <a href="#" class="text-primary hover:underline">"Два Сумма"</a></p>
-                            <span class="text-xs text-gray-400">Сложность: <span class="font-bold text-yellow-400">Средняя</span></span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm font-medium">Python</p>
-                        <p class="text-xs text-gray-400">Сегодня</p>
-                    </div>
-                </li>
-                 <li class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-700/50 transition-colors">
-                    <div class="flex items-center space-x-4">
-                        <div class="p-2 bg-gray-700 rounded-full"><i data-feather="check-circle" class="w-5 h-5 text-green-400"></i></div>
-                        <div>
-                            <p class="font-semibold">Решена задача <a href="#" class="text-primary hover:underline">"Перевернуть строку"</a></p>
-                            <span class="text-xs text-gray-400">Сложность: <span class="font-bold text-green-400">Легкая</span></span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm font-medium">JavaScript</p>
-                        <p class="text-xs text-gray-400">Вчера</p>
-                    </div>
-                </li>
-                 <li class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-700/50 transition-colors">
-                    <div class="flex items-center space-x-4">
-                        <div class="p-2 bg-gray-700 rounded-full"><i data-feather="check-circle" class="w-5 h-5 text-green-400"></i></div>
-                        <div>
-                            <p class="font-semibold">Решена задача <a href="#" class="text-primary hover:underline">"Поиск медианы"</a></p>
-                            <span class="text-xs text-gray-400">Сложность: <span class="font-bold text-red-400">Сложная</span></span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm font-medium">C++</p>
-                        <p class="text-xs text-gray-400">3 дня назад</p>
-                    </div>
-                </li>
-            </ul>
+            {% if recent_activities %}
+                <ul class="space-y-4">
+                    {% for assignment in recent_activities %}
+                        <li class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-700/50 transition-colors">
+                            <div class="flex items-center space-x-4">
+                                <!-- Иконка результата -->
+                                {% if assignment.status == 'completed' %}
+                                    <div class="p-2 bg-gray-700 rounded-full"><i data-feather="check-circle" class="w-5 h-5 text-green-400"></i></div>
+                                    <div>
+                                        <p class="font-semibold">Выигран квест <a href="{{ assignment.quest.get_absolute_url }}" class="text-primary hover:underline">"{{ assignment.quest.title }}"</a></p>
+                                        <span class="text-xs text-gray-400">Результат: <span class="font-bold text-green-400">Победа</span></span>
+                                    </div>
+                                {% elif assignment.status == 'failed' %}
+                                    <div class="p-2 bg-gray-700 rounded-full"><i data-feather="x-circle" class="w-5 h-5 text-red-400"></i></div>
+                                    <div>
+                                        <p class="font-semibold">Проигран квест <a href="{{ assignment.quest.get_absolute_url }}" class="text-primary hover:underline">"{{ assignment.quest.title }}"</a></p>
+                                        <span class="text-xs text-gray-400">Результат: <span class="font-bold text-red-400">Поражение</span></span>
+                                    </div>
+                                {% else %}
+                                    <div class="p-2 bg-gray-700 rounded-full"><i data-feather="clock" class="w-5 h-5 text-blue-400"></i></div> <!-- Цвет изменён на синий -->
+                                    <div>
+                                        <p class="font-semibold">Квест в процессе <a href="{{ assignment.quest.get_absolute_url }}" class="text-primary hover:underline">"{{ assignment.quest.title }}"</a></p>
+                                        <span class="text-xs text-gray-400">Статус: <span class="font-bold text-blue-400">{{ assignment.get_status_display|default:"Активен" }}</span></span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="text-right">
+                                <!-- PTS и сложность -->
+                                <div class="flex items-center justify-end gap-2">
+                                    {% if assignment.status == 'completed' %}
+                                        <p class="text-sm font-medium text-green-400">{{ assignment.quest.pts }} PTS</p>
+                                    {% elif assignment.status == 'failed' %}
+                                        <p class="text-sm font-medium text-red-400">-{{ assignment.quest.penalty }} PTS</p>
+                                    {% else %}
+                                        <p class="text-sm font-medium text-gray-400">{{ assignment.quest.pts }} PTS</p>
+                                    {% endif %}
+
+                                    <!-- Тег сложности -->
+                                    <span class="{{ assignment.difficulty_color.bg }} {{ assignment.difficulty_color.text }} text-xs font-semibold px-3 py-1 rounded-full">
+                                        {{ assignment.quest.difficulty|upper }}
+                                    </span>
+                                </div>
+
+                                <!-- Дата — под PTS и сложностью -->
+                                <p class="text-xs text-gray-400 mt-1">
+                                    {% if assignment.completed_at %}
+                                        Завершён: {{ assignment.completed_at|date:"d M Y"|default:"-" }}
+                                    {% else %}
+                                        Назначен: {{ assignment.assigned_at|date:"d M Y"|default:"-" }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-400">Нет недавней активности.</p>
+            {% endif %}
         </div>
+
     </div>
 </div>
 {% endblock content %}
