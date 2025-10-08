@@ -1,6 +1,8 @@
 from datetime import timedelta
+
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView
+from django.http import HttpRequest
 
 from battlecode.pagedata import PageData
 
@@ -63,19 +65,29 @@ class QuestWorkView(DetailView):
         accepted = Assignment.objects.filter(user=self.request.user, status="active").all()
         context["accepted_list"] = [item.quest.slug for item in accepted]
         context["work_timer"] = timedelta(hours=self.object.work_time)
+
+        completed = Assignment.objects.filter(user=self.request.user, status="completed").all()
+        context["completed_list"] = [item.quest.slug for item in completed]
+
         return context
 
 
-def quests_check(request):
-    pd = PageData(
-        title="Quests",
-        description="Track your progress and available quests on your personal dashboard.",
+def quest_reviews(request: HttpRequest, slug: str):
+    quest = get_object_or_404(Quest, slug=slug, active=True)
+
+    context = {}
+    context["pd"] = PageData(
+        title=f"Проверка: {quest.title}",
+        description="Список работ участников для оценки.",
         curr_page=current_page,
     )
-    return render(request, "quests_check.html", context={"pd": pd})
+    context["quest"] = quest
+    context["items"] = Assignment.objects.filter(quest=quest, status="completed").all()
+
+    return render(request, "quest_reviews.html", context)
 
 
-def quest_checklist(request, slug):
+def quest_checklist(request: HttpRequest, slug: str, username: str):
     quest = get_object_or_404(Quest, slug=slug, active=True)
 
     criteria = [
@@ -117,34 +129,3 @@ def quest_checklist(request, slug):
             "success": success,
         },
     )
-
-
-def quest_reviews(request, slug):
-    quest = get_object_or_404(Quest, slug=slug, active=True)
-
-    assignments = []
-    for i in range(1, 11):
-        assignments.append(
-            {
-                "user": {"username": f"user_{i:02d}"},
-                "points": 100 + i * 15,
-                "completed_in": quest.work_time - (i % 3),
-            }
-        )
-
-    pd = PageData(
-        title=f"Проверка: {quest.title}",
-        description="Список работ участников для оценки.",
-        curr_page=current_page,
-    )
-
-    return render(
-        request,
-        "quest_reviews.html",
-        {
-            "pd": pd,
-            "quest": quest,
-            "assignments": assignments,
-        },
-    )
-

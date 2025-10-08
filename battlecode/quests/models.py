@@ -148,6 +148,8 @@ class Assignment(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Квест",
     )
+
+    reviews = models.IntegerField(verbose_name="Количество проверок", default=0)
     status = models.CharField(
         max_length=20,
         choices=ASSIGNMENT_STATUS_CHOICES,

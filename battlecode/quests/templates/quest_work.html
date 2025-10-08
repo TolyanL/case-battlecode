@@ -19,9 +19,16 @@
     </div>
 
     <div class="mt-8 flex justify-end">
-        <button class="px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
+        {% if quest.slug in completed_list %}
+        <button class="px-8 py-3 text-base bg-gray-600 text-white font-bold rounded-lg">
+            <span>🕒 Квест заблокирован, возвращайтесь через 3 дня</span>
+        </button>
+        {% else %}
+        {% csrf_token %}
+        <button data-action="complete" data-quest-slug="{{ quest.slug }}" class="quest-btn px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
             <span>Отправить Решение</span>
         </button>
+        {% endif %}
     </div>
 </div>
 {% endblock content %}
@@ -38,4 +45,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/{{ quest.language.name|lower }}/{{ quest.language.name|lower }}.min.js"></script>
 
 <script src="{% static "/js/code-mirror.js" %}"></script>
+<script src="{% static "/js/quest-btn.js" %}"></script>
 {% endblock extra_js %}

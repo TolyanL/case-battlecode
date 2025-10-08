@@ -10,4 +10,3 @@ RANKS = (
     ("9", "Master"),
     ("10", "Grandmaster"),
 )
-

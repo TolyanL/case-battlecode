@@ -20,8 +20,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 "give-up": {
                     url: "/quests/give-up",
-                    successMsg: "⚔️ Начать кодовую битву",
+                    successMsg: "🕒 Квест заблокирован, возвращайтесь через 3 дня",
                     newAction: "accept",
+                    oldColor: "gray",
+                    newColor: "cyan"
+                },
+                "complete": {
+                    url: "/quests/complete",
+                    successMsg: "⚔️ Начать кодовую битву",
+                    newAction: "-",
                     oldColor: "gray",
                     newColor: "cyan"
                 }
@@ -56,8 +63,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     this.className = originalClassName.replace(actionConfig.oldColor, actionConfig.newColor);
                     this.dataset.action = actionConfig.newAction;
                     showMessage(data.message, "success");
-
-                    window.location.href = `/quests/work/${questSlug}`;
+                    
+                    if (btnAction == "complete") {
+                        window.location.href = `/quests/${questSlug}/reviews`;
+                    } else {
+                        window.location.href = `/quests/work/${questSlug}`;
+                    }
                 } else {
                     this.textContent = originalText;
                     showMessage(`Ошибка: ${data.message}`, "error");
