@@ -118,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = "user_auth:login"
+LOGIN_URL = "login"
 OTP_LOGIN_URL = "/login/verify-otp/"
 
 # Internationalization
