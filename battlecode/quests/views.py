@@ -1,5 +1,5 @@
 from datetime import timedelta
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView
 
 from battlecode.pagedata import PageData
@@ -73,3 +73,78 @@ def quests_check(request):
         curr_page=current_page,
     )
     return render(request, "quests_check.html", context={"pd": pd})
+
+
+def quest_checklist(request, slug):
+    quest = get_object_or_404(Quest, slug=slug, active=True)
+
+    criteria = [
+        "Отправил рабочий код",
+        "Написал README.md",
+        "Использовал систему контроля версий (Git)",
+        "Прошёл все тесты",
+        "Задокументировал архитектуру решения",
+        "Соблюдал стиль кода",
+        "Решение оптимально по времени/памяти",
+        "Нет копипасты",
+    ]
+
+    if request.method == "POST":
+        print("Форма отправлена (заглушка):")
+        for i, _ in enumerate(criteria):
+            value = request.POST.get(f"criteria_{i}")
+            print(f"  Критерий {i}: {value}")
+        rating = request.POST.get("rating")
+        comment = request.POST.get("comment")
+        print(f"  Оценка: {rating}, Комментарий: {comment}")
+        success = True
+    else:
+        success = False
+
+    pd = PageData(
+        title=f"Оценка: {quest.title}",
+        description="Проверьте работу участника по чек-листу.",
+        curr_page=current_page,
+    )
+
+    return render(
+        request,
+        "quest_checklist.html",
+        {
+            "pd": pd,
+            "quest": quest,
+            "criteria": criteria,
+            "success": success,
+        },
+    )
+
+
+def quest_reviews(request, slug):
+    quest = get_object_or_404(Quest, slug=slug, active=True)
+
+    assignments = []
+    for i in range(1, 11):
+        assignments.append(
+            {
+                "user": {"username": f"user_{i:02d}"},
+                "points": 100 + i * 15,
+                "completed_in": quest.work_time - (i % 3),
+            }
+        )
+
+    pd = PageData(
+        title=f"Проверка: {quest.title}",
+        description="Список работ участников для оценки.",
+        curr_page=current_page,
+    )
+
+    return render(
+        request,
+        "quest_reviews.html",
+        {
+            "pd": pd,
+            "quest": quest,
+            "assignments": assignments,
+        },
+    )
+
