@@ -22,38 +22,17 @@
 </head>
 
 <body class="bg-dark text-light min-h-screen">
-    <header class="bg-gray-900 border-b border-gray-800 py-4 px-6 flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
-                <span class="font-bold text-white">{{ user.profile.initials|default:"JD" }}</span>
-            </div>
-            <div>
-                <p class="font-semibold">{{ user.username|default:"JohnDoe" }}</p>
-                <p class="text-xs text-gray-400">{{ user.profile.title|default:"Level 12 Explorer" }}</p>
-            </div>
-        </div>
-
-        <div class="hidden md:block">
-            {% include "include/menu.html" %}
-        </div>
-
-        <div class="flex items-center space-x-4">
-            <button class="p-2 rounded-full hover:bg-gray-800 transition">
-                <i data-feather="bell" class="w-5 h-5"></i>
-            </button>
-            <button class="p-2 rounded-full hover:bg-gray-800 transition">
-                <i data-feather="settings" class="w-5 h-5"></i>
-            </button>
-        </div>
-    </header>
+    {% include "include/menu.html" %}
 
     <main class="container mx-auto py-8 px-4">
         {% block content %}
         {% endblock content %}
     </main>
 
-    <script>
-        feather.replace();
-    </script>
+    <script>feather.replace();</script>
 </body>
+<footer>
+    <script src="{% static "/js/mobile-menu.js" %}"></script>
+    {% block extra_js %}{% endblock extra_js %}
+</footer>
 </html>

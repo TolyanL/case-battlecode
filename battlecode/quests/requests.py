@@ -1,0 +1,38 @@
+import json
+
+from django.http import HttpRequest, JsonResponse
+from django.contrib.auth.decorators import login_required
+
+from battlecode.quest_settings import MAX_PICKED_QUESTS
+from quests.models import Quest, Assignment
+
+
+@login_required()
+def accept_quest(request: HttpRequest):
+    if request.method == "POST":
+        user = request.user
+        try:
+            data = json.loads(request.body)
+
+            quest_slug = data.get("quest_slug")
+            if not quest_slug:
+                return JsonResponse({"success": False, "message": "Empty request"})
+
+            quest = Quest.objects.get(slug=quest_slug)
+            if not quest:
+                return JsonResponse({"success": False, "message": "Quest not found"})
+
+            items = Assignment.objects.filter(user=user, quest=quest, status="active")
+            if len(items) >= MAX_PICKED_QUESTS:
+                return JsonResponse({"success": False, "message": "You already have the maximum number of quests"})
+            if items.exists():
+                return JsonResponse({"success": False, "message": "You already have an active quest"})
+
+            Assignment.objects.create(user=user, quest=quest)
+
+            return JsonResponse({"success": True, "message": "Quest accepted"})
+        except Exception as e:
+            print("err: ", e)
+            return JsonResponse({"success": False, "message": "Error has occurred"})
+
+    return JsonResponse({"success": False, "message": "Empty request"})
