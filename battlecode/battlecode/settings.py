@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_static",
     # /TOTP
     "leaderboard",
+    "peer_review",
     "dashboard",
     "user_auth",
     "quests",
