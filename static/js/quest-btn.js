@@ -13,14 +13,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const actions = {
                 "accept": {
                     url: "/quests/accept",
-                    successMsg: "💀 Give Up",
+                    successMsg: "💀 Сдаться",
                     newAction: "give-up",
                     oldColor: "cyan",
                     newColor: "gray"
                 },
                 "give-up": {
                     url: "/quests/give-up",
-                    successMsg: "⚔️ Start Code Battle",
+                    successMsg: "⚔️ Начать кодовую битву",
                     newAction: "accept",
                     oldColor: "gray",
                     newColor: "cyan"
@@ -56,6 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     this.className = originalClassName.replace(actionConfig.oldColor, actionConfig.newColor);
                     this.dataset.action = actionConfig.newAction;
                     showMessage(data.message, "success");
+
+                    window.location.href = `/quests/work/${questSlug}`;
                 } else {
                     this.textContent = originalText;
                     showMessage(`Ошибка: ${data.message}`, "error");

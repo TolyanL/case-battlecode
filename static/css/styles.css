@@ -38,70 +38,7 @@ body {
     margin: 0 auto;
 }
 
-.editor-container {
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    overflow: hidden;
-    margin-top: 24px;
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.5s ease;
-}
-
-.editor-container.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.editor-header {
-    background: #334155;
-    padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.language-selector {
-    background: #475569;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-}
-
-.editor-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.editor-btn {
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.finish-btn {
-    background: #10b981;
-}
-
-.finish-btn:hover {
-    background: #059669;
-}
-
-.surrender-btn {
-    background: #ef4444;
-}
-
-.surrender-btn:hover {
-    background: #dc2626;
-}
-
+/* Styles for CodeMirror itself */
 .CodeMirror {
     height: 400px;
     font-size: 16px;
@@ -122,15 +59,7 @@ body {
     border-left: 2px solid #0ea5e9;
 }
 
-.timer-display {
-    background: #334155;
-    color: #f1f5f9;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 16px;
-}
-
+/* Modal styles */
 .modal {
     display: none;
     position: fixed;
@@ -206,4 +135,11 @@ body {
     .modal-buttons {
         flex-direction: column;
     }
+}
+
+.CodeMirror {
+    border: 1px solid #374151;
+    border-radius: 0.5rem;
+    height: 500px;
+    font-size: 1rem;
 }
