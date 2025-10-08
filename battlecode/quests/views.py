@@ -53,3 +53,79 @@ def quests_check(request):
         curr_page=current_page,
     )
     return render(request, "quests_check.html", context={"pd": pd})
+
+
+from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def quest_checklist(request, slug):
+    quest = get_object_or_404(Quest, slug=slug, active=True)
+    
+    # Заглушка: список критериев (в будущем можно вынести в модель)
+    criteria = [
+        "Отправил рабочий код",
+        "Написал README.md",
+        "Использовал систему контроля версий (Git)",
+        "Прошёл все тесты",
+        "Задокументировал архитектуру решения",
+        "Соблюдал стиль кода",
+        "Решение оптимально по времени/памяти",
+        "Нет копипасты",
+    ]
+
+    if request.method == "POST":
+        # Заглушка: в реальности здесь будет сохранение в БД
+        # Например: Review.objects.create(...)
+        print("Форма отправлена (заглушка):")
+        for i, _ in enumerate(criteria):
+            value = request.POST.get(f"criteria_{i}")
+            print(f"  Критерий {i}: {value}")
+        rating = request.POST.get("rating")
+        comment = request.POST.get("comment")
+        print(f"  Оценка: {rating}, Комментарий: {comment}")
+        # Можно показать сообщение об успехе
+        success = True
+    else:
+        success = False
+
+    pd = PageData(
+        title=f"Оценка: {quest.title}",
+        description="Проверьте работу участника по чек-листу.",
+        curr_page=current_page,
+    )
+
+    return render(request, "quest_checklist.html", {
+        "pd": pd,
+        "quest": quest,
+        "criteria": criteria,
+        "success": success,
+    })
+
+
+@login_required
+def quest_reviews(request, slug):
+    quest = get_object_or_404(Quest, slug=slug, active=True)
+    
+    # Заглушка: получаем 10 последних завершённых заданий
+    # В будущем: Assignment.objects.filter(quest=quest, status='completed')[:10]
+    assignments = []
+    for i in range(1, 11):
+        assignments.append({
+            "user": {"username": f"user_{i:02d}"},
+            "points": 100 + i * 15,
+            "completed_in": quest.work_time - (i % 3),  # имитация времени
+        })
+
+    pd = PageData(
+        title=f"Проверка: {quest.title}",
+        description="Список работ участников для оценки.",
+        curr_page=current_page,
+    )
+
+    return render(request, "quest_reviews.html", {
+        "pd": pd,
+        "quest": quest,
+        "assignments": assignments,
+    })

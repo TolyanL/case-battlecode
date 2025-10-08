@@ -1,0 +1,39 @@
+<!-- quests/templates/quests/quest_reviews.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ pd.title }}{% endblock %}
+{% block description %}{{ pd.description }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-white">{{ quest.title }}</h1>
+        <p class="text-gray-400 mt-2">{{ quest.description|truncatewords:30 }}</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for item in assignments %}
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:bg-gray-800/50 transition">
+            <div class="flex justify-between items-start mb-3">
+                <div>
+                    <h3 class="font-semibold text-white">{{ item.user.username }}</h3>
+                    <p class="text-sm text-gray-400 mt-1">Очки: <span class="text-primary font-medium">{{ item.points }}</span></p>
+                </div>
+                <span class="bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded">
+                    {{ item.completed_in }} ч
+                </span>
+            </div>
+            <a href="{% url 'quest_checklist' slug=quest.slug %}"
+               class="mt-3 w-full block text-center bg-gray-800 hover:bg-gray-700 text-gray-200 py-2 rounded-lg text-sm transition">
+                Проверить
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-8 text-gray-500">
+            Нет завершённых работ для проверки.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
