@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Выход из системы{% endblock title %}
+{% block description %}Идет перенаправление на страницу входа...{% endblock description %}
+
+{% block extra_js %}
+    <meta http-equiv="refresh" content="0; url={% url 'login' %}">
+{% endblock extra_js %}
+
+{% block content %}
+{% endblock content %}
