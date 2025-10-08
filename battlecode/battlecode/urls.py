@@ -11,6 +11,7 @@ urlpatterns = [
     path("auth/", include("user_auth.urls")),
     path("quests/", include("quests.urls")),
     path("users/", include("user.urls")),
+    path("review/", include("peer_review.urls")),
     path("", include("index.urls")),
 ]
 
