@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 "complete": {
                     url: "/quests/complete",
-                    successMsg: "⚔️ Начать кодовую битву",
+                    successMsg: "⚔️ Start Code Battle",
                     newAction: "-",
                     oldColor: "gray",
                     newColor: "cyan"
@@ -65,7 +65,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     showMessage(data.message, "success");
                     
                     if (btnAction == "complete") {
-                        window.location.href = `/quests/${questSlug}/reviews`;
+                        window.location.href = `/quests/reviews/${questSlug}`;
+                    } else if (btnAction == "give-up") {
+                        window.location.href = `/quests/details/${questSlug}`;
                     } else {
                         window.location.href = `/quests/work/${questSlug}`;
                     }

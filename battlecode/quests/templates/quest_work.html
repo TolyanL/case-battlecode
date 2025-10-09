@@ -18,16 +18,21 @@
         <textarea id="code-editor"></textarea>
     </div>
 
-    <div class="mt-8 flex justify-end">
+    <div class="mt-8 flex justify-center">
         {% if quest.slug in completed_list %}
         <button class="px-8 py-3 text-base bg-gray-600 text-white font-bold rounded-lg">
             <span>🕒 Квест заблокирован, возвращайтесь через 3 дня</span>
         </button>
         {% else %}
         {% csrf_token %}
-        <button data-action="complete" data-quest-slug="{{ quest.slug }}" class="quest-btn px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
-            <span>Отправить Решение</span>
-        </button>
+        <div class="flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
+            <button data-action="complete" data-quest-slug="{{ quest.slug }}" class="quest-btn px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
+                <span>Отправить Решение</span>
+            </button>
+            <button data-action="give-up" data-quest-slug="{{ quest.slug }}" class="quest-btn px-8 py-3 text-base bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors duration-300">
+                <span>Сдаться</span>
+            </button>
+        </div>
         {% endif %}
     </div>
 </div>

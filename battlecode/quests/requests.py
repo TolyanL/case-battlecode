@@ -59,7 +59,7 @@ def give_up_quest(request: HttpRequest):
                 return JsonResponse({"success": False, "message": "You have no active quests"})
 
             Assignment.objects.filter(user=user, quest=quest, status="active").update(
-                status="failed", failed_at=datetime.now()
+                status="failed", completed_at=datetime.now()
             )
 
             return JsonResponse({"success": True, "message": "Quest failed"})

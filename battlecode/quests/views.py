@@ -1,10 +1,12 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView
 from django.http import HttpRequest
+from django.db.models import Q
 
 from battlecode.pagedata import PageData
+from battlecode.quest_settings import break_delta
 
 from quests.models import Quest, Assignment
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -49,8 +51,20 @@ class QuestDetailView(DetailView, LoginRequiredMixin):
             description="Details about the selected quest.",
             curr_page=current_page,
         )
+
         accepted = Assignment.objects.filter(user=self.request.user, status="active").all()
         context["accepted_list"] = [item.quest.slug for item in accepted]
+
+        completed = (
+            Assignment.objects.filter(
+                user=self.request.user,
+                completed_at__gte=break_delta,
+            )
+            .filter(Q(status="completed") | Q(status="failed"))
+            .all()
+        )
+
+        context["completed_list"] = [item.quest.slug for item in completed]
         return context
 
 
@@ -69,7 +83,14 @@ class QuestWorkView(DetailView):
         context["accepted_list"] = [item.quest.slug for item in accepted]
         context["work_timer"] = timedelta(hours=self.object.work_time)
 
-        completed = Assignment.objects.filter(user=self.request.user, status="completed").all()
+        completed = (
+            Assignment.objects.filter(user=self.request.user)
+            .filter(
+                Q(status="completed") | Q(status="failed"),
+                Q(completed_at__gte=break_delta),
+            )
+            .all()
+        )
         context["completed_list"] = [item.quest.slug for item in completed]
 
         return context

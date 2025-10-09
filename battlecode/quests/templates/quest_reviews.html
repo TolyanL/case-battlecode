@@ -51,8 +51,7 @@
                         <span class="text-xs text-gray-400">Навыки</span>
                         <p class="font-semibold text-white">
                             {% for skill in quest.skills.all %}
-                                +{{ skill.points }} {{ skill.name|title }}
-                                {% if not forloop.last %}, {% endif %}
+                                +{{ skill.name|title }}
                             {% endfor %}
                         </p>
                     </div>
@@ -70,7 +69,7 @@
 
     <div class="mb-8 flex justify-start">
         <a href="{% url 'quest_detail' slug=quest.slug %}" class="inline-flex items-center px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg transition-colors duration-300">
-            <i data-feather="clock" class="w-4 h-4 mr-2"></i>
+            <i data-feather="corner-up-left" class="w-4 h-4 mr-2"></i>
             Назад к полному заданию
         </a>
     </div>
@@ -96,13 +95,13 @@
                         {{ item.completed_at|timesince }} назад
                     </span>
                 </div>
-                {% comment %} {% if user.username != item.user.username %} {% endcomment %}
+                {% if user.username != item.user.username %}
                 <div class="mt-4">
                     <a href="{% url 'quest_review' slug=quest.slug username=item.user.username %}" class="w-full block text-center bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
                         Проверить
                     </a>
                 </div>
-                {% comment %} {% endif %} {% endcomment %}
+                {% endif %}
             </div>
         </div>
         {% empty %}
