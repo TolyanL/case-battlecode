@@ -7,11 +7,14 @@ from django.http import HttpRequest
 from battlecode.pagedata import PageData
 
 from quests.models import Quest, Assignment
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 
 current_page = "quests"
 
 
+@login_required
 def quests_all(request):
     pd = PageData(
         title="Quests",
@@ -35,7 +38,7 @@ def quests_all(request):
     )
 
 
-class QuestDetailView(DetailView):
+class QuestDetailView(DetailView, LoginRequiredMixin):
     model = Quest
     template_name = "quest_detail.html"
 
@@ -103,6 +106,7 @@ def quest_checklist(request: HttpRequest, slug: str, username: str):
 
     if request.method == "POST":
         print("Форма отправлена (заглушка):")
+
         for i, _ in enumerate(criteria):
             value = request.POST.get(f"criteria_{i}")
             print(f"  Критерий {i}: {value}")

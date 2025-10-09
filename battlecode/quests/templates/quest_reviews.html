@@ -52,6 +52,7 @@
                         <p class="font-semibold text-white">
                             {% for skill in quest.skills.all %}
                                 +{{ skill.points }} {{ skill.name|title }}
+                                {% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </p>
                     </div>
@@ -69,7 +70,7 @@
 
     <div class="mb-8 flex justify-start">
         <a href="{% url 'quest_detail' slug=quest.slug %}" class="inline-flex items-center px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg transition-colors duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left w-4 h-4 mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <i data-feather="clock" class="w-4 h-4 mr-2"></i>
             Назад к полному заданию
         </a>
     </div>
@@ -95,13 +96,13 @@
                         {{ item.completed_at|timesince }} назад
                     </span>
                 </div>
-                {% if user.username != item.user.username %}
+                {% comment %} {% if user.username != item.user.username %} {% endcomment %}
                 <div class="mt-4">
                     <a href="{% url 'quest_review' slug=quest.slug username=item.user.username %}" class="w-full block text-center bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
                         Проверить
                     </a>
                 </div>
-                {% endif %}
+                {% comment %} {% endif %} {% endcomment %}
             </div>
         </div>
         {% empty %}

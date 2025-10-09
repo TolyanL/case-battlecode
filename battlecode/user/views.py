@@ -1,11 +1,11 @@
 from django.shortcuts import render
 
 from battlecode.pagedata import PageData
-
+from django.contrib.auth.decorators import login_required
 
 current_page = "user"
 
-
+@login_required
 def user_profile(request, username: str):
     pd = PageData(
         title=f"User {username}",
