@@ -55,17 +55,14 @@
     </div>
 
     <div class="flex items-center space-x-2">
+        <button class="p-2 rounded-full hover:bg-gray-800 transition">
+            <i data-feather="bell" class="w-5 h-5"></i>
+        </button>
         <a href="{% url 'logout' %}" 
            title="Выход"
            class="p-2 rounded-full hover:bg-gray-800 transition">
             <i data-feather="log-out" class="w-5 h-5"></i> 
         </a>
-        <button class="p-2 rounded-full hover:bg-gray-800 transition">
-            <i data-feather="bell" class="w-5 h-5"></i>
-        </button>
-        <button class="p-2 rounded-full hover:bg-gray-800 transition">
-            <i data-feather="settings" class="w-5 h-5"></i>
-        </button>
         <button id="mobile-menu-button" class="p-2 rounded-full hover:bg-gray-800 transition md:hidden">
             <i data-feather="menu" class="w-5 h-5"></i>
         </button>

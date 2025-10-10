@@ -10,11 +10,12 @@ class Review(models.Model):
         related_name="reviews",
         verbose_name="Пользователь",
     )
-    quest = models.ForeignKey(
+    assignment = models.ForeignKey(
         Assignment,
         on_delete=models.PROTECT,
         verbose_name="Квест",
     )
+
     grade = models.IntegerField(default=1, verbose_name="Рейтинг")
     comment = models.TextField(verbose_name="Комментарий")
 

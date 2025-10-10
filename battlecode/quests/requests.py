@@ -73,7 +73,6 @@ def give_up_quest(request: HttpRequest):
 @login_required
 def complete_quest(request: HttpRequest):
     if request.method == "POST":
-        print("complete quest", request.body)
         user = request.user
         try:
             data = json.loads(request.body)
@@ -90,8 +89,12 @@ def complete_quest(request: HttpRequest):
             if not items.exists():
                 return JsonResponse({"success": False, "message": "You have no active quests"})
 
+            code = data.get("data") or ""
+
             Assignment.objects.filter(user=user, quest=quest, status="active").update(
-                status="completed", completed_at=datetime.now()
+                status="completed",
+                completed_at=datetime.now(),
+                code=code,
             )
 
             return JsonResponse({"success": True, "message": "Quest completed"})

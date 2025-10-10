@@ -1,6 +1,6 @@
-from datetime import timedelta, datetime
+from datetime import timedelta
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DetailView
 from django.http import HttpRequest
 from django.db.models import Q
@@ -24,7 +24,7 @@ def quests_all(request):
         curr_page=current_page,
     )
 
-    quests = Quest.objects.filter(active=True)
+    quests = Quest.objects.filter(active=True).all()
     accepted = Assignment.objects.filter(user=request.user, status="active").all()
     accepted_list = [item.quest.slug for item in accepted]
 
@@ -106,51 +106,6 @@ def quest_reviews(request: HttpRequest, slug: str):
         curr_page=current_page,
     )
     context["quest"] = quest
-    context["items"] = Assignment.objects.filter(quest=quest, status="completed").all()
+    context["items"] = Assignment.objects.filter(quest=quest, status="completed").order_by("-completed_at").all()
 
     return render(request, "quest_reviews.html", context)
-
-
-def quest_checklist(request: HttpRequest, slug: str, username: str):
-    quest = get_object_or_404(Quest, slug=slug, active=True)
-
-    criteria = [
-        "Отправил рабочий код",
-        "Написал README.md",
-        "Использовал систему контроля версий (Git)",
-        "Прошёл все тесты",
-        "Задокументировал архитектуру решения",
-        "Соблюдал стиль кода",
-        "Решение оптимально по времени/памяти",
-        "Нет копипасты",
-    ]
-
-    if request.method == "POST":
-        print("Форма отправлена (заглушка):")
-
-        for i, _ in enumerate(criteria):
-            value = request.POST.get(f"criteria_{i}")
-            print(f"  Критерий {i}: {value}")
-        rating = request.POST.get("rating")
-        comment = request.POST.get("comment")
-        print(f"  Оценка: {rating}, Комментарий: {comment}")
-        success = True
-    else:
-        success = False
-
-    pd = PageData(
-        title=f"Оценка: {quest.title}",
-        description="Проверьте работу участника по чек-листу.",
-        curr_page=current_page,
-    )
-
-    return render(
-        request,
-        "quest_checklist.html",
-        {
-            "pd": pd,
-            "quest": quest,
-            "criteria": criteria,
-            "success": success,
-        },
-    )

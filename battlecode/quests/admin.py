@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Quest, Language, Skill, QuestDetail
+from .models import Quest, Language, Skill, QuestDetail, Assignment, QuestReviewChecklist, ChecklistItem
 
 
 @admin.register(Quest)
@@ -39,3 +39,23 @@ class SkillAdmin(admin.ModelAdmin):
 
     ordering = ["-created_at"]
     date_hierarchy = "created_at"
+
+
+@admin.register(Assignment)
+class AssignmentAdmin(admin.ModelAdmin):
+    list_display = ("user", "quest", "status", "assigned_at")
+    list_filter = ("status", "assigned_at")
+
+    ordering = ["-assigned_at"]
+    date_hierarchy = "assigned_at"
+
+
+class ChecklistItemInline(admin.TabularInline):
+    model = ChecklistItem
+    extra = 1
+
+
+@admin.register(QuestReviewChecklist)
+class QuestReviewAdmin(admin.ModelAdmin):
+    inlines = [ChecklistItemInline]
+    list_display = ("created_at",)

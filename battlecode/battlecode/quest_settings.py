@@ -4,12 +4,12 @@ from datetime import datetime, timedelta
 DIFFICULTY_CHOICES = (
     ("easy", "Easy"),
     ("medium", "Medium"),
-    ("hard", "Hard"),
+    ("hard", "Hard🔥"),
 )
 ASSIGNMENT_STATUS_CHOICES = (
-    ("active", "Активный"),
-    ("completed", "Завершен"),
-    ("failed", "Неудачный"),
+    ("active", "Активно"),
+    ("completed", "Завершено"),
+    ("failed", "Завалено"),
 )
 
 MIN_PTS = 10

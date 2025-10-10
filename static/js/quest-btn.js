@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const originalText = this.textContent;
             const originalClassName = this.className;
-            this.disabled = true;
 
             const actions = {
                 "accept": {
@@ -16,21 +15,24 @@ document.addEventListener("DOMContentLoaded", function () {
                     successMsg: "💀 Сдаться",
                     newAction: "give-up",
                     oldColor: "cyan",
-                    newColor: "gray"
+                    newColor: "gray",
+                    data: ""
                 },
                 "give-up": {
                     url: "/quests/give-up",
                     successMsg: "🕒 Квест заблокирован, возвращайтесь через 3 дня",
                     newAction: "accept",
                     oldColor: "gray",
-                    newColor: "cyan"
+                    newColor: "cyan",
+                    data: ""
                 },
                 "complete": {
                     url: "/quests/complete",
                     successMsg: "⚔️ Start Code Battle",
                     newAction: "-",
                     oldColor: "gray",
-                    newColor: "cyan"
+                    newColor: "cyan",
+                    data: window.codeEditor ? window.codeEditor.getValue() : ""
                 }
             };
 
@@ -48,7 +50,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
                 },
                 body: JSON.stringify({
-                    quest_slug: questSlug
+                    quest_slug: questSlug,
+                    data: actionConfig.data
                 })
             })
             .then(response => {

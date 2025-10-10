@@ -36,6 +36,11 @@ class Quest(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Задачи",
     )
+    checklist = models.OneToOneField(
+        "QuestReviewChecklist",
+        on_delete=models.PROTECT,
+        verbose_name="Чек-лист ревью квеста",
+    )
 
     active = models.BooleanField(default=True, verbose_name="Активен")
 
@@ -149,6 +154,8 @@ class Assignment(models.Model):
         verbose_name="Квест",
     )
 
+    code = models.TextField(verbose_name="Код")
+
     reviews = models.IntegerField(verbose_name="Количество проверок", default=0)
     status = models.CharField(
         max_length=20,
@@ -159,5 +166,54 @@ class Assignment(models.Model):
 
     completed_at = models.DateTimeField(verbose_name="Дата завершения", null=True, blank=True)
 
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    assigned_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата назначения")
+    updated_at = models.DateTimeField(auto_now=True)
+    assigned_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.quest.title}"
+
+    class Meta:
+        verbose_name = "Взятое задание"
+        verbose_name_plural = "Взятые задания"
+        ordering = ["-assigned_at"]
+
+
+class QuestReviewChecklist(models.Model):
+    # quest = models.ForeignKey(
+    #     Quest,
+    #     on_delete=models.PROTECT,
+    #     related_name="reviews",
+    #     verbose_name="Квест",
+    # )
+
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # def __str__(self):
+    #     return f"Ревью: {self.quest_name}"
+
+    class Meta:
+        verbose_name = "Чек-лист ревью квеста"
+        verbose_name_plural = "Чек-листы ревью квеста"
+        ordering = ["-created_at"]
+
+
+class ChecklistItem(models.Model):
+    review = models.ForeignKey(
+        QuestReviewChecklist,
+        on_delete=models.CASCADE,
+        related_name="checklist_items",
+        verbose_name="Ревью",
+    )
+    description = models.CharField(max_length=500, verbose_name="Описание пункта")
+    is_working = models.BooleanField(default=False, verbose_name="Работает?")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.description
+
+    class Meta:
+        verbose_name = "Элемент чеклиста"
+        verbose_name_plural = "Элементы чеклиста"
+        ordering = ["-created_at"]
