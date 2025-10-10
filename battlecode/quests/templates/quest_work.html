@@ -4,6 +4,11 @@
 {% block title %}{{ quest.title }}{% endblock title %}
 {% block description %}{{ quest.description }}{% endblock description %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+{% endblock extra_css %}
+
 {% block content %}
 <div class="max-w-7xl mx-auto">
     <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-8">
@@ -42,9 +47,6 @@
 {% endblock content %}
 
 {% block extra_js %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closetag.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.js"></script>
@@ -52,6 +54,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/{{ quest.language.name|lower }}/{{ quest.language.name|lower }}.min.js"></script>
 
-<script src="{% static "/js/code-mirror.js" %}"></script>
+<script src="{% static "/js/code-mirror/code-mirror.js" %}"></script>
 <script src="{% static "/js/quest-btn.js" %}"></script>
 {% endblock extra_js %}

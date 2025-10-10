@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
         lineNumbers: true,
         mode: questLang.innerHTML.toLowerCase(),
-        theme: 'dracula', 
+        theme: 'dracula',
         tabSize: 4,
         indentUnit: 4,
         indentWithTabs: false,
@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", function() {
         autoCloseTags: true,
         styleActiveLine: true,
         lineWrapping: true,
+        viewportMargin: Infinity,
+        readOnly: true,
     });
     window.codeEditor = editor;
 });

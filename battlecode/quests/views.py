@@ -68,7 +68,7 @@ class QuestDetailView(DetailView, LoginRequiredMixin):
         return context
 
 
-class QuestWorkView(DetailView):
+class QuestWorkView(DetailView, LoginRequiredMixin):
     model = Quest
     template_name = "quest_work.html"
 
@@ -98,6 +98,13 @@ class QuestWorkView(DetailView):
 
 def quest_reviews(request: HttpRequest, slug: str):
     quest = get_object_or_404(Quest, slug=slug, active=True)
+
+    if not Assignment.objects.filter(
+        user=request.user,
+        quest=quest,
+        status="completed",
+    ).exists():
+        return redirect("quest_detail", slug=slug)
 
     context = {}
     context["pd"] = PageData(
