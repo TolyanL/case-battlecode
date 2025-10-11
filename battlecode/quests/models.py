@@ -179,18 +179,8 @@ class Assignment(models.Model):
 
 
 class QuestReviewChecklist(models.Model):
-    # quest = models.ForeignKey(
-    #     Quest,
-    #     on_delete=models.PROTECT,
-    #     related_name="reviews",
-    #     verbose_name="Квест",
-    # )
-
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    # def __str__(self):
-    #     return f"Ревью: {self.quest_name}"
 
     class Meta:
         verbose_name = "Чек-лист ревью квеста"
