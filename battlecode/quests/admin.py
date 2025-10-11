@@ -1,15 +1,31 @@
+# case-battlecode/battlecode/quests/admin.py
 from django.contrib import admin
-from .models import Quest, Language, Skill, QuestDetail, Assignment, QuestReviewChecklist, ChecklistItem
-
+from .models import Quest, QuestDetail, Language, Skill, Assignment, QuestReviewChecklist, ChecklistItem, Course # Добавить Course
 
 @admin.register(Quest)
 class QuestAdmin(admin.ModelAdmin):
-    list_display = ("title", "active", "created_at")
-    list_filter = ("active", "created_at")
-    search_fields = ("title", "description")
+    list_display = ('title', 'difficulty', 'pts', 'active', 'course') # Добавить course в список
+    list_filter = ('difficulty', 'active', 'skills', 'course') # Добавить course в фильтры
+    search_fields = ('title', 'description')
+    prepopulated_fields = {'slug': ('title',)}
+    filter_horizontal = ('skills',) # Удобный виджет для ManyToMany
 
-    ordering = ["-created_at"]
-    date_hierarchy = "created_at"
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ('title', 'difficulty', 'base_pts', 'active', 'created_at')
+    list_filter = ('difficulty', 'active', 'skills')
+    search_fields = ('title', 'description')
+    prepopulated_fields = {'slug': ('title',)}
+    # --- ИЗМЕНЕНО: Добавлено поле 'quests' в редактирование ---
+    # filter_horizontal = ('skills',) # Убираем 'quests' из-за потенциальной ошибки InvalidCursorName
+    # raw_id_fields = ('quests',) # Альтернатива: показать ID
+    # fields = ('title', 'description', 'slug', 'skills', 'base_pts', 'difficulty', 'quests', 'active') # Порядок полей
+    # --- /ИЗМЕНЕНО ---
+    fields = ('title', 'description', 'slug', 'skills', 'base_pts', 'difficulty', 'quests', 'active') # Добавили 'quests' в редактирование
+    filter_horizontal = ('skills',) # Только для 'skills' из-за InvalidCursorName
+
+# ... (остальные регистрации админки для QuestDetail, Language, Skill, Assignment, QuestReviewChecklist, ChecklistItem, если были)
+
 
 
 @admin.register(QuestDetail)

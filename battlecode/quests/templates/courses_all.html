@@ -1,0 +1,80 @@
+<!-- case-battlecode/battlecode/quests/templates/courses_all.html -->
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Курсы{% endblock title %}
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-white">Доступные курсы</h1>
+    <p class="text-gray-400">Выберите курс, чтобы начать обучение и развивать навыки.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for course in courses %}
+        <!-- Сделаем всю карточку ссылкой на детальную страницу курса -->
+        <a href="{% url 'course_detail' slug=course.slug %}" class="block w-full bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300 text-left">
+            <div>
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <span class="bg-purple-500/20 text-purple-400 text-xs font-semibold px-3 py-1 rounded-full">{{ course.base_pts }} PTS</span>
+                        {% if course.difficulty == "easy" %}
+                            <span class="bg-cyan-500/20 text-cyan-400 text-xs font-semibold px-3 py-1 rounded-full">{{ course.difficulty|title }}</span>
+                        {% elif course.difficulty == "medium" %}
+                            <span class="bg-orange-500/20 text-orange-400 text-xs font-semibold px-3 py-1 rounded-full">{{ course.difficulty|title }}</span>
+                        {% else %}
+                            <span class="bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1 rounded-full">{{ course.difficulty|title }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <h4 class="font-bold text-white text-lg mb-2">{{ course.title }}</h4>
+                <p class="text-gray-400 text-sm mb-4">{{ course.description }}</p>
+            </div>
+            <div class="mt-auto pt-4 border-t border-gray-700/50">
+                <div class="flex justify-between items-center text-sm text-gray-400 mb-2">
+                    <span class="flex items-center">
+                        <i data-feather="award" class="w-4 h-4 mr-2"></i>
+                        Навыки:
+                    </span>
+                </div>
+                <div class="flex flex-wrap gap-1 mb-4">
+                    {% for skill in course.skills.all %}
+                        <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full">{{ skill.name|title }}</span>
+                    {% endfor %}
+                </div>
+                <div class="flex justify-between items-center text-sm text-gray-400 mb-2">
+                    <span class="flex items-center">
+                        <i data-feather="book" class="w-4 h-4 mr-2"></i>
+                        Квесты:
+                    </span>
+                    <span>{{ course.quests.count }}</span> <!-- Используем .count для ManyToManyField -->
+                </div>
+                <div class="mt-4">
+                    {% if course.slug in enrolled_slugs %}
+                        <form method="post" action="{% url 'req_unenroll_course' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="course_slug" value="{{ course.slug }}">
+                            <button type="submit" class="w-full bg-gray-700 text-gray-400 font-bold py-2 px-4 rounded-lg opacity-75 hover:opacity-100 transition-opacity">
+                                Отписаться
+                            </button>
+                        </form>
+                    {% else %}
+                        {% if enrolled_slugs|length >= max_courses %}
+                            <button class="w-full bg-gray-700 text-gray-400 font-bold py-2 px-4 rounded-lg opacity-50 cursor-not-allowed" disabled>
+                                Лимит курсов ({{ max_courses }})
+                            </button>
+                        {% else %}
+                            <form method="post" action="{% url 'req_enroll_course' %}" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="course_slug" value="{{ course.slug }}">
+                                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
+                                    Записаться
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+    {% empty %}
+        <p class="text-gray-400">Нет доступных курсов.</p>
+    {% endfor %}
+</div>
+{% endblock content %}
