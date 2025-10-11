@@ -38,6 +38,7 @@
                         Quests
                     </a>
                 </li>
+                {% comment %}
                 <!-- --- Новая ссылка --- -->
                 <li>
                     <a href="{% url 'courses_all' %}"
@@ -46,6 +47,7 @@
                     </a>
                 </li>
                 <!-- --- /Новая ссылка --- -->
+                 {% endcomment %}
                 <li>
                     <a href="{% url 'leaderboard' %}"
                     class="font-medium {% if pd.curr_page == 'leaderboard' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">

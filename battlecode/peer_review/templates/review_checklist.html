@@ -29,12 +29,12 @@
             <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
                 <h2 class="text-xl font-semibold text-white mb-4">Критерии оценки</h2>
                 <div class="space-y-4">
-                    {% for check in checklist %}
+                    {% for item in checklist %}
                     <div class="flex justify-between items-center pb-2 border-b border-gray-800">
-                        <span class="text-gray-200">{{ forloop.counter }}. {{ check }}</span>
+                        <span class="text-gray-200">{{ forloop.counter }}. {{ item }}</span>
 
                         <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" name="criteria_{{ forloop.counter0 }}" value="true" class="sr-only peer">
+                            <input type="checkbox" name="task_{{ item.slug }}" value="true" class="sr-only peer">
                             <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-300 dark:peer-focus:ring-gray-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
                             <span class="ms-3 text-sm font-medium text-gray-300">Выполнено</span>
                         </label>

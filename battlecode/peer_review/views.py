@@ -1,46 +1,74 @@
 from django.http import HttpRequest
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from battlecode.pagedata import PageData
 from quests.models import Assignment
-from peer_review.models import Review
+
+from battlecode.review_settings import REVIEW_COUNT
+
+from peer_review.models import Review, ReviewChecklistAnswer
+from peer_review.model_utils import calculate_pts
 
 
-current_page = "review"
+curr_page = "review"
 
 
 def review_checklist(request: HttpRequest, slug: str, username: str):
-    item = Assignment.objects.filter(user__username=username, quest__slug=slug, status="completed").first()
-    if not item:
-        return redirect("quest_reviews", slug=slug)
-
-    context = {}
-    checklist_items = item.quest.checklist.checklist_items.all()
-
-    if request.method == "POST":
-        for i, _ in enumerate(checklist_items):
-            value = request.POST.get(f"criteria_{i}")
-            print(f"  Критерий {i}: {value}")
-
-        rating = request.POST.get("rating")
-        comment = request.POST.get("comment")
-
-        print(f"  Оценка: {rating}, Комментарий: {comment}")
-        return redirect("quest_reviews", slug=item.quest.slug)
-
-    context["pd"] = PageData(
-        title=f"Оценка: {item.quest.title}",
-        description="Проверьте работу участника по чек-листу.",
-        curr_page=current_page,
+    assignment = get_object_or_404(
+        Assignment,
+        user__username=username,
+        quest__slug=slug,
+        status="completed",
     )
 
-    context["item"] = item
-    context["checklist"] = checklist_items
+    if Review.objects.filter(assignment=assignment, user=request.user).exists():
+        return redirect("quest_reviews", slug=assignment.quest.slug)
+    if assignment.reviews >= REVIEW_COUNT:
+        return redirect("quest_reviews", slug=assignment.quest.slug)
 
+    checklist_items = assignment.quest.checklist.checklist_items.all()
+
+    if request.method == "POST":
+        rating = int(request.POST.get("rating", 0))
+        comment = request.POST.get("comment", "").strip()
+
+        review = Review.objects.create(
+            assignment=assignment,
+            user=request.user,
+            grade=rating,
+            comment=comment,
+            completed_tasks=0,
+        )
+
+        completed_count = 0
+        for item in checklist_items:
+            work = False
+            if request.POST.get(f"task_{item.slug}", ""):
+                work = True
+                completed_count += 1
+
+            ReviewChecklistAnswer.objects.create(
+                review=review,
+                checklist_item=item,
+                work=work,
+            )
+
+        review.completed_tasks = completed_count
+        review.give_pts = calculate_pts(len(checklist_items), completed_count, assignment.quest.pts, rating)
+        review.save()
+
+        assignment.review += 1
+        assignment.save()
+
+        return redirect("quest_reviews", slug=assignment.quest.slug)
+
+    context = {
+        "pd": PageData(
+            title=f"Оценка: {assignment.quest.title}",
+            description="Проверьте работу участника по чек-листу.",
+            curr_page=curr_page,
+        ),
+        "item": assignment,
+        "checklist": checklist_items,
+    }
     return render(request, "review_checklist.html", context)
-
-
-# TODO: Save to db:
-# checklist_id
-# checklist with checked items
-# ^-- add to Review model
