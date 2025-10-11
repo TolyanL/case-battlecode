@@ -13,7 +13,16 @@
 <div class="max-w-7xl mx-auto">
     <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-8">
         <div class="flex justify-between items-start mb-4">
-            <h1 class="text-3xl font-bold mb-3 text-white">{{ quest.title }}</h1>
+            
+            <div class="flex items-center flex-wrap"> 
+                <h1 class="text-3xl font-bold mb-3 text-white mr-4">{{ quest.title }}</h1>
+                
+                {% if quest.penalty > 0 %}
+                <div class="inline-flex items-center bg-red-900/40 text-red-400 text-sm font-semibold px-3 py-1 rounded-full">
+                     Штраф: -{{ quest.penalty }} очков
+                </div>
+                {% endif %}
+                </div>
             <span class="bg-blue-500/20 text-blue-400 text-sm font-semibold px-3 py-1 rounded-full quest-lang">{{ quest.language.name }}</span>
         </div>
         <div class="pt-5 border-t border-gray-700/50 prose prose-invert max-w-none text-gray-400">
