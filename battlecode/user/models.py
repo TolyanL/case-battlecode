@@ -1,7 +1,8 @@
+# case-battlecode/battlecode/user/models.py
 from django.db import models
 from django.contrib.auth.models import User
-
 from battlecode.stats_settings import RANKS
+# from quests.models import Course # Импортируем Course
 
 
 class Profile(models.Model):
@@ -17,3 +18,18 @@ class Profile(models.Model):
         choices=RANKS,
     )
     pts = models.IntegerField(default=0, verbose_name="Очки")
+
+    # enrolled_courses = models.ManyToManyField(
+    #     Course,
+    #     related_name="enrolled_users",
+    #     verbose_name="Записанные курсы",
+    #     blank=True,
+    # )
+
+    def __str__(self):
+        return f"Profile for {self.user.username}"
+
+    class Meta:
+        verbose_name = "Профиль"
+        verbose_name_plural = "Профили"
+        ordering = ["user__username"]

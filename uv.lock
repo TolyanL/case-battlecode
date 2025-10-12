@@ -18,7 +18,9 @@ source = { virtual = "." }
 dependencies = [
     { name = "django" },
     { name = "django-debug-toolbar" },
+    { name = "django-import-export" },
     { name = "django-otp" },
+    { name = "django-simpleui" },
     { name = "django-two-factor-auth" },
     { name = "pillow" },
     { name = "psycopg2-binary" },
@@ -30,7 +32,9 @@ dependencies = [
 requires-dist = [
     { name = "django", specifier = ">=5.2.7" },
     { name = "django-debug-toolbar", specifier = ">=6.0.0" },
+    { name = "django-import-export", specifier = ">=4.3.10" },
     { name = "django-otp", specifier = ">=1.6.1" },
+    { name = "django-simpleui", specifier = ">=2025.6.24" },
     { name = "django-two-factor-auth", specifier = ">=1.18.1" },
     { name = "pillow", specifier = ">=11.3.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
@@ -45,6 +49,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44", size = 27697, upload-time = "2022-10-25T02:36:22.414Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6", size = 25335, upload-time = "2022-10-25T02:36:20.889Z" },
+]
+
+[[package]]
+name = "diff-match-patch"
+version = "20241021"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/ad/32e1777dd57d8e85fa31e3a243af66c538245b8d64b7265bec9a61f2ca33/diff_match_patch-20241021.tar.gz", hash = "sha256:beae57a99fa48084532935ee2968b8661db861862ec82c6f21f4acdd6d835073", size = 39962, upload-time = "2024-10-21T19:41:21.094Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f7/bb/2aa9b46a01197398b901e458974c20ed107935c26e44e37ad5b0e5511e44/diff_match_patch-20241021-py3-none-any.whl", hash = "sha256:93cea333fb8b2bc0d181b0de5e16df50dd344ce64828226bda07728818936782", size = 43252, upload-time = "2024-10-21T19:41:19.914Z" },
 ]
 
 [[package]]
@@ -87,6 +100,20 @@ wheels = [
 ]
 
 [[package]]
+name = "django-import-export"
+version = "4.3.10"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "diff-match-patch" },
+    { name = "django" },
+    { name = "tablib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/70/5f/646ba68c6938f99781477c3dee6c0a0c151b04cf0920d649bcb81eff38b0/django_import_export-4.3.10.tar.gz", hash = "sha256:bc113050c367b895fdd97f516d904f1120cdefb89fa15ef30dc1144e1a731886", size = 2230656, upload-time = "2025-09-26T17:07:26.236Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9f/a6/ea57f21756933b6c6e56582a508cd6728617d98e8c83dc95df53af2b4660/django_import_export-4.3.10-py3-none-any.whl", hash = "sha256:a9ad98c8b88fd266012a8c394fd3b997d528da908056c35d75a6117dbcda0e2f", size = 150823, upload-time = "2025-09-26T17:07:24.384Z" },
+]
+
+[[package]]
 name = "django-otp"
 version = "1.6.1"
 source = { registry = "https://pypi.org/simple" }
@@ -109,6 +136,15 @@ sdist = { url = "https://files.pythonhosted.org/packages/53/88/c36e484d3b6c91974
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f1/6e/1625919cf833a28515ad0e5a7c5a7be659703f411176f6fed57ed9525181/django_phonenumber_field-8.2.0-py3-none-any.whl", hash = "sha256:291f5c5e4abb27a9faaa508ef14b27bd307fb3b5b7570b1594a32a696cefb8ec", size = 69256, upload-time = "2025-10-02T15:37:27.27Z" },
 ]
+
+[[package]]
+name = "django-simpleui"
+version = "2025.6.24"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/97/d7/57ac337258399c33c28b5d960407e2c640f22a2edabf2e894d1b51e25fee/django-simpleui-2025.6.24.tar.gz", hash = "sha256:95d1224454a0531071ec7fcd1c6f57acf90e85160c72d6b1d23d538c3a92f4ed", size = 6483918, upload-time = "2025-06-24T06:35:27.545Z" }
 
 [[package]]
 name = "django-two-factor-auth"
@@ -263,6 +299,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e5/40/edede8dd6977b0d3da179a342c198ed100dd2aba4be081861ee5911e4da4/sqlparse-0.5.3.tar.gz", hash = "sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272", size = 84999, upload-time = "2024-12-10T12:05:30.728Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a9/5c/bfd6bd0bf979426d405cc6e71eceb8701b148b16c21d2dc3c261efc61c7b/sqlparse-0.5.3-py3-none-any.whl", hash = "sha256:cf2196ed3418f3ba5de6af7e82c694a9fbdbfecccdfc72e281548517081f16ca", size = 44415, upload-time = "2024-12-10T12:05:27.824Z" },
+]
+
+[[package]]
+name = "tablib"
+version = "3.8.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/09/cc/fe19d9c2ac1088794a51fc72f49b7226f88a0361f924fb3d17a9ec80e657/tablib-3.8.0.tar.gz", hash = "sha256:94d8bcdc65a715a0024a6d5b701a5f31e45bd159269e62c73731de79f048db2b", size = 122247, upload-time = "2025-01-22T15:29:27.276Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5c/95/6542f54ebd90539b12ed6189cb54a6550a28407b1c503c2e55190c29a4c9/tablib-3.8.0-py3-none-any.whl", hash = "sha256:35bdb9d4ec7052232f8803908f9c7a9c3c65807188b70618fa7a7d8ccd560b4d", size = 47935, upload-time = "2025-01-22T15:28:44.499Z" },
 ]
 
 [[package]]

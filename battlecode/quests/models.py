@@ -2,9 +2,8 @@ from slugify import slugify
 
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.models import User
 
-from battlecode.quest_settings import DIFFICULTY_CHOICES, MIN_PTS, ASSIGNMENT_STATUS_CHOICES
+from battlecode.quest_settings import DIFFICULTY_CHOICES, MIN_PTS
 from .model_utils import count_quest_pts
 
 
@@ -20,7 +19,6 @@ class Quest(models.Model):
     )
     base_pts = models.IntegerField(verbose_name="Баллы за победу (без множителя)", default=MIN_PTS)
     penalty = models.IntegerField(verbose_name="Штраф за проигрыш", default=0)
-
     work_time = models.IntegerField(verbose_name="Время работы", default=3)
     check_time = models.IntegerField(verbose_name="Время проверки", default=3)
 
@@ -43,7 +41,6 @@ class Quest(models.Model):
     )
 
     active = models.BooleanField(default=True, verbose_name="Активен")
-
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
@@ -80,13 +77,6 @@ class QuestDetail(models.Model):
 
     def __str__(self):
         return self.task
-
-    @property
-    def review_pool(self) -> list["Assignment"]:
-        q = Assignment.objects.filter(quest=self, status="completed")
-        if q.exists():
-            return list(q.all())
-        return []
 
     class Meta:
         verbose_name = "Квест - задача"
@@ -141,43 +131,6 @@ class Skill(models.Model):
         ordering = ["-created_at"]
 
 
-class Assignment(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="assignments",
-        verbose_name="Пользователь",
-    )
-    quest = models.ForeignKey(
-        Quest,
-        on_delete=models.CASCADE,
-        verbose_name="Квест",
-    )
-
-    code = models.TextField(verbose_name="Код")
-
-    reviews = models.IntegerField(verbose_name="Количество проверок", default=0)
-    status = models.CharField(
-        max_length=20,
-        choices=ASSIGNMENT_STATUS_CHOICES,
-        default="active",
-        verbose_name="Статус",
-    )
-
-    completed_at = models.DateTimeField(verbose_name="Дата завершения", null=True, blank=True)
-
-    updated_at = models.DateTimeField(auto_now=True)
-    assigned_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.quest.title}"
-
-    class Meta:
-        verbose_name = "Взятое задание"
-        verbose_name_plural = "Взятые задания"
-        ordering = ["-assigned_at"]
-
-
 class QuestReviewChecklist(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -193,12 +146,15 @@ class ChecklistItem(models.Model):
         QuestReviewChecklist,
         on_delete=models.CASCADE,
         related_name="checklist_items",
-        verbose_name="Ревью",
+        verbose_name="Чек-лист Ревью",
     )
+    slug = models.CharField(null=True, blank=True)
     description = models.CharField(max_length=500, verbose_name="Описание пункта")
-    is_working = models.BooleanField(default=False, verbose_name="Работает?")
-
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.description)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.description
