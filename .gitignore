@@ -8,6 +8,7 @@ __pycache__/
 # Django related
 logs/*
 media/*
+collected_static/
 
 # C extensions
 *.so

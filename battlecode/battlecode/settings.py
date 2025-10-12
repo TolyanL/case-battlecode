@@ -26,6 +26,7 @@ CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1", "http://localhost"]
 # Application definition
 
 INSTALLED_APPS = [
+    "simpleui",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_totp",
     "django_otp.plugins.otp_static",
     # /TOTP
+    "import_export",
     "leaderboard",
     "peer_review",
     "dashboard",
@@ -121,6 +123,39 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LOGIN_URL = "login"
 OTP_LOGIN_URL = "/login/verify-otp/"
+
+
+# Admin panel settings (SimpleUI)
+SIMPLEUI_DEFAULT_THEME = "simpleui.css"
+SIMPLEUI_DEFAULT_ICON = False
+
+# Icons for Django Apps
+SIMPLEUI_ICON = {
+    "Otp_Static": "fa-solid fa-microchip",
+    "Otp_Totp": "fa-solid fa-lock",
+    "Static devices": "fa-solid fa-server",
+    "TOTP devices": "fa-solid fa-lock",
+    "Взятые задания": "fa-solid fa-tasks",
+    "Quests": "fa-solid fa-map",
+    "Квесты": "fa-solid fa-map",
+    "Квесты - задачи": "fa-solid fa-list-check",
+    "Навыки": "fa-solid fa-star",
+    "Чек-листы ревью квеста": "fa-solid fa-clipboard-check",
+    "Языки": "fa-solid fa-code",
+}
+
+SIMPLEUI_LOGIN_PARTICLES = True
+
+# Custom home page (can be a link)
+# SIMPLEUI_LOGO = "/static/favicon/logo.png"
+
+# SimpleUI Info
+SIMPLEUI_HOME_INFO = False
+
+SIMPLEUI_HOME_QUICK = True
+
+# SimpleUI Analysis (must be False)
+SIMPLEUI_ANALYSIS = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/

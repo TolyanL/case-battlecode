@@ -5,7 +5,8 @@ from django.http import HttpRequest, JsonResponse
 from django.contrib.auth.decorators import login_required
 
 from battlecode.quest_settings import MAX_PICKED_QUESTS
-from quests.models import Quest, Assignment
+from quests.models import Quest
+from peer_review.models import Assignment
 
 
 @login_required()

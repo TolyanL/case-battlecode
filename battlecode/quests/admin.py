@@ -1,15 +1,17 @@
 from django.contrib import admin
-from .models import Quest, Language, Skill, QuestDetail, Assignment, QuestReviewChecklist, ChecklistItem
+# from import_export.admin import ImportExportActionModelAdmin
+# TODO: Implement
+
+from .models import Quest, QuestDetail, Language, Skill, QuestReviewChecklist, ChecklistItem
 
 
 @admin.register(Quest)
 class QuestAdmin(admin.ModelAdmin):
-    list_display = ("title", "active", "created_at")
-    list_filter = ("active", "created_at")
+    list_display = ("title", "difficulty", "pts", "active")
+    list_filter = ("difficulty", "active", "skills")
     search_fields = ("title", "description")
-
-    ordering = ["-created_at"]
-    date_hierarchy = "created_at"
+    prepopulated_fields = {"slug": ("title",)}
+    filter_horizontal = ("skills",)
 
 
 @admin.register(QuestDetail)
@@ -39,15 +41,6 @@ class SkillAdmin(admin.ModelAdmin):
 
     ordering = ["-created_at"]
     date_hierarchy = "created_at"
-
-
-@admin.register(Assignment)
-class AssignmentAdmin(admin.ModelAdmin):
-    list_display = ("user", "quest", "status", "assigned_at")
-    list_filter = ("status", "assigned_at")
-
-    ordering = ["-assigned_at"]
-    date_hierarchy = "assigned_at"
 
 
 class ChecklistItemInline(admin.TabularInline):
