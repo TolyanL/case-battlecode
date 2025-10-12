@@ -64,7 +64,7 @@ def review_checklist(request: HttpRequest, slug: str, username: str):
             if assignment.reviews == REVIEW_COUNT:
                 give_pts = assignment.reviews_avg_pts
                 if give_pts > 0:
-                    assignment.status = "successful"
+                    assignment.status = "success"
                 else:
                     assignment.status = "failed"
                     give_pts = assignment.quest.penalty * -1
