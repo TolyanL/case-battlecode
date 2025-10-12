@@ -10,7 +10,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from battlecode.pagedata import PageData
 from battlecode.quest_settings import break_delta
 
-from quests.models import Quest, Assignment
+from quests.models import Quest
+from peer_review.models import Assignment
 
 
 curr_page = "quests"
@@ -58,7 +59,8 @@ class QuestDetailView(DetailView, LoginRequiredMixin):
         completed = (
             Assignment.objects.filter(
                 user=self.request.user,
-                completed_at__gte=break_delta,
+                completed_at__isnull=False,
+                completed_at__gte=break_delta(),
             )
             .filter(Q(status="completed") | Q(status="failed"))
             .all()
@@ -88,7 +90,7 @@ class QuestWorkView(DetailView, LoginRequiredMixin):
             Assignment.objects.filter(user=self.request.user)
             .filter(
                 Q(status="completed") | Q(status="failed"),
-                Q(completed_at__gte=break_delta),
+                Q(completed_at__gte=break_delta()),
             )
             .all()
         )
@@ -203,4 +205,3 @@ def quest_reviews(request: HttpRequest, slug: str):
 #
 #
 # # --- /НОВЫЕ ПРЕДСТАВЛЕНИЯ ДЛЯ КУРСОВ ---
-

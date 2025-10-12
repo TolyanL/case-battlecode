@@ -1,7 +1,7 @@
 from battlecode.review_settings import GRADE_WEIGHT, CHECKLIST_WEIGHT
 
 
-def calculate_pts(checklist_len: int, completed_count: int, quest_pts: int, grade: int) -> int:
+def calculate_review_pts(checklist_len: int, completed_count: int, quest_pts: int, grade: int) -> int:
     if checklist_len == 0:
         checklist_ratio = 1.0
     else:

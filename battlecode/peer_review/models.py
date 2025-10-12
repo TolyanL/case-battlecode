@@ -1,7 +1,54 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from quests.models import Assignment, ChecklistItem
+from battlecode.review_settings import ASSIGNMENT_STATUS_CHOICES
+from quests.models import Quest, ChecklistItem
+
+
+class Assignment(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="assignments",
+        verbose_name="Пользователь",
+    )
+    quest = models.ForeignKey(
+        Quest,
+        on_delete=models.CASCADE,
+        verbose_name="Квест",
+    )
+
+    given_pts = models.IntegerField(verbose_name="Полученные баллы", default=0)
+
+    code = models.TextField(verbose_name="Код")
+    status = models.CharField(
+        max_length=20,
+        choices=ASSIGNMENT_STATUS_CHOICES,
+        default="active",
+        verbose_name="Статус",
+    )
+
+    @property
+    def reviews(self) -> int:
+        return Review.objects.filter(assignment=self).count()
+
+    @property
+    def reviews_avg_pts(self) -> int:
+        values = Review.objects.filter(assignment=self).values_list("give_pts", flat=True)
+        return int(sum(values) / len(values))
+
+    completed_at = models.DateTimeField(verbose_name="Дата завершения", null=True, blank=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+    assigned_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.quest.title}"
+
+    class Meta:
+        verbose_name = "Взятое задание"
+        verbose_name_plural = "Взятые задания"
+        ordering = ["-assigned_at"]
 
 
 class Review(models.Model):
