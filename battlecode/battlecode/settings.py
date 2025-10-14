@@ -39,11 +39,14 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_static",
     # /TOTP
     "import_export",
+    "django_summernote",
+    "colorfield",
     "leaderboard",
     "peer_review",
     "dashboard",
     "user_auth",
     "quests",
+    "badges",
     "index",
     "user",
 ]
@@ -103,6 +106,20 @@ DATABASES = {
 }
 
 
+# Redis
+
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = os.getenv("REDIS_PORT", "6379")
+
+REDIS_TTL = 3600
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
+    }
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -126,22 +143,35 @@ OTP_LOGIN_URL = "/login/verify-otp/"
 
 
 # Admin panel settings (SimpleUI)
+
 SIMPLEUI_DEFAULT_THEME = "simpleui.css"
 SIMPLEUI_DEFAULT_ICON = False
 
 # Icons for Django Apps
 SIMPLEUI_ICON = {
-    "Otp_Static": "fa-solid fa-microchip",
-    "Otp_Totp": "fa-solid fa-lock",
-    "Static devices": "fa-solid fa-server",
-    "TOTP devices": "fa-solid fa-lock",
-    "Взятые задания": "fa-solid fa-tasks",
+    # Quests
     "Quests": "fa-solid fa-map",
     "Квесты": "fa-solid fa-map",
     "Квесты - задачи": "fa-solid fa-list-check",
     "Навыки": "fa-solid fa-star",
-    "Чек-листы ревью квеста": "fa-solid fa-clipboard-check",
     "Языки": "fa-solid fa-code",
+    "Чек-листы ревью квеста": "fa-solid fa-clipboard-check",
+    # Peer Review
+    "Peer_Review": "fa-solid fa-eye",
+    "Взятые задания": "fa-solid fa-square-check",
+    "Ревью": "fa-solid fa-tasks",
+    # User
+    "User": "fa-solid fa-user",
+    "Профили": "fa-solid fa-id-card",
+    # --- Django Plugins ---
+    # Django OTP
+    "Otp_Static": "fa-solid fa-microchip",
+    "Otp_Totp": "fa-solid fa-lock",
+    "Static devices": "fa-solid fa-server",
+    "TOTP devices": "fa-solid fa-lock",
+    # Django Summernote
+    "Django Summernote": "fa-solid fa-pen",
+    "Attachments": "fa-solid fa-paperclip",
 }
 
 SIMPLEUI_LOGIN_PARTICLES = True

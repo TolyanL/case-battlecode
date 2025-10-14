@@ -1,8 +1,8 @@
-# case-battlecode/battlecode/user/models.py
 from django.db import models
 from django.contrib.auth.models import User
+
 from battlecode.stats_settings import RANKS
-# from quests.models import Course # Импортируем Course
+from badges.models import Badge
 
 
 class Profile(models.Model):
@@ -19,12 +19,15 @@ class Profile(models.Model):
     )
     pts = models.IntegerField(default=0, verbose_name="Очки")
 
-    # enrolled_courses = models.ManyToManyField(
-    #     Course,
-    #     related_name="enrolled_users",
-    #     verbose_name="Записанные курсы",
-    #     blank=True,
-    # )
+    badges = models.ManyToManyField(
+        Badge,
+        related_name="users",
+        blank=True,
+        null=True,
+    )
+
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания", null=True)
 
     def __str__(self):
         return f"Profile for {self.user.username}"

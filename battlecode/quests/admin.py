@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from django_summernote.admin import SummernoteModelAdmin
 # from import_export.admin import ImportExportActionModelAdmin
 # TODO: Implement
 
@@ -15,7 +17,9 @@ class QuestAdmin(admin.ModelAdmin):
 
 
 @admin.register(QuestDetail)
-class QuestDetailAdmin(admin.ModelAdmin):
+class QuestDetailAdmin(SummernoteModelAdmin):
+    summernote_fields = ("task",)
+
     list_display = ("updated_at", "created_at")
     list_filter = ("updated_at",)
 

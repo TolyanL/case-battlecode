@@ -1,9 +1,13 @@
+networks:
+  case_db:
+    driver: bridge
+
 services:
   case_db:
     container_name: case_db
     image: postgres:17
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - case_db
     ports:
       - ${DB_PORT}:5432
     env_file:
@@ -12,6 +16,20 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
+    volumes:
+          - postgres_data:/var/lib/postgresql/data/
+
+  case_redis:
+    image: redis:latest
+    container_name: case_redis
+    networks:
+      - case_db
+    ports:
+      - "${REDIS_PORT}:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
 
 volumes:
   postgres_data:
+  redis_data:
