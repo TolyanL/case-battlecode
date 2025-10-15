@@ -1,11 +1,10 @@
 from datetime import timedelta
 
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest
 from django.db.models import Q
-from django.views.generic import DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import DetailView, ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from battlecode.pagedata import PageData
 from battlecode.quest_settings import break_delta
@@ -17,28 +16,28 @@ from peer_review.models import Assignment
 curr_page = "quests"
 
 
-@login_required
-def quests_all(request: HttpRequest) -> HttpResponse:
-    pd = PageData(
-        title="Quests",
-        description="Track your progress and available quests on your personal dashboard.",
-        curr_page=curr_page,
-    )
-    quests = Quest.objects.filter(active=True).all()
+class QuestsAllView(ListView, LoginRequiredMixin):
+    model = Quest
+    template_name = "quests_all.html"
+    context_object_name = "quests"
 
-    accepted = Assignment.objects.filter(user=request.user, status="active").all()
-    accepted_list = [item.quest.slug for item in accepted]
+    paginate_by = 12
 
-    return render(
-        request,
-        "quests_all.html",
-        context={
-            "pd": pd,
-            "quests": quests,
-            "accepted": accepted,
-            "accepted_list": accepted_list,
-        },
-    )
+    def get_queryset(self):
+        return Quest.objects.filter(active=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["pd"] = PageData(
+            title="Quests",
+            description="Track your progress and available quests on your personal dashboard.",
+            curr_page=curr_page,
+        )
+
+        context["accepted"] = Assignment.objects.filter(user=self.request.user, status="active").all()
+        context["accepted_list"] = [item.quest.slug for item in context["accepted"]]
+
+        return context
 
 
 class QuestDetailView(DetailView, LoginRequiredMixin):

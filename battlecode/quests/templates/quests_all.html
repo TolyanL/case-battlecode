@@ -65,8 +65,29 @@
         <p class="text-gray-400">Нет доступных квестов.</p>
     {% endfor %}
 </div>
-{% endblock content %}
 
-{% block extra_js %}
-<script src="{% static "/js/quest-btn.js" %}"></script>
-{% endblock extra_js %}
+{% if is_paginated %}
+<div class="flex justify-center items-center mt-8 space-x-2">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors duration-300">
+            &laquo;
+        </a>
+    {% endif %}
+
+    <span class="px-4 py-2 text-gray-400">
+        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-cyan-600 hover:text-white transition-colors duration-300">
+            &raquo;
+        </a>
+    {% else %}
+        <span class="px-4 py-2 bg-gray-900 text-gray-600 rounded-lg">
+            &raquo;
+        </span>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock content %}

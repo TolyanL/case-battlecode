@@ -167,19 +167,19 @@
                                         {% if assignment.status == 'success' %}
                                             <div class="p-2 bg-gray-700 rounded-full"><i data-feather="check-circle" class="w-5 h-5 text-green-400"></i></div>
                                             <div>
-                                                <p class="font-semibold">Завершён квест <a href="{{ assignment.quest.get_absolute_url }}" class="text-primary">{{ assignment.quest.title }}</a></p>
+                                                <p class="font-semibold">Завершён квест <a href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a></p>
                                                 <span class="text-xs text-gray-400">Результат: <span class="font-bold text-green-400">Победа</span></span>
                                             </div>
                                         {% elif assignment.status == 'failed' %}
                                             <div class="p-2 bg-gray-700 rounded-full"><i data-feather="x-circle" class="w-5 h-5 text-red-400"></i></div>
                                             <div>
-                                                <p class="font-semibold">Завершён квест <a href="{{ assignment.quest.get_absolute_url }}" class="text-primary">{{ assignment.quest.title }}</a></p>
+                                                <p class="font-semibold">Завершён квест <a href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a></p>
                                                 <span class="text-xs text-gray-400">Результат: <span class="font-bold text-red-400">Поражение</span></span>
                                             </div>
                                         {% else %}
                                             <div class="p-2 bg-gray-700 rounded-full"><i data-feather="clock" class="w-5 h-5 text-orange-400"></i></div>
                                             <div>
-                                                <p class="font-semibold">Взят <a href="{{ assignment.quest.get_absolute_url }}" class="text-primary">{{ assignment.quest.title }}</a></p>
+                                                <p class="font-semibold">Взят <a href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a></p>
                                                 <span class="text-xs text-gray-400">Статус: <span class="font-bold text-orange-400">Ожидает проверки</span></span>
                                             </div>
                                         {% endif %}
@@ -215,7 +215,7 @@
                                     <div class="flex items-center space-x-4">
                                         <div class="p-2 bg-gray-700 rounded-full"><i data-feather="check-square" class="w-5 h-5 text-blue-400"></i></div>
                                         <div>
-                                            <p class="font-semibold">Проверен квест <a href="{{ review.assignment.quest.get_absolute_url }}" class="text-primary">{{ review.assignment.quest.title }}</a></p>
+                                            <p class="font-semibold">Проверен квест <a href="{{ review.assignment.quest.get_absolute_url }}">{{ review.assignment.quest.title }}</a></p>
                                             <span class="text-xs text-gray-400">Работа: <a href="{% url "user_profile" username=review.assignment.user.username %}" class="font-bold text-blue-400">{{ review.assignment.user.username }}</a></span>
                                         </div>
                                     </div>

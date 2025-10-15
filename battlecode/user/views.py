@@ -69,7 +69,7 @@ def get_recent_activity(user_id: int, assignments: list[Assignment]) -> list[Ass
         activity.difficulty_color = DIFFICULTY_COLORS.get(difficulty, DIFFICULTY_COLORS["default"])
         recent_activities.append({"object": activity, "type": "assignment", "date": activity.assigned_at})
 
-    reviews = Review.objects.filter(user__id=user_id).order_by("-created_at")
+    reviews = Review.objects.filter(user__id=user_id).order_by("-created_at").all()[:5]
     for review in reviews:
         recent_activities.append({"object": review, "type": "review", "date": review.created_at})
 

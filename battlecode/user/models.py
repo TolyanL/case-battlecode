@@ -21,7 +21,6 @@ class Profile(models.Model):
 
     badges = models.ManyToManyField(
         Badge,
-        related_name="users",
         blank=True,
         null=True,
     )
