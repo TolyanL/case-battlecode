@@ -67,6 +67,12 @@ class QuestDetailView(DetailView, LoginRequiredMixin):
         )
         context["completed_list"] = [item.quest.slug for item in completed]
 
+        context["failed"] = (
+            Assignment.objects.filter(user=self.request.user)
+            .filter(status="failed", completed_at__gte=break_delta())
+            .exists()
+        )
+
         return context
 
 
@@ -97,6 +103,15 @@ class QuestWorkView(DetailView, LoginRequiredMixin):
         context["completed_list"] = [item.quest.slug for item in completed]
 
         return context
+
+    def get(self, request, *args, **kwargs):
+        if (
+            Assignment.objects.filter(user=self.request.user)
+            .filter(status="failed", completed_at__gte=break_delta())
+            .exists()
+        ):
+            return redirect("quests_all")
+        return super().get(request, *args, **kwargs)
 
 
 def quest_reviews(request: HttpRequest, slug: str):

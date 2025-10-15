@@ -3,6 +3,8 @@ from slugify import slugify
 from django.db import models
 from django.urls import reverse
 
+from colorfield.fields import ColorField
+
 from battlecode.quest_settings import DIFFICULTY_CHOICES, MIN_PTS
 from .model_utils import count_quest_pts
 
@@ -87,6 +89,8 @@ class QuestDetail(models.Model):
 class Language(models.Model):
     name = models.CharField(max_length=200, verbose_name="Название", blank=False)
     slug = models.CharField(blank=True)
+
+    color = ColorField(format="hex", default="#000000", verbose_name="Цвет")
 
     active = models.BooleanField(default=True, verbose_name="Активен")
 

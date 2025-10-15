@@ -5,6 +5,8 @@ from django.http import HttpRequest, JsonResponse
 from django.contrib.auth.decorators import login_required
 
 from battlecode.quest_settings import MAX_PICKED_QUESTS
+
+from user.models import Profile
 from quests.models import Quest
 from peer_review.models import Assignment
 
@@ -60,8 +62,14 @@ def give_up_quest(request: HttpRequest):
                 return JsonResponse({"success": False, "message": "You have no active quests"})
 
             Assignment.objects.filter(user=user, quest=quest, status="active").update(
-                status="failed", completed_at=datetime.now()
+                status="failed",
+                given_pts=-quest.penalty,
+                completed_at=datetime.now(),
             )
+            if quest.penalty > 0:
+                profile = Profile.objects.get(user=user)
+                profile.pts -= quest.penalty
+                profile.save()
 
             return JsonResponse({"success": True, "message": "Quest failed"})
         except Exception as e:
