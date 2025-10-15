@@ -101,13 +101,13 @@
                             {{ item.completed_at|timesince }} назад
                         </span>
                     </div>
-                    {% if user.username != item.user.username %}
+                    {% comment %} {% if user.username != item.user.username %} {% endcomment %}
                     <div class="mt-4">
                         <a href="{% url 'review_detail' slug=quest.slug username=item.user.username %}" class="w-full block text-center bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
                             Проверить
                         </a>
                     </div>
-                    {% endif %}
+                    {% comment %} {% endif %} {% endcomment %}
                 </div>
             </div>
             {% endif %}

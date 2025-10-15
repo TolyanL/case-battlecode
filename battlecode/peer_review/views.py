@@ -69,8 +69,11 @@ def review_checklist(request: HttpRequest, slug: str, username: str):
                     assignment.status = "failed"
                     give_pts = assignment.quest.penalty * -1
 
-                profile = Profile.objects.get(user=request.user)
+                profile = Profile.objects.get(user=assignment.user)
+
                 profile.pts += give_pts
+                if profile.pts < 0:
+                    profile.pts = 0
 
                 assignment.given_pts = give_pts
 

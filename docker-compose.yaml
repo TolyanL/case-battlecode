@@ -1,17 +1,33 @@
 networks:
-  case_db:
+  case-net:
     driver: bridge
 
 services:
+  case_web:
+    container_name: case_web
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - django-media:/code/media
+      - django-static:/code/static
+    networks:
+      - case-net
+    env_file: ".env"
+    depends_on:
+      - case_db
+      - case_redis
+
   case_db:
     container_name: case_db
     image: postgres:17
     networks:
-      - case_db
+      - case-net
     ports:
-      - ${DB_PORT}:5432
+      - "${DB_PORT}:5432"
     env_file:
-      - .env.dev
+      - .env
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -23,7 +39,7 @@ services:
     image: redis:latest
     container_name: case_redis
     networks:
-      - case_db
+      - case-net
     ports:
       - "${REDIS_PORT}:6379"
     command: redis-server --appendonly yes
@@ -33,3 +49,5 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  django-media:
+  django-static:

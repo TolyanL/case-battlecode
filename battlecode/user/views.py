@@ -19,15 +19,15 @@ def user_profile(request, username: str):
     else:
         user = get_object_or_404(User, username=username)
 
-    BadgeManager(user).check_all_badges()
-
     profile = getattr(user, "profile", None)
     if not profile:
         profile = Profile.objects.create(user=user)
 
+    BadgeManager(user).check_all_badges()
+
     assignments = Assignment.objects.filter(user=user).order_by("-assigned_at")[:5]
 
-    recent_activities = get_recent_activity(assignments)
+    recent_activities = get_recent_activity(user.id, assignments)
     preferred_languages = get_pref_langs(assignments)
 
     pd = PageData(
@@ -50,7 +50,7 @@ def user_profile(request, username: str):
     )
 
 
-def get_recent_activity(assignments: list[Assignment]) -> list[Assignment]:
+def get_recent_activity(user_id: int, assignments: list[Assignment]) -> list[Assignment]:
     DIFFICULTY_COLORS = {
         "easy": {"bg": "bg-green-500/20", "text": "text-green-500"},
         "medium": {"bg": "bg-orange-500/20", "text": "text-orange-500"},
@@ -69,7 +69,7 @@ def get_recent_activity(assignments: list[Assignment]) -> list[Assignment]:
         activity.difficulty_color = DIFFICULTY_COLORS.get(difficulty, DIFFICULTY_COLORS["default"])
         recent_activities.append({"object": activity, "type": "assignment", "date": activity.assigned_at})
 
-    reviews = Review.objects.filter(user=assignment.user).order_by("-created_at")
+    reviews = Review.objects.filter(user__id=user_id).order_by("-created_at")
     for review in reviews:
         recent_activities.append({"object": review, "type": "review", "date": review.created_at})
 

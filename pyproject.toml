@@ -14,6 +14,7 @@ dependencies = [
     "django-simpleui>=2025.6.24",
     "django-summernote>=0.8.20.0",
     "django-two-factor-auth>=1.18.1",
+    "gunicorn>=23.0.0",
     "pillow>=11.3.0",
     "psycopg2-binary>=2.9.10",
     "python-dotenv>=1.1.1",

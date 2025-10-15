@@ -4,7 +4,7 @@ from django.contrib.auth.forms import User
 
 from battlecode.settings import REDIS_TTL
 
-from peer_review.models import Assignment, Review
+from peer_review.models import Assignment
 from user.models import Profile
 
 from badges import badges_checkers as checkers
