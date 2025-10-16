@@ -13,7 +13,6 @@ db_up:
     docker compose -f {{dev_db}} up -d --build
 
 db_migrate:
-    uv run {{managepy}} makemigrations
     uv run {{managepy}} migrate
 
 db_dw:
