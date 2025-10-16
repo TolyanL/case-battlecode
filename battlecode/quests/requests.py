@@ -25,11 +25,12 @@ def accept_quest(request: HttpRequest):
             quest = Quest.objects.get(slug=quest_slug)
             if not quest:
                 return JsonResponse({"success": False, "message": "Quest not found"})
-
-            items = Assignment.objects.filter(user=user, quest=quest, status="active")
-            if len(items) >= MAX_PICKED_QUESTS:
+            print(Assignment.objects.filter(user=user, status="active").count())
+            if Assignment.objects.filter(user=user, status="active").count() >= MAX_PICKED_QUESTS:
+                print("You already have the maximum number of quests")
                 return JsonResponse({"success": False, "message": "You already have the maximum number of quests"})
-            if items.exists():
+            if Assignment.objects.filter(user=user, quest=quest, status="active").exists():
+                print("You already have an active quest")
                 return JsonResponse({"success": False, "message": "You already have an active quest"})
 
             Assignment.objects.create(user=user, quest=quest)

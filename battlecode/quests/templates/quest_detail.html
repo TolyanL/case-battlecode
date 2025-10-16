@@ -68,27 +68,25 @@
         </div>
 
         <div class="mt-8 flex justify-center">
-            {% if failed %}
-            <button class="quest-btn w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors duration-300">
-                <span>🕒 On Timeout</span>
-            </button>
-            {% elif quest.slug in completed_list %}
-                <a href="{% url "quest_reviews" slug=quest.slug %}" class="w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
-                    <i data-feather="check-circle" class="w-5 h-5 mr-3 text-white"></i>
-                    To Reviews
-                </a>
-            {% else %}
+            {% if button_state == 'start' %}
                 {% csrf_token %}
-                {% if quest.slug in accepted_list %}
+                <button data-action="accept" data-quest-slug="{{ quest.slug }}" class="quest-btn w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
+                    <span>⚔️ Start Code Battle</span>
+                </button>
+            {% elif button_state == 'continue_work' %}
                 <a href="{% url "quest_work" slug=quest.slug %}" class="w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
                     <i data-feather="code" class="w-5 h-5 mr-3 text-white"></i>
                     Continue Work
                 </a>
-                {% else %}
-                <button data-action="accept" data-quest-slug="{{ quest.slug }}" class="quest-btn w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
-                    <span>⚔️ Start Code Battle</span>
+            {% elif button_state == 'to_reviews' %}
+                <a href="{% url "quest_reviews" slug=quest.slug %}" class="w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
+                    <i data-feather="check-circle" class="w-5 h-5 mr-3 text-white"></i>
+                    To Reviews
+                </a>
+            {% elif button_state == 'on_timeout' %}
+                <button class="quest-btn w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors duration-300">
+                    <span>🕒 On Timeout</span>
                 </button>
-                {% endif %}
             {% endif %}
         </div>
     </div>

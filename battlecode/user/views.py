@@ -83,6 +83,9 @@ def get_pref_langs(assignments: list[Assignment]) -> list[dict]:
     pref_langs = []
 
     for assignment in assignments:
+        if assignment.status == "active":
+            continue
+
         lang = assignment.quest.language
         if lang.name in lang_counts:
             lang_counts[lang.name][0] += 1

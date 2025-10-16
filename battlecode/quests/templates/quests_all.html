@@ -21,7 +21,7 @@
                         {% elif quest.difficulty == "medium" %}
                             <span class="bg-orange-500/20 text-orange-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}</span>
                         {% else %}
-                            <span class="bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}</span>
+                            <span class="bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}🔥</span>
                         {% endif %}
                         {% if quest.penalty > 0 %}
                             <span class="bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1 rounded-full">
@@ -32,6 +32,22 @@
                     <span class="bg-blue-500/20 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.language.name }}</span>
                 </div>
                 <h4 class="font-bold text-white text-lg mb-2">{{ quest.title }}</h4>
+                {% if quest.slug in accepted %}
+                <span class="flex items-center text-blue-400 text-xs mb-2">
+                    <i data-feather="code" class="w-4 h-4 mr-1"></i>
+                    In Progress
+                </span>
+                {% elif quest.slug in review %}
+                <span class="flex items-center text-orange-400 text-xs mb-2">
+                    <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                    On Review
+                </span>
+                {% elif quest.slug in completed %}
+                <span class="flex items-center text-gray-400 text-xs mb-2">
+                    <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                    On Cooldown
+                </span>
+                {% endif %}
                 <p class="text-gray-400 text-sm mb-4">{{ quest.description }}</p>
             </div>
 
@@ -40,27 +56,14 @@
                     <span class="flex items-center">
                         <i data-feather="award" class="w-4 h-4 mr-2"></i>
                         {% for skill in quest.skills.all %}
-                            +{{ skill.name|title }}
+                            +{{ skill.name }}
                             {% if not forloop.last %},{% endif %}
                         {% endfor %}
                     </span>
                     <span class="flex items-center"><i data-feather="clock" class="w-4 h-4 mr-2"></i>{{ quest.work_time }}ч</span>
                 </div>
-                {% comment %} <div class="mt-4">
-                    {% if quest.slug in accepted_list %}
-                    <button class="w-full bg-gray-700 text-gray-400 font-bold py-2 px-4 rounded-lg opacity-75">
-                        Взят
-                    </button>
-                    {% else %}
-                    {% csrf_token %}
-                    <button data-quest-slug="{{ quest.slug }}" class="accept-quest-btn w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
-                        Принять
-                    </button>
-                    {% endif %}
-                </div> {% endcomment %}
             </div>
         </a>
-
     {% empty %}
         <p class="text-gray-400">Нет доступных квестов.</p>
     {% endfor %}

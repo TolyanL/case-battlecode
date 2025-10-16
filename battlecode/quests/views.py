@@ -34,9 +34,25 @@ class QuestsAllView(ListView, LoginRequiredMixin):
             curr_page=curr_page,
         )
 
-        context["accepted"] = Assignment.objects.filter(user=self.request.user, status="active").all()
-        context["accepted_list"] = [item.quest.slug for item in context["accepted"]]
-
+        if self.request.user.is_authenticated:
+            context["accepted"] = [
+                i.quest.slug for i in (Assignment.objects.filter(user=self.request.user).filter(status="active").all())
+            ]
+            context["review"] = [
+                i.quest.slug
+                for i in (Assignment.objects.filter(user=self.request.user).filter(status="completed").all())
+            ]
+            context["completed"] = [
+                i.quest.slug
+                for i in (
+                    Assignment.objects.filter(user=self.request.user)
+                    .filter(
+                        Q(status="success") | Q(status="failed"),
+                        Q(completed_at__gte=break_delta()),
+                    )
+                    .all()
+                )
+            ]
         return context
 
 
@@ -52,25 +68,24 @@ class QuestDetailView(DetailView, LoginRequiredMixin):
             curr_page=curr_page,
         )
 
-        accepted = Assignment.objects.filter(user=self.request.user, status="active").all()
-        context["accepted_list"] = [item.quest.slug for item in accepted]
+        button_state = "start"  # 'start', 'continue_work', 'to_reviews', 'on_timeout'
 
-        completed = (
-            Assignment.objects.filter(
-                user=self.request.user,
-                completed_at__isnull=False,
-                completed_at__gte=break_delta(),
-            )
-            .filter(Q(status="completed") | Q(status="failed"))
-            .all()
-        )
-        context["completed_list"] = [item.quest.slug for item in completed]
+        user = self.request.user
+        quest = self.get_object()
 
-        context["failed"] = (
-            Assignment.objects.filter(user=self.request.user)
-            .filter(status="failed", completed_at__gte=break_delta())
-            .exists()
-        )
+        assignment = Assignment.objects.filter(user=user, quest=quest).order_by("-updated_at").first()
+
+        if assignment:
+            if assignment.status == "active":
+                button_state = "continue_work"
+            elif assignment.status == "completed":
+                button_state = "to_reviews"
+            elif assignment.status in ["success", "failed"]:
+                cooldown_timestamp = break_delta()
+                if assignment.completed_at and assignment.completed_at > cooldown_timestamp:
+                    button_state = "on_timeout"
+
+        context["button_state"] = button_state
 
         return context
 
@@ -88,25 +103,31 @@ class QuestWorkView(DetailView, LoginRequiredMixin):
         )
         context["work_timer"] = timedelta(hours=self.object.work_time)
 
-        accepted = Assignment.objects.filter(user=self.request.user, status="active").all()
-        context["accepted_list"] = [item.quest.slug for item in accepted]
-
-        completed = (
-            Assignment.objects.filter(user=self.request.user)
-            .filter(
-                Q(status="completed") | Q(status="failed"),
-                Q(completed_at__gte=break_delta()),
+        context["completed"] = [
+            item.quest.slug
+            for item in (
+                Assignment.objects.filter(user=self.request.user)
+                .filter(
+                    Q(status="success") | Q(status="failed"),
+                )
+                .filter(
+                    quest__slug=self.kwargs["slug"],
+                    completed_at__gte=break_delta(),
+                )
+                .all()
             )
-            .all()
-        )
-        context["completed_list"] = [item.quest.slug for item in completed]
+        ]
 
         return context
 
     def get(self, request, *args, **kwargs):
         if (
             Assignment.objects.filter(user=self.request.user)
-            .filter(status="failed", completed_at__gte=break_delta())
+            .filter(Q(status="success") | Q(status="failed"))
+            .filter(
+                quest__slug=self.kwargs["slug"],
+                completed_at__gte=break_delta(),
+            )
             .exists()
         ):
             return redirect("quests_all")

@@ -176,11 +176,17 @@
                                                 <p class="font-semibold">Завершён квест <a href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a></p>
                                                 <span class="text-xs text-gray-400">Результат: <span class="font-bold text-red-400">Поражение</span></span>
                                             </div>
+                                        {% elif assignment.status == 'active' %}
+                                            <div class="p-2 bg-gray-700 rounded-full"><i data-feather="clock" class="w-5 h-5 text-orange-400"></i></div>
+                                            <div>
+                                                <p class="font-semibold">Взят <a href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a></p>
+                                                <span class="text-xs text-gray-400">Статус: <span class="font-bold text-blue-400">Выполняется</span></span>
+                                            </div>
                                         {% else %}
                                             <div class="p-2 bg-gray-700 rounded-full"><i data-feather="clock" class="w-5 h-5 text-orange-400"></i></div>
                                             <div>
                                                 <p class="font-semibold">Взят <a href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a></p>
-                                                <span class="text-xs text-gray-400">Статус: <span class="font-bold text-orange-400">Ожидает проверки</span></span>
+                                                <span class="text-xs text-gray-400">Статус: <span class="font-bold text-orange-400">Ожидает проверки {{ assignment.reviews }}/{{ pd.max_reviews }}</span></span>
                                             </div>
                                         {% endif %}
                                     </div>
