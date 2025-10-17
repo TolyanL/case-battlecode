@@ -22,7 +22,6 @@ class Quest(models.Model):
     base_pts = models.IntegerField(verbose_name="Баллы за победу (без множителя)", default=MIN_PTS)
     penalty = models.IntegerField(verbose_name="Штраф за проигрыш", default=0)
     work_time = models.IntegerField(verbose_name="Время работы", default=3)
-    check_time = models.IntegerField(verbose_name="Время проверки", default=3)
 
     skills = models.ManyToManyField("Skill", verbose_name="Навыки")
     language = models.ForeignKey(
