@@ -1,4 +1,6 @@
 .python-version
+.env
+.env.dev
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
