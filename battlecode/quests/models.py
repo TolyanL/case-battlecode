@@ -6,7 +6,7 @@ from django.urls import reverse
 from colorfield.fields import ColorField
 
 from battlecode.quest_settings import DIFFICULTY_CHOICES, MIN_PTS
-from .model_utils import count_quest_pts
+from .model_utils import count_quest_pts, get_contrast_color
 
 
 class Quest(models.Model):
@@ -99,7 +99,19 @@ class Language(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+        self.text_color = get_contrast_color(self.color)
         super().save(*args, **kwargs)
+
+    @property
+    def text_color(self):
+        return get_contrast_color(self.color)
+
+    @property
+    def bg_color(self):
+        hex_color = self.color.lstrip("#")
+        alpha = 0.2
+        r, g, b = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+        return f"rgba({r}, {g}, {b}, {alpha})"
 
     def __str__(self):
         return self.name

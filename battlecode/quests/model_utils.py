@@ -24,3 +24,10 @@ def _count_skill_pts(multiplyer: int, skills: list[object]) -> int:
     for skill in skills:
         skill_mult += skill.value * 0.1
     return skill_mult
+
+
+def get_contrast_color(hex_color: str):
+    hex_color = hex_color.lstrip("#")
+    r, g, b = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+    brightness = (r * 299 + g * 587 + b * 114) / 1000
+    return "black" if brightness > 128 else "white"

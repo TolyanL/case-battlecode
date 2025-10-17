@@ -3,6 +3,7 @@ from slugify import slugify
 from colorfield.fields import ColorField
 from django.db import models
 
+from quests.model_utils import get_contrast_color
 from quests.models import Quest
 
 
@@ -33,6 +34,17 @@ class Badge(models.Model):
         if self.slug == "":
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    @property
+    def text_color(self):
+        return get_contrast_color(self.color)
+
+    @property
+    def bg_color(self):
+        hex_color = self.color.lstrip("#")
+        alpha = 0.2
+        r, g, b = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+        return f"rgba({r}, {g}, {b}, {alpha})"
 
     def __str__(self):
         return self.name
