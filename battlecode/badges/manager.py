@@ -16,7 +16,7 @@ def _make_quest_property(status: str, redis_key: str):
     def getter(self):
         value = client.get(redis_key)
 
-        if value is not None:
+        if value:
             return int(value)
 
         db_value = Assignment.objects.filter(user=self.user, status=status).count()
@@ -55,7 +55,12 @@ class BadgeManager:
 
     @property
     def all_quests(self) -> int:
-        return self.active_quests + self.successful_quests + self.completed_quests + self.failed_quests
+        return (
+            self.active_quests
+            + self.successful_quests
+            + self.completed_quests
+            + self.failed_quests
+        )
 
     def _has_badge(self, badge_slug: str) -> bool:
         badge_key = f"{self._badges_key}:{badge_slug}"
@@ -97,7 +102,12 @@ class BadgeManager:
 
     def badge_all_quests(self):
         if all(
-            [self.active_quests > 0, self.success_quests > 0, self.completed_quests > 0, self.failed_quests > 0],
+            [
+                self.active_quests > 0,
+                self.success_quests > 0,
+                self.completed_quests > 0,
+                self.failed_quests > 0,
+            ],
         ):
             self._grant_badge("jack_of_all_trades")
 
