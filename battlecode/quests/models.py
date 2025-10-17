@@ -99,7 +99,6 @@ class Language(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
-        self.text_color = get_contrast_color(self.color)
         super().save(*args, **kwargs)
 
     @property
