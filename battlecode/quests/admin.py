@@ -9,16 +9,15 @@ from .models import Quest, QuestDetail, Language, Skill, QuestReviewChecklist, C
 
 @admin.register(Quest)
 class QuestAdmin(admin.ModelAdmin):
-    list_display = ("title", "difficulty", "pts", "active")
+    list_display = ("title", "difficulty", "pts", "active", "updated_at", "created_at")
     list_filter = ("difficulty", "active", "skills")
     search_fields = ("title", "description")
-    prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("skills",)
 
 
 @admin.register(QuestDetail)
 class QuestDetailAdmin(SummernoteModelAdmin):
-    summernote_fields = ("task",)
+    summernote_fields = ("updated_at", "created_at")
 
     list_display = ("updated_at", "created_at")
     list_filter = ("updated_at",)
@@ -29,9 +28,9 @@ class QuestDetailAdmin(SummernoteModelAdmin):
 
 @admin.register(Language)
 class LanguageAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug")
-    list_filter = ("slug",)
-    search_fields = ("name", "slug")
+    list_display = ("name", "color", "active", "updated_at", "created_at")
+    list_filter = ("name", "color", "created_at", "updated_at")
+    search_fields = ("name",)
 
     ordering = ["-created_at"]
     date_hierarchy = "created_at"
@@ -39,9 +38,9 @@ class LanguageAdmin(admin.ModelAdmin):
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
-    list_display = ("name", "value", "slug")
-    list_filter = ("slug",)
-    search_fields = ("name", "slug")
+    list_display = ("name", "value", "updated_at", "created_at")
+    list_filter = ("name", "value", "created_at", "updated_at")
+    search_fields = ("name",)
 
     ordering = ["-created_at"]
     date_hierarchy = "created_at"

@@ -12,7 +12,6 @@ from .model_utils import count_quest_pts, get_contrast_color
 class Quest(models.Model):
     title = models.CharField(max_length=200, verbose_name="Название", blank=False)
     description = models.TextField(verbose_name="Описание", blank=False)
-    slug = models.CharField(blank=True)
 
     difficulty = models.CharField(
         choices=DIFFICULTY_CHOICES,
@@ -45,9 +44,9 @@ class Quest(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
+    @property
+    def slug(self):
+        return slugify(self.title)
 
     def get_absolute_url(self) -> str:
         return reverse("quest_detail", kwargs={"slug": self.slug})
@@ -87,7 +86,6 @@ class QuestDetail(models.Model):
 
 class Language(models.Model):
     name = models.CharField(max_length=200, verbose_name="Название", blank=False)
-    slug = models.CharField(blank=True)
 
     color = ColorField(format="hex", default="#000000", verbose_name="Цвет")
 
@@ -96,9 +94,9 @@ class Language(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
+    @property
+    def slug(self):
+        return slugify(self.name)
 
     @property
     def text_color(self):
@@ -122,7 +120,6 @@ class Language(models.Model):
 
 class Skill(models.Model):
     name = models.CharField(max_length=200, verbose_name="Название", blank=False)
-    slug = models.CharField(blank=True)
 
     #  INFO: value - вес навыка при вычислении баллов за победу в квесте
     value = models.IntegerField(verbose_name="Вес навыка", default=0)
@@ -132,9 +129,9 @@ class Skill(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
+    @property
+    def slug(self):
+        return slugify(self.name)
 
     def __str__(self):
         return self.name
@@ -162,13 +159,12 @@ class ChecklistItem(models.Model):
         related_name="checklist_items",
         verbose_name="Чек-лист Ревью",
     )
-    slug = models.CharField(null=True, blank=True)
     description = models.CharField(max_length=500, verbose_name="Описание пункта")
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.description)
-        super().save(*args, **kwargs)
+    @property
+    def slug(self):
+        return slugify(self.description)
 
     def __str__(self):
         return self.description
