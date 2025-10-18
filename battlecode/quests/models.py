@@ -12,6 +12,7 @@ from .model_utils import count_quest_pts, get_contrast_color
 class Quest(models.Model):
     title = models.CharField(max_length=200, verbose_name="Название", blank=False)
     description = models.TextField(verbose_name="Описание", blank=False)
+    slug = models.CharField(max_length=200, blank=True)
 
     difficulty = models.CharField(
         choices=DIFFICULTY_CHOICES,
@@ -21,6 +22,7 @@ class Quest(models.Model):
     base_pts = models.IntegerField(verbose_name="Баллы за победу (без множителя)", default=MIN_PTS)
     penalty = models.IntegerField(verbose_name="Штраф за проигрыш", default=0)
     work_time = models.IntegerField(verbose_name="Время работы", default=3)
+    task = models.TextField(verbose_name="Задача")
 
     skills = models.ManyToManyField("Skill", verbose_name="Навыки")
     language = models.ForeignKey(
@@ -29,11 +31,6 @@ class Quest(models.Model):
         verbose_name="Язык",
         related_name="quests",
     )
-    details = models.OneToOneField(
-        "QuestDetail",
-        on_delete=models.CASCADE,
-        verbose_name="Задачи",
-    )
     checklist = models.OneToOneField(
         "QuestReviewChecklist",
         on_delete=models.PROTECT,
@@ -41,12 +38,13 @@ class Quest(models.Model):
     )
 
     active = models.BooleanField(default=True, verbose_name="Активен")
+
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
-    @property
-    def slug(self):
-        return slugify(self.title)
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self) -> str:
         return reverse("quest_detail", kwargs={"slug": self.slug})
@@ -66,21 +64,6 @@ class Quest(models.Model):
     class Meta:
         verbose_name = "Квест"
         verbose_name_plural = "Квесты"
-        ordering = ["-created_at"]
-
-
-class QuestDetail(models.Model):
-    task = models.TextField(verbose_name="Задача")
-
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-
-    def __str__(self):
-        return self.task
-
-    class Meta:
-        verbose_name = "Квест - задача"
-        verbose_name_plural = "Квесты - задачи"
         ordering = ["-created_at"]
 
 

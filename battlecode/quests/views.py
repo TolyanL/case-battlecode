@@ -10,6 +10,7 @@ from battlecode.pagedata import PageData
 from battlecode.quest_settings import break_delta
 
 from quests.models import Quest
+from courses.models import Course
 from peer_review.models import Assignment
 
 

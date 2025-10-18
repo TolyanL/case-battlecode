@@ -13,7 +13,8 @@ db_up:
     docker compose -f {{dev_db}} up -d --build
 
 db_migrate:
-    uv run {{managepy}} migrate
+  uv run {{managepy}} makemigrations
+  uv run {{managepy}} migrate
 
 db_dw:
   docker compose -f {{dev_db}} down
@@ -24,6 +25,4 @@ db_dw:
   echo "✅ pulled successfully"
 
 serve:
-  uv run {{managepy}} makemigrations
-  uv run {{managepy}} migrate
   uv run {{managepy}} runserver

@@ -4,26 +4,17 @@ from django_summernote.admin import SummernoteModelAdmin
 # from import_export.admin import ImportExportActionModelAdmin
 # TODO: Implement
 
-from .models import Quest, QuestDetail, Language, Skill, QuestReviewChecklist, ChecklistItem
+from .models import Quest, Language, Skill, QuestReviewChecklist, ChecklistItem
 
 
 @admin.register(Quest)
-class QuestAdmin(admin.ModelAdmin):
+class QuestAdmin(SummernoteModelAdmin):
     list_display = ("title", "difficulty", "pts", "active", "updated_at", "created_at")
     list_filter = ("difficulty", "active", "skills")
     search_fields = ("title", "description")
     filter_horizontal = ("skills",)
 
-
-@admin.register(QuestDetail)
-class QuestDetailAdmin(SummernoteModelAdmin):
-    summernote_fields = ("updated_at", "created_at")
-
-    list_display = ("updated_at", "created_at")
-    list_filter = ("updated_at",)
-
-    ordering = ["-updated_at"]
-    date_hierarchy = "updated_at"
+    summernote_fields = ("task",)
 
 
 @admin.register(Language)

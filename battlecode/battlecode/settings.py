@@ -39,15 +39,17 @@ INSTALLED_APPS = [
     "import_export",
     "django_summernote",
     "colorfield",
+    "django_apscheduler",
     "leaderboard",
     "peer_review",
     "dashboard",
     "user_auth",
+    "bc_utils",
+    "courses",
     "quests",
     "badges",
     "index",
     "user",
-    'courses',
 ]
 
 MIDDLEWARE = [
@@ -151,7 +153,6 @@ SIMPLEUI_ICON = {
     # Quests
     "Quests": "fa-solid fa-map",
     "Квесты": "fa-solid fa-map",
-    "Квесты - задачи": "fa-solid fa-list-check",
     "Навыки": "fa-solid fa-star",
     "Языки": "fa-solid fa-code",
     "Чек-листы ревью квеста": "fa-solid fa-clipboard-check",

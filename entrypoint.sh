@@ -9,7 +9,7 @@ python manage.py migrate
 
 # Create a superuser
 echo "Checking for superuser..."
-python create_superuser.py
+python utils/deploy/create_superuser.py
 
 # Start the main process
 exec "$@"
