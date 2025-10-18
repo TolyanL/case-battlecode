@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "badges",
     "index",
     "user",
+    'courses',
 ]
 
 MIDDLEWARE = [

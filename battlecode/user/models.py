@@ -22,7 +22,6 @@ class Profile(models.Model):
     badges = models.ManyToManyField(
         Badge,
         blank=True,
-        null=True,
     )
 
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")

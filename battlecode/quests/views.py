@@ -53,6 +53,7 @@ class QuestsAllView(ListView, LoginRequiredMixin):
                     .all()
                 )
             ]
+        context["courses"] = Course.objects.all()
         return context
 
 

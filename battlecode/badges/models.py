@@ -23,7 +23,7 @@ class Badge(models.Model):
         verbose_name="Цвет",
     )
 
-    rel_quests = models.ManyToManyField(Quest, blank=True, null=True)
+    rel_quests = models.ManyToManyField(Quest, blank=True)
 
     active = models.BooleanField(default=True, verbose_name="Активен")
 

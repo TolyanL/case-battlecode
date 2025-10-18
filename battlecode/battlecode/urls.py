@@ -13,6 +13,7 @@ urlpatterns = [
     path("quests/", include("quests.urls")),
     path("users/", include("user.urls")),
     path("review/", include("peer_review.urls")),
+    path("courses/", include("courses.urls")),
     path("", include("index.urls")),
 ]
 
