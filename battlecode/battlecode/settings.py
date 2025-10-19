@@ -1,6 +1,8 @@
 import os
 
 from pathlib import Path
+from datetime import timedelta
+
 from dotenv import load_dotenv
 
 
@@ -39,7 +41,6 @@ INSTALLED_APPS = [
     "import_export",
     "django_summernote",
     "colorfield",
-    "django_apscheduler",
     "leaderboard",
     "peer_review",
     "dashboard",
@@ -121,6 +122,25 @@ CACHES = {
     }
 }
 
+
+# Celery
+
+CELERY_BROKER_URL = "redis://case_redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://case_redis:6379/0"
+
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+
+CELERY_TIMEZONE = "Europe/Moscow"
+
+CELERY_BEAT_SCHEDULE = {
+    "check_expired_assigments": {
+        "task": "peer_review.tasks.check_assignments",
+        "schedule": timedelta(minutes=1),
+    },
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -192,7 +212,7 @@ SIMPLEUI_ANALYSIS = False
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 

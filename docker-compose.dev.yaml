@@ -17,10 +17,10 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
     volumes:
-          - postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
 
   case_redis:
-    image: redis:latest
+    image: redis:alpine
     container_name: case_redis
     networks:
       - case_db
@@ -29,6 +29,34 @@ services:
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
+
+  case_celery_worker:
+    build: .
+    container_name: case_celery_worker
+    command: celery -A battlecode worker -l info
+    volumes:
+      - .:/app
+    networks:
+      - case_db
+    env_file:
+      - .env
+    depends_on:
+      - case_redis
+      - case_db
+
+  case_celery_beat:
+    build: .
+    container_name: case_celery_beat
+    command: celery -A battlecode beat -l info
+    volumes:
+      - .:/app
+    networks:
+      - case_db
+    env_file:
+      - .env
+    depends_on:
+      - case_redis
+      - case_db
 
 volumes:
   postgres_data:

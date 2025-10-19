@@ -1,6 +1,4 @@
 .python-version
-.env
-.env.dev
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -145,6 +143,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env.dev
 .envrc
 .venv
 env/

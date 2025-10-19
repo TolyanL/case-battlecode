@@ -9,7 +9,8 @@ from user.models import Profile
 
 from badges import badges_checkers as checkers
 from badges.models import Badge
-from badges.redis import client
+
+from battlecode.redis import client
 
 
 def _make_quest_property(status: str, redis_key: str):

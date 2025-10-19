@@ -21,7 +21,7 @@ services:
 
   case_db:
     container_name: case_db
-    image: postgres:17
+    image: postgres:17-alpine
     networks:
       - case-net
     ports:
@@ -36,7 +36,7 @@ services:
           - postgres_data:/var/lib/postgresql/data/
 
   case_redis:
-    image: redis:latest
+    image: redis:alpine
     container_name: case_redis
     networks:
       - case-net
@@ -45,6 +45,32 @@ services:
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
+
+  case_celery_worker:
+    build: .
+    container_name: case_celery_worker
+    restart: unless-stopped
+    command: celery -A battlecode worker -l info
+    volumes:
+      - django-media:/code/media
+    networks:
+      - case-net
+    env_file: ".env"
+    depends_on:
+      - case_redis
+      - case_db
+
+  case_celery_beat:
+    build: .
+    container_name: case_celery_beat
+    restart: unless-stopped
+    command: celery -A battlecode beat -l info 
+    networks:
+      - case-net
+    env_file: ".env"
+    depends_on:
+      - case_redis
+      - case_db
 
 volumes:
   postgres_data:

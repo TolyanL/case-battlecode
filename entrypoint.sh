@@ -8,8 +8,8 @@ echo "Applying database migrations..."
 python manage.py migrate
 
 # Create a superuser
-echo "Checking for superuser..."
-python utils/deploy/create_superuser.py
+# echo "Checking for superuser..."
+# python utils/deploy/create_superuser.py
 
 # Start the main process
 exec "$@"
