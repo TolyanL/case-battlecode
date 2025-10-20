@@ -59,21 +59,24 @@
         <h2 class="text-2xl font-bold mb-6">Таблица лидеров</h2>
 
         <div class="space-y-3">
-            <div class="hidden md:grid md:grid-cols-10 gap-4 px-6 py-3 text-xs text-gray-400 uppercase bg-gray-800 rounded-lg">
+            {# 1. Обновленный заголовок: grid-cols-11, добавлено 'Успешные' #}
+            <div class="hidden md:grid md:grid-cols-11 gap-4 px-6 py-3 text-xs text-gray-400 uppercase bg-gray-800 rounded-lg">
                 <div class="md:col-span-1">Место</div>
-                <div class="md:col-span-4">Имя пользователя</div>
-                {# <div class="md:col-span-2">Язык</div> #}
-                <div class="md:col-span-1 text-center">Матчи</div>
+                <div class="md:col-span-3">Имя пользователя</div>
+                <div class="md:col-span-2 text-center">Время работы</div>
+                <div class="md:col-span-2 text-center">Матчи</div>
+                <div class="md:col-span-1 text-center">Успешные</div> {# НОВЫЙ ЗАГОЛОВОК #}
                 <div class="md:col-span-2 text-right">PTS</div>
             </div>
 
             {% for entry in leaderboard %}
-            <div class="grid md:grid-cols-10 gap-y-3 gap-x-4 p-4 md:px-6 md:py-4 bg-gray-900 border border-gray-800 rounded-2xl md:items-center hover:bg-gray-800/50 transition">
+            {# 2. Обновленные строки: grid-cols-11 #}
+            <div class="grid md:grid-cols-11 gap-y-3 gap-x-4 p-4 md:px-6 md:py-4 bg-gray-900 border border-gray-800 rounded-2xl md:items-center hover:bg-gray-800/50 transition">
                 <div class="md:col-span-1 flex justify-between items-center">
                     <span class="text-gray-400 md:hidden">Место</span>
                     <span class="font-bold text-lg text-white">{{ entry.rank }}</span>
                 </div>
-                <div class="md:col-span-4">
+                <div class="md:col-span-3">
                     <span class="font-medium text-white">
                         {{ entry.profile.user.username }}
                         {% if user.is_authenticated and entry.profile.user == user %}
@@ -81,12 +84,27 @@
                         {% endif %}
                     </span>
                 </div>
-                <div class="md:col-span-1 flex justify-between items-center md:justify-center">
-                    <span class="text-gray-400 md:hidden">Матчи</span>
+                
+                <div class="md:col-span-2 flex justify-between items-center md:justify-center">
+                    <span class="text-gray-400 md:hidden">Время работы</span> <span class="font-medium text-white">
+                        {{ entry.profile.work_time|default:"—" }}
+                    </span>
+                </div>
+                
+                <div class="md:col-span-2 flex justify-between items-center md:justify-center"> <span class="text-gray-400 md:hidden">Матчи</span>
                     <span class="font-medium text-white">
                         {{ entry.profile.matches_played|default:"—" }}
                     </span>
                 </div>
+                
+                {# 3. НОВЫЙ СТОЛБЕЦ с успешными заданиями #}
+                <div class="md:col-span-1 flex justify-between items-center md:justify-center"> 
+                    <span class="text-gray-400 md:hidden">Успешные</span>
+                    <span class="font-medium text-green-400">
+                        {{ entry.success_assignments }}
+                    </span>
+                </div>
+                
                 <div class="md:col-span-2 flex justify-between items-center md:justify-end">
                     <span class="text-gray-400 md:hidden">PTS</span>
                     <span class="font-bold text-primary text-lg">{{ entry.profile.pts }}</span>
@@ -99,17 +117,18 @@
             {% endfor %}
         </div>
 
-        <!-- Отображаем "You" только если пользователь авторизован и НЕ в топе -->
         {% if user.is_authenticated and current_user_entry and current_user_entry.rank > 10 %}
         <div class="mt-8">
-            <div class="grid md:grid-cols-10 gap-y-3 gap-x-4 p-4 md:px-6 md:py-4 bg-gray-800 border border-primary rounded-2xl md:items-center shadow-lg shadow-primary/20">
+            {# 4. Обновленная строка для текущего пользователя: grid-cols-11 #}
+            <div class="grid md:grid-cols-11 gap-y-3 gap-x-4 p-4 md:px-6 md:py-4 bg-gray-800 border border-primary rounded-2xl md:items-center shadow-lg shadow-primary/20">
                 <div class="md:col-span-1 flex justify-between items-center">
                     <span class="text-gray-400 md:hidden">Место</span>
                     <span class="font-bold text-lg text-white">{{ current_user_entry.rank }}</span>
                 </div>
-                <div class="md:col-span-4">
+                <div class="md:col-span-3">
                     <span class="font-medium text-white">You</span>
                 </div>
+                
                 {# Язык для текущего пользователя #}
                 {# <div class="md:col-span-2 flex justify-between items-center">
                     <span class="text-gray-400 md:hidden">Язык</span>
@@ -121,12 +140,28 @@
                         <span class="text-gray-500 text-xs">—</span>
                     {% endif %}
                 </div> #}
-                <div class="md:col-span-1 flex justify-between items-center md:justify-center">
-                    <span class="text-gray-400 md:hidden">Матчи</span>
+                
+                <div class="md:col-span-2 flex justify-between items-center md:justify-center">
+                    <span class="text-gray-400 md:hidden">Время работы</span>
+                    <span class="font-medium text-white">
+                        {{ current_user_entry.profile.work_time|default:"—" }}
+                    </span>
+                </div>
+                
+                <div class="md:col-span-2 flex justify-between items-center md:justify-center"> <span class="text-gray-400 md:hidden">Матчи</span>
                     <span class="font-medium text-white">
                         {{ current_user_entry.profile.matches_played|default:"—" }}
                     </span>
                 </div>
+                
+                {# 5. НОВЫЙ СТОЛБЕЦ с успешными заданиями для текущего пользователя #}
+                <div class="md:col-span-1 flex justify-between items-center md:justify-center"> 
+                    <span class="text-gray-400 md:hidden">Успешные</span>
+                    <span class="font-medium text-green-400">
+                        {{ current_user_entry.success_assignments }}
+                    </span>
+                </div>
+                
                 <div class="md:col-span-2 flex justify-between items-center md:justify-end">
                     <span class="text-gray-400 md:hidden">Очки</span>
                     <span class="font-bold text-primary text-lg">{{ current_user_entry.profile.pts }}</span>
