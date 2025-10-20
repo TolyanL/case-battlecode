@@ -12,17 +12,12 @@ class Profile(models.Model):
         related_name="profile",
         verbose_name="Пользователь",
     )
-    rank = models.IntegerField(
-        default=1,
-        verbose_name="Ранг",
-        choices=RANKS,
-    )
+
+    rank = models.IntegerField(default=1, verbose_name="Ранг", choices=RANKS)
     pts = models.IntegerField(default=0, verbose_name="Очки")
 
-    badges = models.ManyToManyField(
-        Badge,
-        blank=True,
-    )
+    badges = models.ManyToManyField(Badge, blank=True)
+    courses = models.ManyToManyField("courses.Course", related_name="enrolled_profiles", blank=True)
 
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания", null=True)

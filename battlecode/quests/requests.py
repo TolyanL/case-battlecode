@@ -18,14 +18,14 @@ def accept_quest(request: HttpRequest):
         try:
             data = json.loads(request.body)
 
-            quest_slug = data.get("quest_slug")
+            quest_slug = data.get("slug")
             if not quest_slug:
                 return JsonResponse({"success": False, "message": "Empty request"})
 
             quest = Quest.objects.get(slug=quest_slug)
             if not quest:
                 return JsonResponse({"success": False, "message": "Quest not found"})
-            print(Assignment.objects.filter(user=user, status="active").count())
+
             if Assignment.objects.filter(user=user, status="active").count() >= MAX_PICKED_QUESTS:
                 print("You already have the maximum number of quests")
                 return JsonResponse({"success": False, "message": "You already have the maximum number of quests"})
@@ -50,7 +50,7 @@ def give_up_quest(request: HttpRequest):
         try:
             data = json.loads(request.body)
 
-            quest_slug = data.get("quest_slug")
+            quest_slug = data.get("slug")
             if not quest_slug:
                 return JsonResponse({"success": False, "message": "Empty request"})
 
@@ -87,7 +87,7 @@ def complete_quest(request: HttpRequest):
         try:
             data = json.loads(request.body)
 
-            quest_slug = data.get("quest_slug")
+            quest_slug = data.get("slug")
             if not quest_slug:
                 return JsonResponse({"success": False, "message": "Empty request"})
 

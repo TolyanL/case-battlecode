@@ -24,7 +24,7 @@ class Quest(models.Model):
     work_time = models.IntegerField(verbose_name="Время работы", default=3)
     task = models.TextField(verbose_name="Задача")
 
-    skills = models.ManyToManyField("Skill", verbose_name="Навыки")
+    skills = models.ManyToManyField("Skill", related_name="quests", verbose_name="Навыки")
     language = models.ForeignKey(
         "Language",
         on_delete=models.PROTECT,

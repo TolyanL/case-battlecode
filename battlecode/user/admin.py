@@ -12,4 +12,4 @@ class ProfileAdmin(admin.ModelAdmin):
     ordering = ["-user__username"]
     date_hierarchy = "created_at"
 
-    filter_horizontal = ("badges",)
+    filter_horizontal = ("badges", "courses")

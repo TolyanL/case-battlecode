@@ -1,9 +1,14 @@
 from django.urls import path
-from . import views
 
-app_name = 'courses'
+from .views import CoursesListView, CourseDetailView
+from .requests import enroll_course, unenroll_course
+
 
 urlpatterns = [
-    path('', views.courses_list, name='courses_list'),
-    path('<int:course_id>/', views.course_detail, name='course_detail'),
+    path("", CoursesListView.as_view(), name="courses_list"),
+    path("<str:slug>", CourseDetailView.as_view(), name="course_detail"),
+    # requests
+    path("rest/enroll", enroll_course, name="enroll_course"),
+    path("rest/unenroll", unenroll_course, name="unenroll_course"),
 ]
+

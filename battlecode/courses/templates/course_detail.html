@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ pd.title }}{% endblock title %}
+{% block description %}{{ pd.description }}{% endblock description %}
+
+{% block content %}
+    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-8">
+        <h1 class="font-bold text-white text-3xl mb-2">{{ course.title }}</h1>
+        <p class="text-gray-400 text-base mb-6">{{ course.description }}</p>
+
+        <div class="pt-6 border-t border-gray-700/50">
+            <h2 class="text-xl font-semibold mb-4 text-white">Обзор курса:</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-400">
+
+                <div class="flex items-center bg-gray-800 p-3 rounded-lg">
+                    <i data-feather="clock" class="w-5 h-5 mr-3 text-cyan-400"></i>
+                    <div>
+                        <span class="text-xs text-gray-400">Общее время</span>
+                        <p class="font-semibold text-white">{{ course.work_time|default:"0" }} ч</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center bg-gray-800 p-3 rounded-lg">
+                    <i data-feather="star" class="w-5 h-5 mr-3 text-cyan-400"></i>
+                    <div>
+                        <span class="text-xs text-gray-400">Всего PTS</span>
+                        <p class="font-semibold text-white">{{ course.total_pts|default:"0" }}</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center bg-gray-800 p-3 rounded-lg">
+                    <i data-feather="package" class="w-5 h-5 mr-3 text-cyan-400"></i>
+                    <div>
+                        <span class="text-xs text-gray-400">Квестов в курсе</span>
+                        <p class="font-semibold text-white">{{ course.quest_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-gray-700/50">
+            <h3 class="text-xl font-semibold mb-4 text-white">Основные навыки курса:</h3>
+            <div class="flex flex-wrap gap-2">
+                {% for skill in course.skills %}
+                    <span class="bg-gray-800 border border-gray-700 text-gray-300 text-sm font-medium px-3 py-1 rounded-md">
+                        {{ skill.name|title }}
+                    </span>
+                {% empty %}
+                    <p class="text-gray-500 text-sm">Навыки для этого курса не указаны.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="mt-8 flex justify-center">
+            {% csrf_token %}
+            {% if accepted %}
+            <button data-action="unenroll" data-slug="{{ course.slug }}" class="action-btn px-8 py-3 text-base bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors duration-300">
+                <span>💀 Отписаться от курса</span>
+            </button>
+            {% else %}
+            <button data-action="enroll" data-slug="{{ course.slug }}" class="action-btn w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
+                <span>🚀 Начать курс</span>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
+        <h2 class="text-2xl font-bold mb-4 text-white">Программа курса</h2>
+        <div class="space-y-6">
+            {% for quest in course.quests.all %}
+                <div class="flex justify-center items-center">
+                    <span class="text-sm font-semibold text-cyan-400 bg-gray-800/60 px-4 py-1 rounded-full">
+                        Уровень {{ forloop.counter }}
+                    </span>
+                </div>
+
+                <a href="{{ quest.get_absolute_url }}" class="block w-full bg-gray-800/50 border border-gray-700/80 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300 text-left">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <span class="bg-cyan-500/20 text-cyan-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.pts }} PTS</span>
+                                {% if quest.difficulty == "easy" %}
+                                    <span class="bg-cyan-500/20 text-cyan-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}</span>
+                                {% elif quest.difficulty == "medium" %}
+                                    <span class="bg-orange-500/20 text-orange-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}</span>
+                                {% else %}
+                                    <span class="bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}🔥</span>
+                                {% endif %}
+                            </div>
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background-color: {{ quest.language.bg_color }}; color: {{ quest.language.color }};">
+                                {{ quest.language.name }}
+                            </span>
+                        </div>
+                        <h4 class="font-bold text-white text-lg mb-2">{{ quest.title }}</h4>
+                        <p class="text-gray-400 text-sm mb-4">{{ quest.description }}</p>
+                    </div>
+
+                    <div class="mt-auto pt-4 border-t border-gray-700/50">
+                        <div class="flex justify-between items-center text-sm text-gray-400">
+                            <span class="flex items-center">
+                                <i data-feather="award" class="w-4 h-4 mr-2"></i>
+                                {% for skill in quest.skills.all %}
+                                    +{{ skill.name }}{% if not forloop.last %},{% endif %}
+                                {% endfor %}
+                            </span>
+                            <span class="flex items-center"><i data-feather="clock" class="w-4 h-4 mr-2"></i>{{ quest.work_time }}ч</span>
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <p class="text-gray-400">В этом курсе пока нет квестов.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static "/js/buttons.js" %}"></script>
+{% endblock extra_js %}

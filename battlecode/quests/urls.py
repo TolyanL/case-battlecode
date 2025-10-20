@@ -7,7 +7,7 @@ urlpatterns = [
     path("details/<str:slug>", QuestDetailView.as_view(), name="quest_detail"),
     path("work/<str:slug>", QuestWorkView.as_view(), name="quest_work"),
     path("reviews/<str:slug>", quest_reviews, name="quest_reviews"),
-    path("accept", accept_quest, name="req_accept_quest"),
-    path("give-up", give_up_quest, name="req_give_up"),
-    path("complete", complete_quest, name="req_complete_quest"),
+    path("rest/accept", accept_quest, name="req_accept_quest"),
+    path("rest/give-up", give_up_quest, name="req_give_up"),
+    path("rest/complete", complete_quest, name="req_complete_quest"),
 ]

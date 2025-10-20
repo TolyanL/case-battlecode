@@ -32,6 +32,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{% url 'courses_list' %}"
+                    class="font-medium {% if pd.curr_page == 'courses' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
+                        Courses
+                    </a>
+                </li>
+                <li>
                     <a href="{% url 'quests_all' %}"
                     class="font-medium {% if pd.curr_page == 'quests' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
                         Quests
@@ -53,9 +59,6 @@
         </nav>
     </div>
     <div class="flex items-center space-x-2">
-        <button class="p-2 rounded-full hover:bg-gray-800 transition">
-            <i data-feather="bell" class="w-5 h-5"></i>
-        </button>
         <a href="{% url 'logout' %}" 
            title="Выход"
            class="p-2 rounded-full hover:bg-gray-800 transition">

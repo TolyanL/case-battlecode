@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".quest-btn").forEach(button => {
+    document.querySelectorAll(".action-btn").forEach(button => {
         button.addEventListener("click", function (e) {
             e.preventDefault();
 
-            const questSlug = this.dataset.questSlug;
+            const slug = this.dataset.slug;
             const btnAction = this.dataset.action;
 
             const originalText = this.textContent;
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const actions = {
                 "accept": {
-                    url: "/quests/accept",
+                    url: "/quests/rest/accept",
                     successMsg: "💀 Сдаться",
                     newAction: "give-up",
                     oldColor: "cyan",
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: ""
                 },
                 "give-up": {
-                    url: "/quests/give-up",
+                    url: "/quests/rest/give-up",
                     successMsg: "🕒 Квест заблокирован, возвращайтесь через 3 дня",
                     newAction: "accept",
                     oldColor: "gray",
@@ -27,12 +27,29 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: ""
                 },
                 "complete": {
-                    url: "/quests/complete",
+                    url: "/quests/rest/complete",
                     successMsg: "⚔️ Start Code Battle",
                     newAction: "-",
                     oldColor: "gray",
                     newColor: "cyan",
                     data: window.codeEditor ? window.codeEditor.getValue() : ""
+                },
+                // Courses
+                "enroll": {
+                    url: "/courses/rest/enroll",
+                    successMsg: "💀 Отписаться от курса",
+                    newAction: "unenroll",
+                    oldColor: "cyan",
+                    newColor: "gray",
+                    data: ""
+                },
+                "unenroll": {
+                    url: "/courses/rest/unenroll",
+                    successMsg: "🚀 Начать курс",
+                    newAction: "enroll",
+                    oldColor: "gray",
+                    newColor: "cyan",
+                    data: ""
                 }
             };
 
@@ -50,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
                 },
                 body: JSON.stringify({
-                    quest_slug: questSlug,
+                    slug: slug,
                     data: actionConfig.data
                 })
             })
@@ -65,42 +82,25 @@ document.addEventListener("DOMContentLoaded", function () {
                     this.textContent = actionConfig.successMsg;
                     this.className = originalClassName.replace(actionConfig.oldColor, actionConfig.newColor);
                     this.dataset.action = actionConfig.newAction;
-                    showMessage(data.message, "success");
-                    
+
                     if (btnAction == "complete") {
-                        window.location.href = `/quests/reviews/${questSlug}`;
+                        window.location.href = `/quests/reviews/${slug}`;
                     } else if (btnAction == "give-up") {
-                        window.location.href = `/quests/details/${questSlug}`;
-                    } else {
-                        window.location.href = `/quests/work/${questSlug}`;
+                        window.location.href = `/quests/details/${slug}`;
+                    } else if (btnAction == "accept") {
+                        window.location.href = `/quests/work/${slug}`;
                     }
                 } else {
                     this.textContent = originalText;
-                    showMessage(`Ошибка: ${data.message}`, "error");
                 }
             })
             .catch(err => {
                 this.textContent = originalText;
                 this.className = originalClassName;
-                showMessage(`Произошла ошибка: ${err.message}`, "error");
             })
             .finally(() => {
                 this.disabled = false;
             });
         });
     });
-
-    function showMessage(message, type) {
-        const alertDiv = document.createElement('div');
-        const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
-
-        alertDiv.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${bgColor} text-white max-w-md`;
-        alertDiv.textContent = message;
-
-        document.body.appendChild(alertDiv);
-
-        setTimeout(() => {
-            alertDiv.remove();
-        }, 3000);
-    }
 });

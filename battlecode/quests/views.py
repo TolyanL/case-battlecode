@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from battlecode.pagedata import PageData
 from battlecode.quest_settings import break_delta
 
+from user.models import Profile
 from quests.models import Quest
 from courses.models import Course
 from peer_review.models import Assignment
@@ -25,7 +26,11 @@ class QuestsAllView(ListView, LoginRequiredMixin):
     paginate_by = 12
 
     def get_queryset(self):
-        return Quest.objects.filter(active=True)
+        user = self.request.user
+        quests = Quest.objects.filter(
+            course_quests__course__enrolled_profiles__user=user,
+        ).distinct()
+        return quests
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -83,13 +88,18 @@ class QuestDetailView(DetailView, LoginRequiredMixin):
             elif assignment.status == "completed":
                 button_state = "to_reviews"
             elif assignment.status in ["success", "failed"]:
-                cooldown_timestamp = break_delta()
-                if assignment.completed_at and assignment.completed_at > cooldown_timestamp:
+                if assignment.completed_at and assignment.completed_at > break_delta():
                     button_state = "on_timeout"
 
         context["button_state"] = button_state
 
         return context
+
+    def get(self, request, *args, **kwargs):
+        course = self.get_object().courses.first()
+        if not Profile.objects.filter(user=self.request.user, courses=course).exists():
+            return redirect("quests_all")
+        return super().get(request, *args, **kwargs)
 
 
 class QuestWorkView(DetailView, LoginRequiredMixin):
@@ -123,6 +133,10 @@ class QuestWorkView(DetailView, LoginRequiredMixin):
         return context
 
     def get(self, request, *args, **kwargs):
+        course = self.get_object().courses.first()
+        if not Profile.objects.filter(user=self.request.user, courses=course).exists():
+            return redirect("quests_all")
+
         if (
             Assignment.objects.filter(user=self.request.user)
             .filter(Q(status="success") | Q(status="failed"))
@@ -133,6 +147,7 @@ class QuestWorkView(DetailView, LoginRequiredMixin):
             .exists()
         ):
             return redirect("quests_all")
+
         return super().get(request, *args, **kwargs)
 
 
