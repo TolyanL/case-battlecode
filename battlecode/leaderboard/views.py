@@ -1,54 +1,87 @@
 from django.http import HttpRequest
 from django.shortcuts import render
 
+from django.db.models import Q, Avg, Count
+
 from battlecode.pagedata import PageData
+
 from user.models import Profile
+from quests.models import Language
 from peer_review.models import Assignment
 
 
-current_page = "leaderboard"
+curr_page = "leaderboard"
 
 
 def leaderboard(request: HttpRequest):
-    context = {}
-    user = request.user
+    leaderboard_list, curr_user_entry = get_leaderboard_data(request.user)
+    side = side_data()
 
-    context["pd"] = PageData(
-        title="Leaderboard",
-        description="Track your progress and available quests on your personal dashboard.",
-        curr_page=current_page,
+    context = {
+        "pd": PageData(
+            curr_page=curr_page,
+            title="Leaderboard",
+            description="Track your progress and available quests on your personal dashboard.",
+        ),
+        "leaderboard": leaderboard_list,
+        "side_data": side,
+        "current_user_entry": curr_user_entry,
+    }
+
+    return render(request, "leaderboard.html", context)
+
+
+def side_data() -> dict:
+    data = {}
+
+    data["total_players"] = Profile.objects.filter(user__is_active=True, pts__gt=0).count()
+
+    data["total_matches"] = Assignment.objects.filter(
+        Q(status="success") | Q(status="failed"),
+    ).count()
+
+    data["average_pts"] = Assignment.objects.filter(
+        Q(status="success") | Q(status="failed"),
+    ).aggregate(avg_given_pts=Avg("given_pts"))["avg_given_pts"]
+
+    data["popular_language"] = (
+        Language.objects.filter(quests__assignment__isnull=False)
+        .annotate(total_assignments=Count("quests__assignment"))
+        .order_by("-total_assignments")
+        .first()
     )
 
-    top_profiles = Profile.objects.filter(user__is_active=True).order_by("-pts")[:10]
-    leaderboard_list = []
+    return data
 
-    user_in_leaderboard = None
-    user_rank = None
+
+def get_leaderboard_data(user) -> tuple[list, dict]:
+    top_profiles = Profile.objects.filter(user__is_active=True).order_by("-pts")[:10]
+
+    leaderboard_list = []
+    current_user_entry = None
 
     for rank, profile in enumerate(top_profiles, start=1):
         success_count = Assignment.objects.filter(
+            Q(status="success") | Q(status="failed"),
             user=profile.user,
-            status="success",
         ).count()
 
-        leaderboard_list.append(
-            {
-                "rank": rank,
-                "profile": profile,
-                "success_assignments": success_count,
-            }
-        )
+        entry = {
+            "rank": rank,
+            "profile": profile,
+            "matches": success_count,
+        }
+        leaderboard_list.append(entry)
 
         if user.is_authenticated and profile.user == user:
-            user_in_leaderboard = {
-                "rank": rank,
-                "profile": profile,
-                "success_assignments": success_count,
-            }
+            current_user_entry = entry
 
-    if user.is_authenticated and not user_in_leaderboard:
-        current_user_profile = Profile.objects.get(user=user)
-        user_pts = current_user_profile.pts
+    if user.is_authenticated and not current_user_entry:
+        curr_user_profile = Profile.objects.filter(user=user).first()
+        if not curr_user_profile:
+            curr_user_profile = Profile.objects.create(user=user)
+
+        user_pts = curr_user_profile.pts
 
         user_rank = Profile.objects.filter(user__is_active=True, pts__gt=user_pts).count() + 1
 
@@ -57,14 +90,10 @@ def leaderboard(request: HttpRequest):
             status="success",
         ).count()
 
-        user_in_leaderboard = {
+        current_user_entry = {
             "rank": user_rank,
-            "profile": current_user_profile,
+            "profile": curr_user_profile,
             "success_assignments": success_count,
         }
 
-    context["leaderboard"] = leaderboard_list
-    context["current_user_entry"] = user_in_leaderboard
-
-    return render(request, "leaderboard.html", context)
-
+    return leaderboard_list, current_user_entry

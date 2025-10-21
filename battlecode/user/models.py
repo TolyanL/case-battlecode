@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from battlecode.stats_settings import RANKS
+
+from peer_review.models import Assignment
 from badges.models import Badge
 
 
@@ -21,6 +24,19 @@ class Profile(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания", null=True)
+
+    @property
+    def total_worktime(self):
+        assignments = Assignment.objects.filter(
+            Q(status="success") | Q(status="failed"),
+            user=self.user,
+        ).values("assigned_at", "completed_at")
+
+        work_time = 0
+        for item in assignments:
+            work_time += (item["completed_at"] - item["assigned_at"]).total_seconds() / 3600
+
+        return round(work_time, 2)
 
     def __str__(self):
         return f"Profile for {self.user.username}"

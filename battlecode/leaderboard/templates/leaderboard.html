@@ -8,49 +8,49 @@
 
     <aside class="lg:col-span-1">
         <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 lg:sticky lg:top-8">
-            <h3 class="text-lg font-semibold mb-4">Сортировка и фильтры</h3>
+            <h3 class="text-lg font-semibold mb-4">Общая статистика</h3>
             <div class="space-y-4">
-                <div>
-                    <label for="time-filter" class="text-sm text-gray-400">Период</label>
-                    <select id="time-filter" class="mt-2 w-full bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-primary transition cursor-pointer">
-                        <option>За все время</option>
-                        <option>Этот год</option>
-                        <option>Этот месяц</option>
-                        <option>Эта неделя</option>
-                        <option>Сегодня</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="lang-filter" class="text-sm text-gray-400">Язык программирования</label>
-                    <select id="lang-filter" class="mt-2 w-full bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-primary transition cursor-pointer">
-                        <option>Все языки</option>
-                        <option>Python</option>
-                        <option>JavaScript</option>
-                        <option>Java</option>
-                        <option>C++</option>
-                    </select>
-                </div>
-
-                <div>
-                    <p class="text-sm text-gray-400">Сортировать по</p>
-                    <div class="mt-2 grid grid-cols-2 gap-1 bg-gray-800 p-1 rounded-xl">
-                        <button class="w-full flex items-center justify-center space-x-2 px-2 py-1.5 rounded-lg text-sm transition bg-primary text-white shadow">
-                            <i data-feather="bar-chart-2" class="w-4 h-4"></i>
-                            <span>Очкам</span>
-                        </button>
-                        <button class="w-full flex items-center justify-center space-x-2 px-2 py-1.5 rounded-lg text-sm transition text-gray-400 hover:bg-gray-700">
-                            <i data-feather="play-circle" class="w-4 h-4"></i>
-                            <span>Матчам</span>
-                        </button>
+                
+                <div class="bg-gray-800 p-4 rounded-lg flex items-center">
+                    <div class="p-2 bg-primary/20 text-primary rounded-lg mr-4">
+                        <i data-feather="users" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">Всего игроков</p>
+                        <p class="text-xl font-bold text-white">{{ side_data.total_players|default:"0" }}</p>
                     </div>
                 </div>
 
-                <div class="border-t border-gray-700/50 pt-4 mt-4">
-                     <button class="w-full flex items-center justify-center space-x-2 bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-lg transition">
-                        <i data-feather="rotate-ccw" class="w-4 h-4"></i>
-                        <span>Сбросить фильтры</span>
-                    </button>
+                <div class="bg-gray-800 p-4 rounded-lg flex items-center">
+                    <div class="p-2 bg-green-500/20 text-green-400 rounded-lg mr-4">
+                        <i data-feather="play-circle" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">Задач решено</p>
+                        <p class="text-xl font-bold text-white">{{ side_data.total_matches|default:"0" }}</p>
+                    </div>
                 </div>
+
+                <div class="bg-gray-800 p-4 rounded-lg flex items-center">
+                    <div class="p-2 bg-blue-500/20 text-blue-400 rounded-lg mr-4">
+                        <i data-feather="code" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">Популярный язык</p>
+                        <p class="text-xl font-bold text-white">{{ side_data.popular_language|default:"N/A" }}</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 p-4 rounded-lg flex items-center">
+                    <div class="p-2 bg-yellow-500/20 text-yellow-400 rounded-lg mr-4">
+                        <i data-feather="bar-chart-2" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">Средний балл</p>
+                        <p class="text-xl font-bold text-white">{{ side_data.average_pts|floatformat:0|default:"0" }}</p>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </aside>
@@ -59,19 +59,20 @@
         <h2 class="text-2xl font-bold mb-6">Таблица лидеров</h2>
 
         <div class="space-y-3">
-            {# 1. Обновленный заголовок: grid-cols-11, добавлено 'Успешные' #}
             <div class="hidden md:grid md:grid-cols-11 gap-4 px-6 py-3 text-xs text-gray-400 uppercase bg-gray-800 rounded-lg">
                 <div class="md:col-span-1">Место</div>
                 <div class="md:col-span-3">Имя пользователя</div>
                 <div class="md:col-span-2 text-center">Время работы</div>
                 <div class="md:col-span-2 text-center">Матчи</div>
-                <div class="md:col-span-1 text-center">Успешные</div> {# НОВЫЙ ЗАГОЛОВОК #}
                 <div class="md:col-span-2 text-right">PTS</div>
             </div>
 
             {% for entry in leaderboard %}
-            {# 2. Обновленные строки: grid-cols-11 #}
+            {% if user == entry.profile.user %}
+            <div class="grid md:grid-cols-11 gap-y-3 gap-x-4 p-4 md:px-6 md:py-4 bg-gray-900 border border-primary rounded-2xl md:items-center shadow-lg shadow-primary/20">
+            {% else %}
             <div class="grid md:grid-cols-11 gap-y-3 gap-x-4 p-4 md:px-6 md:py-4 bg-gray-900 border border-gray-800 rounded-2xl md:items-center hover:bg-gray-800/50 transition">
+            {% endif %}
                 <div class="md:col-span-1 flex justify-between items-center">
                     <span class="text-gray-400 md:hidden">Место</span>
                     <span class="font-bold text-lg text-white">{{ entry.rank }}</span>
@@ -87,24 +88,16 @@
                 
                 <div class="md:col-span-2 flex justify-between items-center md:justify-center">
                     <span class="text-gray-400 md:hidden">Время работы</span> <span class="font-medium text-white">
-                        {{ entry.profile.work_time|default:"—" }}
+                        {{ entry.profile.total_worktime|default:"—" }}
                     </span>
                 </div>
                 
                 <div class="md:col-span-2 flex justify-between items-center md:justify-center"> <span class="text-gray-400 md:hidden">Матчи</span>
                     <span class="font-medium text-white">
-                        {{ entry.profile.matches_played|default:"—" }}
+                        {{ entry.matches|default:"0" }}
                     </span>
                 </div>
-                
-                {# 3. НОВЫЙ СТОЛБЕЦ с успешными заданиями #}
-                <div class="md:col-span-1 flex justify-between items-center md:justify-center"> 
-                    <span class="text-gray-400 md:hidden">Успешные</span>
-                    <span class="font-medium text-green-400">
-                        {{ entry.success_assignments }}
-                    </span>
-                </div>
-                
+
                 <div class="md:col-span-2 flex justify-between items-center md:justify-end">
                     <span class="text-gray-400 md:hidden">PTS</span>
                     <span class="font-bold text-primary text-lg">{{ entry.profile.pts }}</span>
@@ -119,7 +112,6 @@
 
         {% if user.is_authenticated and current_user_entry and current_user_entry.rank > 10 %}
         <div class="mt-8">
-            {# 4. Обновленная строка для текущего пользователя: grid-cols-11 #}
             <div class="grid md:grid-cols-11 gap-y-3 gap-x-4 p-4 md:px-6 md:py-4 bg-gray-800 border border-primary rounded-2xl md:items-center shadow-lg shadow-primary/20">
                 <div class="md:col-span-1 flex justify-between items-center">
                     <span class="text-gray-400 md:hidden">Место</span>
@@ -128,18 +120,6 @@
                 <div class="md:col-span-3">
                     <span class="font-medium text-white">You</span>
                 </div>
-                
-                {# Язык для текущего пользователя #}
-                {# <div class="md:col-span-2 flex justify-between items-center">
-                    <span class="text-gray-400 md:hidden">Язык</span>
-                    {% if current_user_entry.profile.preferred_language %}
-                        <span class="bg-blue-500/20 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full">
-                            {{ current_user_entry.profile.preferred_language }}
-                        </span>
-                    {% else %}
-                        <span class="text-gray-500 text-xs">—</span>
-                    {% endif %}
-                </div> #}
                 
                 <div class="md:col-span-2 flex justify-between items-center md:justify-center">
                     <span class="text-gray-400 md:hidden">Время работы</span>
@@ -153,8 +133,7 @@
                         {{ current_user_entry.profile.matches_played|default:"—" }}
                     </span>
                 </div>
-                
-                {# 5. НОВЫЙ СТОЛБЕЦ с успешными заданиями для текущего пользователя #}
+
                 <div class="md:col-span-1 flex justify-between items-center md:justify-center"> 
                     <span class="text-gray-400 md:hidden">Успешные</span>
                     <span class="font-medium text-green-400">
