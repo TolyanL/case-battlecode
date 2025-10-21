@@ -103,24 +103,25 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ.get("DB_NAME"),
         "USER": os.environ.get("DB_USER", default="bc_db"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", default=12345),  # 12345,
-        "HOST": os.environ.get("DB_HOST", default="localhost"),  # "localhost",
-        "PORT": os.environ.get("DB_PORT", default=5432),  # 5432,
+        "PASSWORD": os.environ.get("DB_PASSWORD", default=12345),
+        "HOST": os.environ.get("DB_HOST", default="localhost"),
+        "PORT": os.environ.get("DB_PORT", default=5432),
     }
 }
 
 
 # Redis
 
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = os.getenv("REDIS_PORT", "6379")
+REDIS_HOST = os.environ.get("REDIS_HOST", default="localhost")
+REDIS_PORT = os.environ.get("REDIS_PORT", default="6379")
+REDIS_DB = os.environ.get("REDIS_DB", default=0)
 
 REDIS_TTL = 3600
 
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}",
     }
 }
 

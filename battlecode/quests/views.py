@@ -27,6 +27,10 @@ class QuestsAllView(ListView, LoginRequiredMixin):
 
     def get_queryset(self):
         user = self.request.user
+
+        if not user.is_authenticated:
+            return ()
+
         quests = Quest.objects.filter(
             course_quests__course__enrolled_profiles__user=user,
         ).distinct()
@@ -40,18 +44,19 @@ class QuestsAllView(ListView, LoginRequiredMixin):
             curr_page=curr_page,
         )
 
+        user = self.request.user
+
         if self.request.user.is_authenticated:
             context["accepted"] = [
-                i.quest.slug for i in (Assignment.objects.filter(user=self.request.user).filter(status="active").all())
+                i.quest.slug for i in (Assignment.objects.filter(user=user).filter(status="active").all())
             ]
             context["review"] = [
-                i.quest.slug
-                for i in (Assignment.objects.filter(user=self.request.user).filter(status="completed").all())
+                i.quest.slug for i in (Assignment.objects.filter(user=user).filter(status="completed").all())
             ]
             context["completed"] = [
                 i.quest.slug
                 for i in (
-                    Assignment.objects.filter(user=self.request.user)
+                    Assignment.objects.filter(user=user)
                     .filter(
                         Q(status="success") | Q(status="failed"),
                         Q(completed_at__gte=break_delta()),

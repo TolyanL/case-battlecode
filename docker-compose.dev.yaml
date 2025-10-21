@@ -5,7 +5,7 @@ networks:
 services:
   case_db:
     container_name: case_db
-    image: postgres:17
+    image: postgres:17-alpine
     networks:
       - case_db
     ports:
@@ -25,7 +25,7 @@ services:
     networks:
       - case_db
     ports:
-      - "${REDIS_PORT}:6379"
+      - ${REDIS_PORT}:6379
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data

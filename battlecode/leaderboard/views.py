@@ -1,6 +1,6 @@
-from django.shortcuts import render
 from django.http import HttpRequest
-from django.db.models import Count
+from django.shortcuts import render
+
 from battlecode.pagedata import PageData
 from user.models import Profile
 from peer_review.models import Assignment
@@ -67,3 +67,4 @@ def leaderboard(request: HttpRequest):
     context["current_user_entry"] = user_in_leaderboard
 
     return render(request, "leaderboard.html", context)
+

@@ -70,6 +70,8 @@ def give_up_quest(request: HttpRequest):
             if quest.penalty > 0:
                 profile = Profile.objects.get(user=user)
                 profile.pts -= quest.penalty
+                if profile.pts < 0:
+                    profile.pts = 0
                 profile.save()
 
             return JsonResponse({"success": True, "message": "Quest failed"})

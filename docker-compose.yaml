@@ -14,7 +14,8 @@ services:
       - django-static:/code/static
     networks:
       - case-net
-    env_file: ".env"
+    env_file:
+      - .env
     depends_on:
       - case_db
       - case_redis
@@ -25,7 +26,7 @@ services:
     networks:
       - case-net
     ports:
-      - "${DB_PORT}:5432"
+      - ${DB_PORT}:5432
     env_file:
       - .env
     environment:
@@ -41,7 +42,7 @@ services:
     networks:
       - case-net
     ports:
-      - "${REDIS_PORT}:6379"
+      - ${REDIS_PORT}:6379
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
@@ -55,7 +56,8 @@ services:
       - django-media:/code/media
     networks:
       - case-net
-    env_file: ".env"
+    env_file:
+      - .env
     depends_on:
       - case_redis
       - case_db
@@ -67,7 +69,8 @@ services:
     command: celery -A battlecode beat -l info 
     networks:
       - case-net
-    env_file: ".env"
+    env_file:
+      - .env
     depends_on:
       - case_redis
       - case_db
