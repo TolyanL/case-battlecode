@@ -38,6 +38,10 @@ class Profile(models.Model):
 
         return round(work_time, 2)
 
+    @property
+    def placement(self):
+        return Profile.objects.filter(user__is_active=True, pts__gt=self.pts).count() + 1
+
     def __str__(self):
         return f"Profile for {self.user.username}"
 
