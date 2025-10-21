@@ -173,6 +173,9 @@ SIMPLEUI_DEFAULT_ICON = False
 
 # Icons for Django Apps
 SIMPLEUI_ICON = {
+    # Courses
+    "Courses": "fa-solid fa-graduation-cap",
+    "Курсы": "fa-solid fa-graduation-cap",
     # Quests
     "Quests": "fa-solid fa-map",
     "Квесты": "fa-solid fa-map",
