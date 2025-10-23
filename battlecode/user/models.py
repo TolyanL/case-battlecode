@@ -1,12 +1,10 @@
+# battlecode/user/models.py
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db.models import Q
-
 from battlecode.stats_settings import RANKS
-
 from peer_review.models import Assignment
 from badges.models import Badge
-
 
 class Profile(models.Model):
     user = models.OneToOneField(
@@ -15,15 +13,24 @@ class Profile(models.Model):
         related_name="profile",
         verbose_name="Пользователь",
     )
-
     rank = models.IntegerField(default=1, verbose_name="Ранг", choices=RANKS)
     pts = models.IntegerField(default=0, verbose_name="Очки")
-
     badges = models.ManyToManyField(Badge, blank=True)
     courses = models.ManyToManyField("courses.Course", related_name="enrolled_profiles", blank=True)
-
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания", null=True)
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        # Создаём все группы при первом сохранении любого профиля
+        Group.objects.get_or_create(name="Students")
+        Group.objects.get_or_create(name="Teachers")
+        Group.objects.get_or_create(name="Administrators")
+        super().save(*args, **kwargs)
+        # Назначаем роль "Student" новому пользователю
+        if is_new:
+            students_group = Group.objects.get(name="Students")
+            self.user.groups.add(students_group)
 
     @property
     def total_worktime(self):
@@ -31,11 +38,9 @@ class Profile(models.Model):
             Q(status="success") | Q(status="failed"),
             user=self.user,
         ).values("assigned_at", "completed_at")
-
         work_time = 0
         for item in assignments:
             work_time += (item["completed_at"] - item["assigned_at"]).total_seconds() / 3600
-
         return round(work_time, 2)
 
     @property
