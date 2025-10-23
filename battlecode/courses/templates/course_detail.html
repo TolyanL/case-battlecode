@@ -38,7 +38,8 @@
                 </div>
             </div>
 
-            <div class="my-6">
+            {% if user.is_authenticated %}
+            <div class="mb-6">
                 <div class="flex justify-between items-center mb-2">
                     <h5 class="text-white font-semibold">Прогресс курса:</h5>
                     <span class="text-primary text-sm font-semibold">{{ course.progress }}%</span>
@@ -47,6 +48,7 @@
                     <div class="bg-primary h-2.5 rounded-full" style="width: {{ course.progress }}%"></div>
                 </div>
             </div>
+            {% endif %}
         </div>
 
         <div class="mt-6 pt-6 border-t border-gray-700/50">

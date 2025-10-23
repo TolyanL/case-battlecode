@@ -34,15 +34,19 @@ def leaderboard(request: HttpRequest):
 def side_data() -> dict:
     data = {}
 
-    data["total_players"] = Profile.objects.filter(user__is_active=True, pts__gt=0).count()
+    data["total_players"] = Profile.objects.filter(
+        user__is_active=True,
+        user__is_staff=False,
+    ).count()
 
     data["total_matches"] = Assignment.objects.filter(
         Q(status="success") | Q(status="failed"),
     ).count()
 
-    data["average_pts"] = Assignment.objects.filter(
+    avg_pts = Assignment.objects.filter(
         Q(status="success") | Q(status="failed"),
     ).aggregate(avg_given_pts=Avg("given_pts"))["avg_given_pts"]
+    data["average_pts"] = avg_pts if avg_pts else 0
 
     data["popular_language"] = (
         Language.objects.filter(quests__assignments__isnull=False)

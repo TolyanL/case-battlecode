@@ -1,9 +1,11 @@
 import json
 
+from django.db.models import Q
 from django.http import HttpRequest, JsonResponse
 from django.contrib.auth.decorators import login_required
 
 from user.models import Profile
+from peer_review.models import Assignment
 from courses.models import Course
 
 
@@ -51,6 +53,21 @@ def unenroll_course(request: HttpRequest):
 
             p = Profile.objects.get(user=user)
             p.courses.remove(course)
+
+            c_quests = course.quests.all()
+            for q in c_quests:
+                if (
+                    a := Assignment.objects.filter(user=user, quest=q)
+                    .filter(Q(status="active") | Q(status="completed"))
+                    .first()
+                ):
+                    a.status = "failed"
+                    a.save()
+                    p.pts -= a.quest.penalty * -1
+
+            if p.pts < 0:
+                p.pts = 0
+
             p.save()
 
             return JsonResponse({"success": True, "message": "Course unenrolled"})
