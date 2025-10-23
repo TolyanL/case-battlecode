@@ -1,151 +1,89 @@
+<!-- battlecode/dashboard/templates/dashboard.html -->
 {% extends "base.html" %}
 {% load static %}
-
-{% block title %}Quest Dashboard{% endblock title %}
-{% block description %}Track your progress and available quests on your personal dashboard.{% endblock description %}
-
+{% block title %}Dashboard{% endblock title %}
+{% block description %}Ваш персональный центр активности.{% endblock description %}
 {% block content %}
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <!-- Левая панель: статистика -->
+  <aside class="lg:col-span-1 bg-gray-900 rounded-2xl p-6 border border-gray-800">
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold text-gray-400 mb-1">Ваши PTS</h3>
+      <p class="text-4xl font-bold text-primary">{{ pts }}</p>
+      <p class="text-gray-400 mt-2">Ранг: <span class="text-white font-medium">{{ rank }}</span></p>
+      <p class="text-gray-500 text-sm">Место: {{ placement }} из {{ user.profile.placement|default:"?" }}</p>
+    </div>
 
-    <aside class="lg:col-span-1 bg-gray-900 rounded-2xl p-6 border border-gray-800">
-        <div class="mb-8">
-            <h3 class="text-lg font-semibold mb-2">Yor PTS</h3>
-            <p class="text-4xl font-bold text-primary">1487</p>
-            <p class="text-gray-400 mt-2">You are in the top: <span class="text-white font-medium">63,2%</span></p>
+    <div>
+      <h4 class="text-md font-semibold mb-4 text-gray-300">Прогресс по курсам</h4>
+      {% for item in course_progress %}
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-1">
+            <span class="text-gray-400">{{ item.course.title }}</span>
+            <span class="text-white">{{ item.done }} / {{ item.total }}</span>
+          </div>
+          <div class="w-full bg-gray-800 rounded-full h-2">
+            <div class="bg-primary h-2 rounded-full" style="width: {{ item.percent }}%"></div>
+          </div>
         </div>
+      {% empty %}
+        <p class="text-gray-500 text-sm">Вы не записаны ни на один курс.</p>
+      {% endfor %}
+    </div>
+  </aside>
 
-        <div>
-            <h4 class="text-md font-semibold mb-4">And also:</h4>
-            <div class="space-y-4">
-                <div class="flex justify-between items-center pb-3 border-b border-gray-800">
-                    <div>
-                        <p class="text-gray-400 text-sm">Average time</p>
-                        <p class="font-medium">15:23</p>
-                    </div>
-                    <div class="text-right">
-
-                        <p class="text-gray-400 text-sm">Top</p>
-                        <p class="font-medium text-green-400">15%</p>
-                    </div>
-
-                </div>
-                <div class="flex justify-between items-center pb-3 border-b border-gray-800">
-                    <div>
-                        <p class="text-gray-400 text-sm">PvP win rate</p>
-                        <p class="font-medium">60%</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-gray-400 text-sm">Top</p>
-                        <p class="font-medium text-green-400">22%</p>
-                    </div>
-                </div>
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-gray-400 text-sm">Completed quests</p>
-                        <p class="font-medium">263</p>
-
-                    </div>
-                    <div class="text-right">
-                        <p class="text-gray-400 text-sm">Top</p>
-                        <p class="font-medium text-green-400">23,3%</p>
-                    </div>
-                </div>
-            </div>
+  <!-- Правая панель: активность -->
+  <section class="lg:col-span-2 space-y-8">
+    <!-- В работе -->
+    <div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-white">В работе</h2>
+        <a href="{% url 'quests_all' %}?status=in_progress" class="text-primary text-sm hover:underline">Все</a>
+      </div>
+      {% for item in in_progress %}
+        <div class="bg-gray-800 rounded-xl p-4 mb-3 border border-gray-700">
+          <div class="flex justify-between">
+            <h4 class="font-bold text-white">{{ item.quest.title }}</h4>
+            <span class="text-cyan-400 text-sm">{{ item.quest.pts }} PTS</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-1">{{ item.quest.description|truncatewords:12 }}</p>
+          <a href="{% url 'quest_work' item.quest.slug %}" class="mt-3 inline-block text-primary hover:underline text-sm">Продолжить</a>
         </div>
-    </aside>
+      {% empty %}
+        <p class="text-gray-500">Нет активных квестов.</p>
+      {% endfor %}
+    </div>
 
-    <section class="lg:col-span-2">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">Available Quests</h2>
-            <button
-
-                class="flex items-center space-x-1 bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg transition">
-                <i data-feather="filter" class="w-4 h-4"></i>
-                <span>Filter</span>
-            </button>
+    <!-- На проверке -->
+    <div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-white">На проверке</h2>
+        <a href="{% url 'quests_all' %}?status=on_review" class="text-primary text-sm hover:underline">Все</a>
+      </div>
+      {% for item in on_review %}
+        <div class="bg-gray-800 rounded-xl p-4 mb-3 border border-gray-700">
+          <h4 class="font-bold text-white">{{ item.quest.title }}</h4>
+          <p class="text-gray-400 text-sm mt-1">Ожидает проверки</p>
         </div>
+      {% empty %}
+        <p class="text-gray-500">Нет квестов на проверке.</p>
+      {% endfor %}
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            <div class="quest-card bg-gray-800 rounded-xl p-5 border border-gray-700 flex flex-col justify-between h-full">
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="bg-cyan-500/20 text-cyan-400 text-xs font-semibold px-3 py-1 rounded-full">150 PTS</span>
-                        <span class="bg-blue-500/20 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full">Python</span>
-                    </div>
-                    <h4 class="font-bold text-white text-lg mb-2">Алгоритмы сортировки</h4>
-                    <p class="text-gray-400 text-sm mb-4">Напишите три функции сортировки: пузырьком, выбором и быструю.</p>
-                </div>
-
-                <div class="mt-auto pt-4 border-t border-gray-700/50">
-                    <div class="flex justify-between items-center text-sm text-gray-400">
-                        <span class="flex items-center"><i data-feather="award" class="w-4 h-4 mr-2"></i>+20 Алгоритмы, +15 Python</span>
-                        <span class="flex items-center"><i data-feather="clock" class="w-4 h-4 mr-2"></i>01:23:45</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="quest-card bg-gray-800 rounded-xl p-5 border border-gray-700 flex flex-col justify-between h-full">
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-
-                        <span class="bg-cyan-500/20 text-cyan-400 text-xs font-semibold px-3 py-1 rounded-full">120 PTS</span>
-                        <span class="bg-yellow-500/20 text-yellow-400 text-xs font-semibold px-3 py-1 rounded-full">JavaScript</span>
-                    </div>
-                    <h4 class="font-bold text-white text-lg mb-2">Async/Await Challenge</h4>
-                    <p class="text-gray-400 text-sm mb-4">Fetch data from a public API and display it in a clean, user-friendly way.</p>
-                </div>
-                <div class="mt-auto pt-4 border-t border-gray-700/50">
-                    <div class="flex justify-between items-center text-sm text-gray-400">
-                        <span class="flex items-center"><i data-feather="award" class="w-4 h-4 mr-2"></i>+20 Async, +15 API</span>
-                        <span class="flex items-center"><i data-feather="clock" class="w-4 h-4 mr-2"></i>01:30:00</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="quest-card bg-gray-800 rounded-xl p-5 border border-gray-700 flex flex-col justify-between h-full">
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="bg-cyan-500/20 text-cyan-400 text-xs font-semibold px-3 py-1 rounded-full">200 PTS</span>
-                        <span class="bg-blue-500/20 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full">Python</span>
-                    </div>
-                    <h4 class="font-bold text-white text-lg mb-2">Data Analysis with Pandas</h4>
-
-                    <p class="text-gray-400 text-sm mb-4">Analyze a CSV dataset to find key insights and visualize the results.</p>
-
-                </div>
-                <div class="mt-auto pt-4 border-t border-gray-700/50">
-
-                    <div class="flex justify-between items-center text-sm text-gray-400">
-
-                        <span class="flex items-center"><i data-feather="award" class="w-4 h-4 mr-2"></i>+25 Pandas, +20 Data Viz</span>
-                        <span class="flex items-center"><i data-feather="clock" class="w-4 h-4 mr-2"></i>03:00:00</span>
-                    </div>
-
-                </div>
-            </div>
-
-             <div class="quest-card bg-gray-800 rounded-xl p-5 border border-gray-700 flex flex-col justify-between h-full">
-
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="bg-cyan-500/20 text-cyan-400 text-xs font-semibold px-3 py-1 rounded-full">75 PTS</span>
-                        <span class="bg-yellow-500/20 text-yellow-400 text-xs font-semibold px-3 py-1 rounded-full">JavaScript</span>
-                    </div>
-                    <h4 class="font-bold text-white text-lg mb-2">DOM Manipulation</h4>
-                    <p class="text-gray-400 text-sm mb-4">Create an interactive to-do list application from scratch.</p>
-                </div>
-                <div class="mt-auto pt-4 border-t border-gray-700/50">
-                    <div class="flex justify-between items-center text-sm text-gray-400">
-                        <span class="flex items-center"><i data-feather="award" class="w-4 h-4 mr-2"></i>+15 DOM, +10 Events</span>
-                        <span class="flex items-center"><i data-feather="clock" class="w-4 h-4 mr-2"></i>45:00</span>
-
-                    </div>
-                </div>
-            </div>
-
+    <!-- Недавно завершено -->
+    <div>
+      <h2 class="text-xl font-bold text-white mb-4">Недавно завершено</h2>
+      {% for item in completed_recent %}
+        <div class="flex justify-between items-center py-2 border-b border-gray-800">
+          <span class="text-white">{{ item.quest.title }}</span>
+          <span class="text-sm {% if item.status == 'success' %}text-green-400{% else %}text-red-400{% endif %}">
+            {% if item.status == 'success' %}+{{ item.given_pts }}{% else %}-{{ item.quest.penalty }}{% endif %}
+          </span>
         </div>
-    </section>
-
+      {% empty %}
+        <p class="text-gray-500">Нет завершённых квестов.</p>
+      {% endfor %}
+    </div>
+  </section>
 </div>
 {% endblock content %}
