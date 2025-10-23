@@ -20,10 +20,10 @@
                 {% endif %}
 
                 {% if quest.penalty > 0 %}
-                    <span class="bg-red-500/20 text-red-400 text-sm font-semibold px-3 py-1 rounded-full">Loose -{{ quest.penalty }} PTS</span>
+                    <span class="bg-red-500/20 text-red-400 text-sm font-semibold px-3 py-1 rounded-full">-{{ quest.penalty }} PTS</span>
                 {% endif %}
             </div>
-            <span class="bg-blue-500/20 text-blue-400 text-xs font-semibold px-3 py-1 rounded-full" style="background-color: {{ quest.language.bg_color }}; color: {{ quest.language.color }};">
+            <span class="bg-blue-500/20 text-blue-400 text-sm font-semibold px-3 py-1 rounded-full" style="background-color: {{ quest.language.bg_color }}; color: {{ quest.language.color }};">
                 {{ quest.language.name }}
             </span>
         </div>
@@ -100,7 +100,7 @@
     <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
         <h2 class="text-2xl font-bold mb-4 text-white">Подробности Задания</h2>
         <div class="prose prose-invert max-w-none text-gray-400">
-            {{ quest.details.task|safe }}
+            {{ quest.task|safe }}
         </div>
     </div>
 

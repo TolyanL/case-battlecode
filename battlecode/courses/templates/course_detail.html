@@ -30,17 +30,27 @@
                 </div>
 
                 <div class="flex items-center bg-gray-800 p-3 rounded-lg">
-                    <i data-feather="package" class="w-5 h-5 mr-3 text-cyan-400"></i>
+                    <i data-feather="book" class="w-5 h-5 mr-3 text-cyan-400"></i>
                     <div>
                         <span class="text-xs text-gray-400">Квестов в курсе</span>
                         <p class="font-semibold text-white">{{ course.quest_count }}</p>
                     </div>
                 </div>
             </div>
+
+            <div class="my-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h5 class="text-white font-semibold">Прогресс курса:</h5>
+                    <span class="text-primary text-sm font-semibold">{{ course.progress }}%</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-2.5">
+                    <div class="bg-primary h-2.5 rounded-full" style="width: {{ course.progress }}%"></div>
+                </div>
+            </div>
         </div>
 
         <div class="mt-6 pt-6 border-t border-gray-700/50">
-            <h3 class="text-xl font-semibold mb-4 text-white">Основные навыки курса:</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">Прокачиваемые навыки:</h3>
             <div class="flex flex-wrap gap-2">
                 {% for skill in course.skills %}
                     <span class="bg-gray-800 border border-gray-700 text-gray-300 text-sm font-medium px-3 py-1 rounded-md">
@@ -54,7 +64,7 @@
 
         <div class="mt-8 flex justify-center">
             {% csrf_token %}
-            {% if accepted %}
+            {% if is_accepted %}
             <button data-action="unenroll" data-slug="{{ course.slug }}" class="action-btn px-8 py-3 text-base bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors duration-300">
                 <span>💀 Отписаться от курса</span>
             </button>
@@ -95,6 +105,23 @@
                         </div>
                         <h4 class="font-bold text-white text-lg mb-2">{{ quest.title }}</h4>
                         <p class="text-gray-400 text-sm mb-4">{{ quest.description }}</p>
+
+                        {% if quest.slug in accepted %}
+                        <span class="flex items-center text-blue-400 text-xs mb-2">
+                            <i data-feather="code" class="w-4 h-4 mr-1"></i>
+                            In Progress
+                        </span>
+                        {% elif quest.slug in review %}
+                        <span class="flex items-center text-orange-400 text-xs mb-2">
+                            <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                            On Review
+                        </span>
+                        {% elif quest.slug in completed %}
+                        <span class="flex items-center text-blue-500 text-xs mb-2">
+                            <i data-feather="check" class="w-4 h-4 mr-1"></i>
+                            Completed
+                        </span>
+                        {% endif %}
                     </div>
 
                     <div class="mt-auto pt-4 border-t border-gray-700/50">

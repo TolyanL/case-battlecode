@@ -45,8 +45,8 @@ def side_data() -> dict:
     ).aggregate(avg_given_pts=Avg("given_pts"))["avg_given_pts"]
 
     data["popular_language"] = (
-        Language.objects.filter(quests__assignment__isnull=False)
-        .annotate(total_assignments=Count("quests__assignment"))
+        Language.objects.filter(quests__assignments__isnull=False)
+        .annotate(total_assignments=Count("quests__assignments"))
         .order_by("-total_assignments")
         .first()
     )

@@ -15,6 +15,8 @@ class Course(models.Model):
 
     quests = models.ManyToManyField(Quest, through="CourseQuest", related_name="courses")
 
+    active = models.BooleanField(default=True, verbose_name="Активный")
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 

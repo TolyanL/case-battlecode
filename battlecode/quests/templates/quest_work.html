@@ -13,21 +13,29 @@
 <div class="max-w-7xl mx-auto">
     <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-8">
         <div class="flex justify-between items-start mb-4">
-            
-            <div class="flex items-center flex-wrap"> 
-                <h1 class="text-3xl font-bold mb-3 text-white mr-4">{{ quest.title }}</h1>
-                
-                {% if quest.penalty > 0 %}
-                <div class="inline-flex items-center bg-red-900/40 text-red-400 text-sm font-semibold px-3 py-1 rounded-full">
-                     Штраф: -{{ quest.penalty }} очков
-                </div>
+            <div>
+                {% if quest.pts %}
+                    <span class="bg-cyan-500/20 text-cyan-400 text-sm font-semibold px-3 py-1 rounded-full">{{ quest.pts }} PTS</span>
                 {% endif %}
-                </div>
-            <span class="bg-blue-500/20 text-blue-400 text-sm font-semibold px-3 py-1 rounded-full quest-lang">{{ quest.language.name }}</span>
+                {% if quest.difficulty == "easy" %}
+                    <span class="bg-cyan-500/20 text-cyan-400 text-sm font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}</span>
+                {% elif quest.difficulty == "medium" %}
+                    <span class="bg-orange-500/20 text-orange-400 text-sm font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}</span>
+                {% else %}
+                    <span class="bg-red-500/20 text-red-400 text-sm font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}🔥</span>
+                {% endif %}
+
+                {% if quest.penalty == 0 %}
+                    <span class="bg-red-500/20 text-red-400 text-sm font-semibold px-3 py-1 rounded-full">-{{ quest.penalty }} PTS</span>
+                {% endif %}
+            </div>
+            <span class="quest-lang bg-blue-500/20 text-blue-400 text-sm font-semibold px-3 py-1 rounded-full" style="background-color: {{ quest.language.bg_color }}; color: {{ quest.language.color }};">
+                {{ quest.language.name }}
+            </span>
         </div>
-        <div class="pt-5 border-t border-gray-700/50 prose prose-invert max-w-none text-gray-400">
-            <p>{{ quest.task|safe }}</p>
-        </div>
+
+        <h1 class="font-bold text-white text-3xl mb-2">{{ quest.title }}</h1>
+        <p class="text-gray-400 text-base mb-6">{{ quest.task|safe }}</p>
     </div>
 
     <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
@@ -38,7 +46,7 @@
     <div class="mt-8 flex justify-center">
         {% if quest.slug in completed %}
         <button class="px-8 py-3 text-base bg-gray-600 text-white font-bold rounded-lg">
-            <span>🕒 Квест на т</span>
+            <span>🕒 Квест на таймауте</span>
         </button>
         {% else %}
         {% csrf_token %}

@@ -148,3 +148,22 @@ body {
 .CodeMirror-scroll {
     min-height: 150px;
 }
+
+.quest-history-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.quest-history-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.quest-history-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #4a5568;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.quest-history-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #5a6778;
+}

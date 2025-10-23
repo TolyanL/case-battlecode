@@ -21,7 +21,7 @@
             <h3 class="text-lg font-semibold border-b border-gray-700 pb-3 mb-4">Достижения</h3>
             <div class="flex flex-wrap gap-4">
                 {% for badge in profile.badges.all %}
-                <span class="text-xs font-bold px-3 py-1 rounded-full {{ badge.bg_class }} {{ badge.text_class }}" title="{{ badge.description }}">{{ badge.name }}</span>
+                <span class="text-xs font-bold px-3 py-1 rounded-full" style="background-color: {{ badge.bg_color }}; color: {{ badge.color }};" title="{{ badge.description }}">{{ badge.name }}</span>
                 {% endfor %}
             </div>
         </div>
@@ -43,29 +43,9 @@
             </div>
         </div>
 
-            <!-- История квестов -->
     <div class="bg-gray-800 rounded-lg p-6 shadow-lg overflow-visible">
         <h3 class="text-lg font-semibold mb-4">История квестов</h3>
         {% if assignments %}
-            <style>
-                /* Стилизация скроллбара для WebKit */
-                .quest-history-scrollbar::-webkit-scrollbar {
-                    width: 8px; /* тонкий */
-                }
-                .quest-history-scrollbar::-webkit-scrollbar-track {
-                    background: transparent; /* фон как у контейнера */
-                }
-                .quest-history-scrollbar::-webkit-scrollbar-thumb {
-                    background-color: #4a5568; /* темно-серый, почти как bg-gray-700 */
-                    border-radius: 4px;
-                    border: 2px solid transparent;
-                    background-clip: content-box;
-                }
-                .quest-history-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background-color: #5a6778; /* чуть светлее при наведении */
-                }
-            </style>
-
             <div class="max-h-[500px] overflow-y-auto pr-2 quest-history-scrollbar">
                 <div class="relative border-l-2 border-gray-700 ml-6 pl-4 space-y-6 overflow-visible">
                     {% for assignment in assignments %}
@@ -111,7 +91,7 @@
                                     <h4 class="flex items-center flex-wrap gap-2 text-base font-semibold text-light">
                                         Ожидает проверки: {{ assignment.quest.title }}
                                         <span class="text-orange-400 text-sm font-medium">
-                                            Статус: {{ assignment.reviews }}/{{ assignment.max_reviews }}
+                                            Статус: {{ assignment.reviews }}/{{ pd.max_reviews }}
                                         </span>
                                     </h4>
                                 {% else %}
@@ -150,7 +130,6 @@
         <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
             <h3 class="text-lg font-semibold mb-4 text-center">Предпочитаемые языки</h3>
             <div class="flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-8">
-                <!-- Левый столбец: первые 5 языков -->
                 <div class="grid grid-cols-1 gap-2 min-w-[140px]">
                     {% for lang in preferred_languages_text|slice:":5" %}
                         <div class="flex items-center">
@@ -160,7 +139,6 @@
                     {% endfor %}
                 </div>
 
-                <!-- Диаграмма по центру -->
                 <div class="w-52 h-52 relative flex-shrink-0">
                     <svg viewBox="0 0 36 36" class="w-full h-full">
                         {% if preferred_languages_chart %}
@@ -172,7 +150,7 @@
                                         r="15.9155"
                                         fill="transparent"
                                         stroke="{{ lang.color }}"
-                                        stroke-width="4"
+                                        stroke-width="3"
                                         stroke-dasharray="{{ lang.dash_array_length|floatformat:2 }} {{ lang.dash_array_gap|floatformat:2 }}"
                                         stroke-dashoffset="{{ lang.dash_offset|floatformat:2 }}"
                                     ></circle>
@@ -187,7 +165,6 @@
                     </svg>
                 </div>
 
-                <!-- Правый столбец: следующие 5 языков -->
                 <div class="grid grid-cols-1 gap-2 min-w-[140px]">
                     {% for lang in preferred_languages_text|slice:"5:" %}
                         <div class="flex items-center">
@@ -199,7 +176,6 @@
             </div>
         </div>
 
-        <!-- Недавняя активность -->
         <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
             <h3 class="text-lg font-semibold mb-4">Недавняя активность</h3>
             {% if recent_activities %}

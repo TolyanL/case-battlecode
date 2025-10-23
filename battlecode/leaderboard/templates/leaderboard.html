@@ -16,7 +16,7 @@
                         <i data-feather="users" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400">Всего игроков</p>
+                        <p class="text-sm text-gray-400">Всего студентов</p>
                         <p class="text-xl font-bold text-white">{{ side_data.total_players|default:"0" }}</p>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                         <i data-feather="play-circle" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400">Задач решено</p>
+                        <p class="text-sm text-gray-400">Квестов решено</p>
                         <p class="text-xl font-bold text-white">{{ side_data.total_matches|default:"0" }}</p>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                         <i data-feather="bar-chart-2" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <p class="text-sm text-gray-400">Средний балл</p>
+                        <p class="text-sm text-gray-400">Средний PTS</p>
                         <p class="text-xl font-bold text-white">{{ side_data.average_pts|floatformat:0|default:"0" }}</p>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                 <div class="md:col-span-1">Место</div>
                 <div class="md:col-span-3">Имя пользователя</div>
                 <div class="md:col-span-2 text-center">Время работы</div>
-                <div class="md:col-span-2 text-center">Матчи</div>
+                <div class="md:col-span-2 text-center">Квесты</div>
                 <div class="md:col-span-2 text-right">PTS</div>
             </div>
 
@@ -88,7 +88,7 @@
                 
                 <div class="md:col-span-2 flex justify-between items-center md:justify-center">
                     <span class="text-gray-400 md:hidden">Время работы</span> <span class="font-medium text-white">
-                        {{ entry.profile.total_worktime|default:"—" }}
+                        {{ entry.profile.total_worktime|default:"0" }} ч
                     </span>
                 </div>
                 
@@ -112,7 +112,7 @@
 
         {% if user.is_authenticated and current_user_entry and current_user_entry.rank > 10 %}
         <div class="mt-8">
-            <div class="grid md:grid-cols-11 gap-y-3 gap-x-4 p-4 md:px-6 md:py-4 bg-gray-800 border border-primary rounded-2xl md:items-center shadow-lg shadow-primary/20">
+            <div class="grid md:grid-cols-11 gap-y-3 gap-x-4 p-4 md:px-6 md:py-4 bg-gray-900 border border-primary rounded-2xl md:items-center shadow-lg shadow-primary/20">
                 <div class="md:col-span-1 flex justify-between items-center">
                     <span class="text-gray-400 md:hidden">Место</span>
                     <span class="font-bold text-lg text-white">{{ current_user_entry.rank }}</span>
@@ -124,23 +124,16 @@
                 <div class="md:col-span-2 flex justify-between items-center md:justify-center">
                     <span class="text-gray-400 md:hidden">Время работы</span>
                     <span class="font-medium text-white">
-                        {{ current_user_entry.profile.work_time|default:"—" }}
+                        {{ current_user_entry.profile.total_worktime|default:"0" }} ч
                     </span>
                 </div>
                 
-                <div class="md:col-span-2 flex justify-between items-center md:justify-center"> <span class="text-gray-400 md:hidden">Матчи</span>
+                <div class="md:col-span-2 flex justify-between items-center md:justify-center"> <span class="text-gray-400 md:hidden">Квесты</span>
                     <span class="font-medium text-white">
-                        {{ current_user_entry.profile.matches_played|default:"—" }}
+                        {{ current_user_entry.matches|default:"0" }}
                     </span>
                 </div>
 
-                <div class="md:col-span-1 flex justify-between items-center md:justify-center"> 
-                    <span class="text-gray-400 md:hidden">Успешные</span>
-                    <span class="font-medium text-green-400">
-                        {{ current_user_entry.success_assignments }}
-                    </span>
-                </div>
-                
                 <div class="md:col-span-2 flex justify-between items-center md:justify-end">
                     <span class="text-gray-400 md:hidden">Очки</span>
                     <span class="font-bold text-primary text-lg">{{ current_user_entry.profile.pts }}</span>

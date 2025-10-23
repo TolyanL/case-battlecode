@@ -11,7 +11,6 @@ from battlecode.quest_settings import break_delta
 
 from user.models import Profile
 from quests.models import Quest
-from courses.models import Course
 from peer_review.models import Assignment
 
 
@@ -46,7 +45,7 @@ class QuestsAllView(ListView, LoginRequiredMixin):
 
         user = self.request.user
 
-        if self.request.user.is_authenticated:
+        if user.is_authenticated:
             context["accepted"] = [
                 i.quest.slug for i in (Assignment.objects.filter(user=user).filter(status="active").all())
             ]
@@ -64,7 +63,6 @@ class QuestsAllView(ListView, LoginRequiredMixin):
                     .all()
                 )
             ]
-        context["courses"] = Course.objects.all()
         return context
 
 

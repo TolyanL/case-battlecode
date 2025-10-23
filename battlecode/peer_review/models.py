@@ -16,6 +16,7 @@ class Assignment(models.Model):
         Quest,
         on_delete=models.CASCADE,
         verbose_name="Квест",
+        related_name="assignments",
     )
 
     given_pts = models.IntegerField(verbose_name="Полученные баллы", default=0)

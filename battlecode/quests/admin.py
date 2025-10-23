@@ -9,8 +9,8 @@ from .models import Quest, Language, Skill, QuestReviewChecklist, ChecklistItem
 
 @admin.register(Quest)
 class QuestAdmin(SummernoteModelAdmin):
-    list_display = ("title", "difficulty", "pts", "active", "updated_at", "created_at")
-    list_filter = ("difficulty", "active", "skills")
+    list_display = ("title", "difficulty", "pts", "penalty", "active", "updated_at", "created_at")
+    list_filter = ("difficulty", "base_pts", "penalty", "active", "skills")
     search_fields = ("title", "description")
     filter_horizontal = ("skills",)
 
