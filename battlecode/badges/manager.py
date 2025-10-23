@@ -56,25 +56,18 @@ class BadgeManager:
 
     @property
     def all_quests(self) -> int:
-        return (
-            self.active_quests
-            + self.successful_quests
-            + self.completed_quests
-            + self.failed_quests
-        )
+        return self.active_quests + self.successful_quests + self.completed_quests + self.failed_quests
 
     def _has_badge(self, badge_slug: str) -> bool:
         badge_key = f"{self._badges_key}:{badge_slug}"
 
         if client.get(badge_key):
-            print(f"Found {badge_slug} in cache")
             return True
 
         item = Badge.objects.filter(slug=badge_slug).first()
         exists = Profile.objects.filter(user=self.user, badges__in=[item]).exists()
 
         if exists:
-            print(f"Doesn't found {badge_slug} in cache, but in db")
             client.setex(badge_key, REDIS_TTL, 1)
         return exists
 

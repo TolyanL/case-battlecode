@@ -44,8 +44,12 @@
                 <div class="flex items-center bg-gray-800 p-3 rounded-lg">
                      <i data-feather="check-circle" class="w-5 h-5 mr-3 text-cyan-400"></i>
                      <div>
-                        <span class="text-xs text-gray-400">Время на проверку</span>
-                        <p class="font-semibold text-white">{{ quest.check_time }} ч</p>
+                        <span class="text-xs text-gray-400">Штраф за проигрыш</span>
+                        {% if quest.penalty != 0 %}
+                        <p class="font-semibold text-red-700">-{{ quest.penalty }} PTS</p>
+                        {% else %}
+                        <p class="font-semibold text-white">Нет</p>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="flex items-center bg-gray-800 p-3 rounded-lg">

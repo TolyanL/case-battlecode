@@ -2,7 +2,6 @@ from django.views.generic import ListView, DetailView
 
 from django.db.models import Q
 from battlecode.pagedata import PageData
-from battlecode.quest_settings import break_delta
 
 from user.models import Profile
 from peer_review.models import Assignment

@@ -218,7 +218,9 @@
                                         {% elif assignment.status == 'success' %}
                                             <p class="text-sm font-medium text-green-400">{{ assignment.given_pts }} PTS</p>
                                         {% else %}
-                                            <p class="text-sm font-medium text-blue-400">{{ assignment.quest.language.name }}</p>
+                                            <p class="text-xs font-semibold px-3 py-1 rounded-full" style="background-color: {{ assignment.quest.language.bg_color }}; color: {{ assignment.quest.language.color }};">
+                                                {{ assignment.quest.language.name }}
+                                            </p>
                                         {% endif %}
 
                                         <span class="{{ assignment.difficulty_color.bg }} {{ assignment.difficulty_color.text }} text-xs font-semibold px-3 py-1 rounded-full">
@@ -248,7 +250,9 @@
                                 </div>
                                 <div class="text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <p class="bg-cyan-500/20 text-cyan-400 text-xs font-semibold px-3 py-1 rounded-full">{{ review.assignment.quest.language.name }}</p>
+                                        <p class="text-xs font-semibold px-3 py-1 rounded-full" style="background-color: {{ review.assignment.quest.language.bg_color }}; color: {{ review.assignment.quest.language.color }};">
+                                            {{ review.assignment.quest.language.name }}
+                                        </p>
                                     </div>
                                 </div>
                             </li>
