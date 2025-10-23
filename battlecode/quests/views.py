@@ -27,13 +27,14 @@ class QuestsAllView(ListView, LoginRequiredMixin):
     def get_queryset(self):
         user = self.request.user
 
-        if not user.is_authenticated:
-            return ()
+        quests_non_course = Quest.objects.filter(course_quests__isnull=True)
 
-        quests = Quest.objects.filter(
-            course_quests__course__enrolled_profiles__user=user,
-        ).distinct()
-        return quests
+        if not user.is_authenticated:
+            return quests_non_course
+
+        quests = Quest.objects.filter(course_quests__course__enrolled_profiles__user=user)
+
+        return quests.union(quests_non_course)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -99,9 +100,13 @@ class QuestDetailView(DetailView, LoginRequiredMixin):
         return context
 
     def get(self, request, *args, **kwargs):
-        course = self.get_object().courses.first()
-        if not Profile.objects.filter(user=self.request.user, courses=course).exists():
-            return redirect("quests_all")
+        obj = self.get_object()
+        course = obj.courses.first()
+
+        if len(obj.courses.all()):
+            if not Profile.objects.filter(user=self.request.user, courses=course).exists():
+                return redirect("quests_all")
+
         return super().get(request, *args, **kwargs)
 
 
@@ -136,9 +141,12 @@ class QuestWorkView(DetailView, LoginRequiredMixin):
         return context
 
     def get(self, request, *args, **kwargs):
-        course = self.get_object().courses.first()
-        if not Profile.objects.filter(user=self.request.user, courses=course).exists():
-            return redirect("quests_all")
+        obj = self.get_object()
+        course = obj.courses.first()
+
+        if len(obj.courses.all()):
+            if not Profile.objects.filter(user=self.request.user, courses=course).exists():
+                return redirect("quests_all")
 
         if (
             Assignment.objects.filter(user=self.request.user)
@@ -156,6 +164,10 @@ class QuestWorkView(DetailView, LoginRequiredMixin):
 
 def quest_reviews(request: HttpRequest, slug: str):
     quest = get_object_or_404(Quest, slug=slug, active=True)
+
+    if len(quest.courses.all()):
+        if not Profile.objects.filter(user=request.user, courses__in=quest.courses.all()).exists():
+            return redirect("quests_all")
 
     if not Assignment.objects.filter(
         user=request.user,

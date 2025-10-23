@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -28,6 +30,14 @@ def user_profile(request, username: str):
 
     assignments = Assignment.objects.filter(user=user).order_by("-assigned_at").all()
 
+    total_assignments = (
+        Assignment.objects.filter(user=user)
+        .filter(
+            Q(status="failed") | Q(status="success"),
+        )
+        .count()
+    )
+
     recent_activities = get_recent_activity(user.id, assignments)
     all_langs, top_langs = get_pref_langs_data(assignments, top_n=10)
 
@@ -45,6 +55,7 @@ def user_profile(request, username: str):
             "user": user,
             "profile": profile,
             "assignments": assignments,
+            "total_assignments": total_assignments,
             "recent_activities": recent_activities,
             "preferred_languages_chart": all_langs,
             "preferred_languages_text": top_langs,
@@ -137,4 +148,3 @@ def get_pref_langs_data(assignments: list[Assignment], top_n: int = 10):
         total_pct += dash_length
 
     return chart_langs, top_langs
-
