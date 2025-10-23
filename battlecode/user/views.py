@@ -27,13 +27,17 @@ def user_profile(request, username: str):
 
     assignments = Assignment.objects.filter(user=user).order_by("-assigned_at").all()
 
-    recent_activities = get_recent_activity(user.id, assignments)
-    preferred_languages = get_pref_langs(assignments)
+    # Передаём max_reviews (замените на реальное значение, если оно динамическое)
+    MAX_REVIEWS = 3  # ← настройте под ваш проект
+
+    recent_activities = get_recent_activity(user.id, assignments, MAX_REVIEWS)
+    all_langs, top_langs = get_pref_langs_data(assignments, top_n=10)
 
     pd = PageData(
         title=f"Профиль — {user.username}",
         description=f"Страница профиля пользователя {user.username}.",
         curr_page="user",
+        max_reviews=MAX_REVIEWS,
     )
 
     return render(
@@ -41,16 +45,17 @@ def user_profile(request, username: str):
         "user_profile.html",
         context={
             "pd": pd,
-            "profile_user": user,
+            "user": user,  # важно: в шаблоне используется {{ user }}
             "profile": profile,
             "assignments": assignments,
             "recent_activities": recent_activities,
-            "preferred_languages": preferred_languages,
+            "preferred_languages_chart": all_langs,
+            "preferred_languages_text": top_langs,
         },
     )
 
 
-def get_recent_activity(user_id: int, assignments: list[Assignment]) -> list[Assignment]:
+def get_recent_activity(user_id: int, assignments: list[Assignment], max_reviews: int) -> list:
     DIFFICULTY_COLORS = {
         "easy": {"bg": "bg-green-500/20", "text": "text-green-500"},
         "medium": {"bg": "bg-orange-500/20", "text": "text-orange-500"},
@@ -58,69 +63,81 @@ def get_recent_activity(user_id: int, assignments: list[Assignment]) -> list[Ass
         "default": {"bg": "bg-gray-500", "text": "text-white"},
     }
 
+    recent_activities = []
+
     for assignment in assignments:
         difficulty = assignment.quest.difficulty
         assignment.difficulty_color = DIFFICULTY_COLORS.get(difficulty, DIFFICULTY_COLORS["default"])
+        assignment.max_reviews = max_reviews  # ← передаём в шаблон
+        recent_activities.append({"object": assignment, "type": "assignment", "date": assignment.updated_at})
 
-    recent_activities = []
-
-    for activity in assignments:
-        difficulty = activity.quest.difficulty
-        activity.difficulty_color = DIFFICULTY_COLORS.get(difficulty, DIFFICULTY_COLORS["default"])
-        recent_activities.append({"object": activity, "type": "assignment", "date": activity.updated_at})
-
-    reviews = Review.objects.filter(user__id=user_id).order_by("-created_at").all()[:5]
+    reviews = Review.objects.filter(user__id=user_id).order_by("-created_at").all()
     for review in reviews:
         recent_activities.append({"object": review, "type": "review", "date": review.created_at})
 
-    recent_activities = sorted(recent_activities, key=lambda x: x["date"], reverse=True)
+    recent_activities.sort(key=lambda x: x["date"], reverse=True)
+    return recent_activities[:5]
 
-    return recent_activities
 
-
-def get_pref_langs(assignments: list[Assignment]) -> list[dict]:
+def get_pref_langs_data(assignments: list[Assignment], top_n: int = 10):
     lang_counts = {}
-    pref_langs = []
 
     for assignment in assignments:
         if assignment.status == "active":
             continue
-
         lang = assignment.quest.language
-        if lang.name in lang_counts:
-            lang_counts[lang.name][0] += 1
+        lang_counts[lang.name] = lang_counts.get(lang.name, 0) + 1
+
+    total = sum(lang_counts.values())
+    if total == 0:
+        return [], []
+
+    lang_list = []
+    for name, count in lang_counts.items():
+        color = None
+        for a in assignments:
+            if a.status != "active" and a.quest.language.name == name:
+                color = a.quest.language.color
+                break
+        percentage = (count / total) * 100
+        lang_list.append({
+            "name": name,
+            "color": color or "#666666",
+            "percentage": percentage,
+            "count": count,
+        })
+
+    lang_list.sort(key=lambda x: x["percentage"], reverse=True)
+
+    # Топ-N для текста
+    top_langs = [
+        {**lang, "percentage": round(lang["percentage"])}
+        for lang in lang_list[:top_n]
+    ]
+
+    # Все языки для диаграммы
+    total_pct = 0.0
+    chart_langs = []
+    n = len(lang_list)
+    for i, lang in enumerate(lang_list):
+        pct = lang["percentage"]
+        if i == n - 1:
+            dash_length = max(0.0, 100.0 - total_pct)
         else:
-            lang_counts[lang.name] = [1, lang.color]
+            dash_length = pct
 
-    total_assignments = sum(i[0] for i in lang_counts.values())
+        if dash_length < 0.5:
+            dash_length = 0.5
+            total_pct = 100.0
 
-    if total_assignments > 0:
-        total_percentage = 0
-        for lang_name, (count, color) in lang_counts.items():
-            percentage = int((count / total_assignments) * 100)
+        chart_langs.append({
+            "name": lang["name"],
+            "color": lang["color"],
+            "percentage": round(lang["percentage"]),
+            "dash_array_length": dash_length,
+            "dash_array_gap": 100.0 - dash_length,
+            "dash_offset": -total_pct,
+        })
+        total_pct += dash_length
 
-            start_angle = total_percentage * 360 / 100
-            total_percentage += percentage
-            end_angle = total_percentage * 360 / 100
-
-            dash_array_length = percentage
-
-            dash_array_gap = 100 - percentage
-
-            dash_offset = -(start_angle / 360) * 100
-            pref_langs.append(
-                {
-                    "name": lang_name,
-                    "color": color,
-                    "percentage": percentage,
-                    "count": count,
-                    "start_angle": start_angle,
-                    "end_angle": end_angle,
-                    "dash_array_length": dash_array_length,
-                    "dash_array_gap": dash_array_gap,
-                    "dash_offset": dash_offset,
-                }
-            )
-
-    pref_langs.sort(key=lambda x: x["percentage"], reverse=True)
-    return pref_langs
+    return chart_langs, top_langs

@@ -26,3 +26,15 @@ db_dw:
 
 serve:
   uv run {{managepy}} runserver
+
+
+# docker compose -f docker-compose.dev.yaml up -d --build
+
+# uv run battlecode/manage.py makemigrations
+# uv run battlecode/manage.py migrate
+
+# docker compose -f docker-compose.dev.yaml down -v
+
+# uv run battlecode/manage.py runserver
+
+# uv run python battlecode/manage.py createsuperuser
