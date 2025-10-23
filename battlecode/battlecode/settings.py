@@ -116,7 +116,7 @@ REDIS_HOST = os.environ.get("REDIS_HOST", default="localhost")
 REDIS_PORT = os.environ.get("REDIS_PORT", default="6379")
 REDIS_DB = os.environ.get("REDIS_DB", default=0)
 
-REDIS_TTL = 3600
+REDIS_TTL = 1800
 
 CACHES = {
     "default": {

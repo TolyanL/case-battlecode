@@ -8,8 +8,8 @@ from quests.models import Quest
 
 
 class Badge(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Название")
-    slug = models.CharField(max_length=100, blank=True)
+    name = models.CharField(max_length=100, verbose_name="Название", unique=True)
+    slug = models.CharField(max_length=100, blank=True, unique=True)
 
     description = models.CharField(
         max_length=500,

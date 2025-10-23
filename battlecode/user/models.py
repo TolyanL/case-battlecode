@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q
 
-from battlecode.stats_settings import RANKS
+from battlecode.stats_settings import RANKS, get_rank
 
 from peer_review.models import Assignment
 from badges.models import Badge
@@ -16,7 +16,6 @@ class Profile(models.Model):
         verbose_name="Пользователь",
     )
 
-    rank = models.IntegerField(default=1, verbose_name="Ранг", choices=RANKS)
     pts = models.IntegerField(default=0, verbose_name="Очки")
 
     badges = models.ManyToManyField(Badge, blank=True)
@@ -24,6 +23,18 @@ class Profile(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания", null=True)
+
+    @property
+    def rank(self):
+        return get_rank(self.pts)
+
+    @property
+    def rank_as_str(self):
+        slug = RANKS[self.rank - 1][1][7:].lower().strip()
+        badge = Badge.objects.filter(slug=slug).first()
+        if not badge or not badge.active:
+            return "Unknown"
+        return badge.name
 
     @property
     def total_worktime(self):

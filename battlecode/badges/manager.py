@@ -2,15 +2,15 @@ from dataclasses import dataclass
 
 from django.contrib.auth.forms import User
 
+from battlecode.redis import client
 from battlecode.settings import REDIS_TTL
+from battlecode.defaults import DefaultBadges
 
 from peer_review.models import Assignment
 from user.models import Profile
 
 from badges import badges_checkers as checkers
 from badges.models import Badge
-
-from battlecode.redis import client
 
 
 def _make_quest_property(status: str, redis_key: str):
@@ -83,16 +83,13 @@ class BadgeManager:
             self.user_profile.badges.add(badge)
             self.user_profile.save()
 
-            # WARN: Delete at final ver.
-            print(f"Granted badge: {badge_slug} for user: {self.user.username}")
-
             client.setex(key, REDIS_TTL, 1)
         except Exception:
             return False
 
     def badge_smartman(self):
         if self.success_quests >= 100:
-            self._grant_badge("smartman")
+            self._grant_badge(DefaultBadges.COMPL_100_QUESTS["slug"])
 
     def badge_all_quests(self):
         if all(
@@ -103,7 +100,7 @@ class BadgeManager:
                 self.failed_quests > 0,
             ],
         ):
-            self._grant_badge("jack_of_all_trades")
+            self._grant_badge(DefaultBadges.ALL_TYPES_QUESTS["slug"])
 
     def badge_pts(self):
         slug = checkers.check_pts(self.user_profile)
