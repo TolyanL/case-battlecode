@@ -50,6 +50,20 @@ class Profile(models.Model):
     def __str__(self):
         return f"Profile for {self.user.username}"
 
+    @property
+    def assigned_quests_slugs(self):
+        return Assignment.objects.filter(user=self.user, status="active").values_list("quest__slug", flat=True)
+
+    @property
+    def review_quests_slugs(self):
+        return Assignment.objects.filter(user=self.user, status="completed").values_list("quest__slug", flat=True)
+
+    @property
+    def completed_quests_slugs(self):
+        return Assignment.objects.filter(
+            user=self.user,
+            status__in=["success", "failed"]
+        ).values_list("quest__slug", flat=True)
     class Meta:
         verbose_name = "Профиль"
         verbose_name_plural = "Профили"
