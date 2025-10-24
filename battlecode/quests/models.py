@@ -10,7 +10,7 @@ from .model_utils import count_quest_pts, get_contrast_color
 
 
 class Quest(models.Model):
-    title = models.CharField(max_length=200, verbose_name="Название", blank=False)
+    title = models.CharField(max_length=200, verbose_name="Название", unique=True, blank=False)
     description = models.TextField(verbose_name="Описание", blank=False)
     slug = models.CharField(max_length=200, blank=True)
 
@@ -68,7 +68,7 @@ class Quest(models.Model):
 
 
 class Language(models.Model):
-    name = models.CharField(max_length=200, verbose_name="Название", blank=False)
+    name = models.CharField(max_length=200, verbose_name="Название", unique=True, blank=False)
 
     color = ColorField(format="hex", default="#000000", verbose_name="Цвет")
 
@@ -102,7 +102,7 @@ class Language(models.Model):
 
 
 class Skill(models.Model):
-    name = models.CharField(max_length=200, verbose_name="Название", blank=False)
+    name = models.CharField(max_length=200, verbose_name="Название", unique=True, blank=False)
 
     #  INFO: value - вес навыка при вычислении баллов за победу в квесте
     value = models.IntegerField(verbose_name="Вес навыка", default=0)

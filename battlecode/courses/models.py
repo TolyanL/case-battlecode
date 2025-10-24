@@ -9,7 +9,7 @@ from quests.models import Quest, Skill
 
 
 class Course(models.Model):
-    title = models.CharField(max_length=200, verbose_name="Название курса")
+    title = models.CharField(max_length=200, unique=True, verbose_name="Название курса")
     description = models.TextField(verbose_name="Описание", blank=True)
     slug = models.CharField(max_length=200, blank=True)
 

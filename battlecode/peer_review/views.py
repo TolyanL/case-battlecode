@@ -1,7 +1,9 @@
 from django.db import transaction
+from django.db.models import Q
 from django.http import HttpRequest
 from django.shortcuts import render, redirect, get_object_or_404
 
+from battlecode.quest_settings import break_delta
 from battlecode.pagedata import PageData
 from battlecode.review_settings import REVIEW_COUNT
 
@@ -22,6 +24,14 @@ def review_checklist(request: HttpRequest, slug: str, username: str):
             quest__slug=slug,
             status="completed",
         )
+
+        if not Assignment.objects.filter(
+            Q(status="success") | Q(status="failed") | Q(status="completed"),
+            user=request.user,
+            quest=assignment.quest,
+            completed_at__gte=break_delta(),
+        ).exists():
+            return redirect("quest_reviews", slug=assignment.quest.slug)
 
         if Review.objects.filter(assignment=assignment, user=request.user).exists():
             return redirect("quest_reviews", slug=assignment.quest.slug)

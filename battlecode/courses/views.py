@@ -89,3 +89,4 @@ class CourseDetailView(DetailView):
             )
 
         return context
+

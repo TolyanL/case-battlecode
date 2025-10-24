@@ -39,7 +39,7 @@
             </div>
 
             {% if user.is_authenticated %}
-            <div class="mb-6">
+            <div class="my-6">
                 <div class="flex justify-between items-center mb-2">
                     <h5 class="text-white font-semibold">Прогресс курса:</h5>
                     <span class="text-primary text-sm font-semibold">{{ course.progress }}%</span>
@@ -99,6 +99,12 @@
                                     <span class="bg-orange-500/20 text-orange-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}</span>
                                 {% else %}
                                     <span class="bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1 rounded-full">{{ quest.difficulty|title }}🔥</span>
+                                {% endif %}
+
+                                {% if quest.penalty > 0 %}
+                                <span class="bg-red-500/20 text-red-400 text-xs font-semibold px-3 py-1 rounded-full">
+                                    -{{ quest.penalty }} PTS
+                                </span>
                                 {% endif %}
                             </div>
                             <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background-color: {{ quest.language.bg_color }}; color: {{ quest.language.color }};">

@@ -9,6 +9,14 @@
     <p class="text-gray-400">Выберите проект, чтобы начать свой путь в разработке.</p>
 </div>
 
+<div class="mb-6 flex flex-wrap gap-2">
+  <a href="?status=all" class="px-4 py-2 rounded-lg {% if current_status == 'all' or current_status == 'None' %}bg-primary text-white{% else %}bg-gray-800 text-gray-300 hover:bg-gray-700{% endif %}">Все</a>
+  <a href="?status=available" class="px-4 py-2 rounded-lg {% if current_status == 'available' %}bg-primary text-white{% else %}bg-gray-800 text-gray-300 hover:bg-gray-700{% endif %}">Можно начать</a>
+  <a href="?status=in_progress" class="px-4 py-2 rounded-lg {% if current_status == 'in_progress' %}bg-blue-600 text-white{% else %}bg-gray-800 text-gray-300 hover:bg-gray-700{% endif %}">В работе</a>
+  <a href="?status=on_review" class="px-4 py-2 rounded-lg {% if current_status == 'on_review' %}bg-orange-600 text-white{% else %}bg-gray-800 text-gray-300 hover:bg-gray-700{% endif %}">На проверке</a>
+  <a href="?status=on_cooldown" class="px-4 py-2 rounded-lg {% if current_status == 'on_cooldown' %}bg-gray-600 text-white{% else %}bg-gray-800 text-gray-300 hover:bg-gray-700{% endif %}">В кулдауне</a>
+</div>
+
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for quest in quests %}
         <a href="{{ quest.get_absolute_url }}" class="block w-full bg-gray-900 border border-gray-800 rounded-lg p-6 flex flex-col hover:border-primary transition-all duration-300 text-left">
@@ -34,6 +42,7 @@
                     </span>
                 </div>
                 <h4 class="font-bold text-white text-lg mb-2">{{ quest.title }}</h4>
+
                 {% if quest.slug in accepted %}
                 <span class="flex items-center text-blue-400 text-xs mb-2">
                     <i data-feather="code" class="w-4 h-4 mr-1"></i>
@@ -50,6 +59,7 @@
                     On Cooldown
                 </span>
                 {% endif %}
+
                 <p class="text-gray-400 text-sm mb-4">{{ quest.description }}</p>
             </div>
 

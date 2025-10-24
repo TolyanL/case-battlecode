@@ -69,6 +69,7 @@ class BadgeManager:
 
         if exists:
             client.setex(badge_key, REDIS_TTL, 1)
+
         return exists
 
     def _grant_badge(self, badge_slug: str) -> bool:

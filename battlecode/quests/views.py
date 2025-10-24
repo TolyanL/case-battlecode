@@ -21,20 +21,38 @@ class QuestsAllView(ListView, LoginRequiredMixin):
     model = Quest
     template_name = "quests_all.html"
     context_object_name = "quests"
-
     paginate_by = 12
 
     def get_queryset(self):
         user = self.request.user
-
-        quests_non_course = Quest.objects.filter(course_quests__isnull=True)
-
         if not user.is_authenticated:
-            return quests_non_course
+            return Quest.objects.none()
 
-        quests = Quest.objects.filter(course_quests__course__enrolled_profiles__user=user)
+        base_quests = Quest.objects.all().distinct()
 
-        return quests.union(quests_non_course)
+        status_filter = self.request.GET.get("status")
+
+        assignments = Assignment.objects.filter(user=user, quest__in=base_quests)
+
+        accepted_slugs = set(assignments.filter(status="active").values_list("quest__slug", flat=True))
+        review_slugs = set(assignments.filter(status="completed").values_list("quest__slug", flat=True))
+        completed_slugs = set(
+            assignments.filter(Q(status="success") | Q(status="failed"), completed_at__gte=break_delta()).values_list(
+                "quest__slug", flat=True
+            )
+        )
+
+        if status_filter == "in_progress":
+            return base_quests.filter(slug__in=accepted_slugs)
+        elif status_filter == "on_review":
+            return base_quests.filter(slug__in=review_slugs)
+        elif status_filter == "on_cooldown":
+            return base_quests.filter(slug__in=completed_slugs)
+        elif status_filter == "available":
+            all_filtered = accepted_slugs | review_slugs | completed_slugs
+            return base_quests.exclude(slug__in=all_filtered)
+        else:
+            return base_quests
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -43,27 +61,18 @@ class QuestsAllView(ListView, LoginRequiredMixin):
             description="Track your progress and available quests on your personal dashboard.",
             curr_page=curr_page,
         )
-
+        context["current_status"] = self.request.GET.get("status", "all")
         user = self.request.user
 
         if user.is_authenticated:
-            context["accepted"] = [
-                i.quest.slug for i in (Assignment.objects.filter(user=user).filter(status="active").all())
-            ]
-            context["review"] = [
-                i.quest.slug for i in (Assignment.objects.filter(user=user).filter(status="completed").all())
-            ]
-            context["completed"] = [
-                i.quest.slug
-                for i in (
-                    Assignment.objects.filter(user=user)
-                    .filter(
-                        Q(status="success") | Q(status="failed"),
-                        Q(completed_at__gte=break_delta()),
-                    )
-                    .all()
-                )
-            ]
+            assignments = Assignment.objects.filter(user=user)
+            context["accepted"] = list(assignments.filter(status="active").values_list("quest__slug", flat=True))
+            context["review"] = list(assignments.filter(status="completed").values_list("quest__slug", flat=True))
+            context["completed"] = list(
+                assignments.filter(
+                    Q(status="success") | Q(status="failed"), completed_at__gte=break_delta()
+                ).values_list("quest__slug", flat=True)
+            )
         return context
 
 
@@ -168,13 +177,6 @@ def quest_reviews(request: HttpRequest, slug: str):
     if len(quest.courses.all()):
         if not Profile.objects.filter(user=request.user, courses__in=quest.courses.all()).exists():
             return redirect("quests_all")
-
-    if not Assignment.objects.filter(
-        user=request.user,
-        quest=quest,
-        status="completed",
-    ).exists():
-        return redirect("quest_detail", slug=slug)
 
     context = {}
     context["pd"] = PageData(

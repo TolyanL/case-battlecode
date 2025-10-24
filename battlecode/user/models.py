@@ -45,7 +45,8 @@ class Profile(models.Model):
 
         work_time = 0
         for item in assignments:
-            work_time += (item["completed_at"] - item["assigned_at"]).total_seconds() / 3600
+            if item["completed_at"]:
+                work_time += (item["completed_at"] - item["assigned_at"]).total_seconds() / 3600
 
         return round(work_time, 2)
 
