@@ -28,7 +28,10 @@ class QuestsAllView(ListView, LoginRequiredMixin):
         if not user.is_authenticated:
             return Quest.objects.none()
 
-        base_quests = Quest.objects.all().distinct()
+        quests_course = Quest.objects.filter(course_quests__course__enrolled_profiles__user=user)
+        quests_non_course = Quest.objects.filter(course_quests__isnull=True)
+
+        base_quests = quests_course | quests_non_course
 
         status_filter = self.request.GET.get("status")
 

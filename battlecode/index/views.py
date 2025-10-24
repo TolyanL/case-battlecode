@@ -32,4 +32,3 @@ def index(request):
             pass
 
     return render(request, "index.html", context)
-

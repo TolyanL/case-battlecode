@@ -10,5 +10,11 @@ python manage.py migrate
 # Create a superuser
 python manage.py create_superuser
 
+# Create default badges
+python manage.py create_badges
+
+# Create user groups
+python manage.py create_user_groups
+
 # Start the main process
 exec "$@"

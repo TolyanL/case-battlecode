@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 import qrcode
 import base64
 
@@ -11,6 +12,8 @@ from django.contrib.auth import login, logout, authenticate, get_user_model
 
 from django_otp import devices_for_user
 from django_otp.plugins.otp_totp.models import TOTPDevice
+
+from battlecode.groups import DEFAULT_USER_GROUP
 
 from user.models import Profile
 from .forms import RegisterForm, LoginForm
@@ -88,6 +91,8 @@ def register(request: HttpRequest):
         if form.is_valid():
             user = form.save()
             Profile.objects.create(user=user)
+            user.groups.add(Group.objects.get(name=DEFAULT_USER_GROUP))
+            user.save()
             login(request, user)
 
             return redirect("setup_2fa")
