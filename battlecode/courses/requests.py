@@ -8,6 +8,11 @@ from user.models import Profile
 from peer_review.models import Assignment
 from courses.models import Course
 
+from logging import getLogger
+
+
+logger = getLogger(__name__)
+
 
 @login_required()
 def enroll_course(request: HttpRequest):
@@ -30,7 +35,7 @@ def enroll_course(request: HttpRequest):
 
             return JsonResponse({"success": True, "message": "Course enrolled"})
         except Exception as e:
-            print("err: ", e)
+            logger.error(e)
             return JsonResponse({"success": False, "message": "Error has occurred"})
 
     return JsonResponse({"success": False, "message": "Empty request"})
@@ -72,7 +77,7 @@ def unenroll_course(request: HttpRequest):
 
             return JsonResponse({"success": True, "message": "Course unenrolled"})
         except Exception as e:
-            print("err: ", e)
+            logger.error(e)
             return JsonResponse({"success": False, "message": "Error has occurred"})
 
     return JsonResponse({"success": False, "message": "Empty request"})

@@ -12,7 +12,7 @@ from user.models import Profile
 from peer_review.models import Assignment, Review
 
 
-current_page = "user"
+curr_page = "user"
 
 
 @login_required

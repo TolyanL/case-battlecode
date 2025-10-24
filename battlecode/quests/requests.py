@@ -11,6 +11,12 @@ from quests.models import Quest
 from peer_review.models import Assignment
 
 
+from logging import getLogger
+
+
+logger = getLogger(__name__)
+
+
 @login_required()
 def accept_quest(request: HttpRequest):
     if request.method == "POST":
@@ -37,7 +43,7 @@ def accept_quest(request: HttpRequest):
 
             return JsonResponse({"success": True, "message": "Quest accepted"})
         except Exception as e:
-            print("err: ", e)
+            logger.error(e)
             return JsonResponse({"success": False, "message": "Error has occurred"})
 
     return JsonResponse({"success": False, "message": "Empty request"})
@@ -76,7 +82,7 @@ def give_up_quest(request: HttpRequest):
 
             return JsonResponse({"success": True, "message": "Quest failed"})
         except Exception as e:
-            print("err: ", e)
+            logger.error(e)
             return JsonResponse({"success": False, "message": "Error has occurred"})
 
     return JsonResponse({"success": False, "message": "Empty request"})
@@ -111,7 +117,7 @@ def complete_quest(request: HttpRequest):
 
             return JsonResponse({"success": True, "message": "Quest completed"})
         except Exception as e:
-            print("err: ", e)
+            logger.error(e)
             return JsonResponse({"success": False, "message": "Error has occurred"})
 
     return JsonResponse({"success": False, "message": "Empty request"})
