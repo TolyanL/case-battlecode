@@ -29,6 +29,37 @@ class Assignment(models.Model):
         verbose_name="Статус",
     )
 
+    completed_at = models.DateTimeField(verbose_name="Дата завершения", null=True, blank=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+    assigned_at = models.DateTimeField(auto_now_add=True)
+
+    def finish(self):
+        user_profile = self.user.profile
+        give_pts = self.reviews_avg_pts
+
+        if give_pts > 0:
+            self.status = "success"
+        else:
+            self.status = "failed"
+            give_pts = self.quest.penalty * -1
+
+        self.given_pts = give_pts
+
+        user_profile.pts += give_pts
+
+        user_profile.save()
+        self.save()
+
+    def fail(self):
+        user_profile = self.user.profile
+        user_profile.pts += self.quest.penalty * -1
+
+        self.status = "failed"
+
+        user_profile.save()
+        self.save()
+
     @property
     def reviews(self) -> int:
         return Review.objects.filter(assignment=self).count()
@@ -37,11 +68,6 @@ class Assignment(models.Model):
     def reviews_avg_pts(self) -> int:
         values = Review.objects.filter(assignment=self).values_list("give_pts", flat=True)
         return int(sum(values) / len(values))
-
-    completed_at = models.DateTimeField(verbose_name="Дата завершения", null=True, blank=True)
-
-    updated_at = models.DateTimeField(auto_now=True)
-    assigned_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.quest.title}"

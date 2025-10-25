@@ -1,7 +1,10 @@
 from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.db.models import Q
+
 from battlecode.pagedata import PageData
+from battlecode.quest_settings import break_delta
 
 from user.models import Profile
 from peer_review.models import Assignment
@@ -25,8 +28,17 @@ class CoursesListView(ListView):
 
         if user.is_authenticated:
             for c in courses:
-                success_quests = c.quests.filter(assignments__user=user, assignments__status="success").count()
-                c.progress = int(100 * success_quests / c.quests.count())
+                finished_quests = (
+                    c.quests.filter(
+                        assignments__user=user,
+                        assignments__assigned_at__gte=break_delta(),
+                    )
+                    .filter(Q(assignments__status="success") | Q(assignments__status="failed"))
+                    .count()
+                )
+                c.progress = int(100 * finished_quests / c.quests.count())
+                if c.progress > 100:
+                    c.progress = 100
 
                 if user.profile.courses.filter(id=c.id).exists():
                     c.enrolled = True
@@ -44,7 +56,7 @@ class CoursesListView(ListView):
         return context
 
 
-class CourseDetailView(DetailView):
+class CourseDetailView(DetailView, LoginRequiredMixin):
     model = Course
     template_name = "course_detail.html"
 
@@ -89,4 +101,3 @@ class CourseDetailView(DetailView):
             )
 
         return context
-

@@ -7,8 +7,6 @@ from battlecode.quest_settings import break_delta
 from battlecode.pagedata import PageData
 from battlecode.review_settings import REVIEW_COUNT
 
-from user.models import Profile
-
 from peer_review.models import Assignment, Review, ReviewChecklistAnswer
 from peer_review.model_utils import calculate_review_pts
 
@@ -72,23 +70,7 @@ def review_checklist(request: HttpRequest, slug: str, username: str):
             review.save()
 
             if assignment.reviews == REVIEW_COUNT:
-                give_pts = assignment.reviews_avg_pts
-                if give_pts > 0:
-                    assignment.status = "success"
-                else:
-                    assignment.status = "failed"
-                    give_pts = assignment.quest.penalty * -1
-
-                profile = Profile.objects.get(user=assignment.user)
-
-                profile.pts += give_pts
-                if profile.pts < 0:
-                    profile.pts = 0
-
-                assignment.given_pts = give_pts
-
-                profile.save()
-                assignment.save()
+                assignment.finish()
 
             return redirect("quest_reviews", slug=assignment.quest.slug)
 

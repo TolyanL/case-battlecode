@@ -64,21 +64,11 @@ def give_up_quest(request: HttpRequest):
             if not quest:
                 return JsonResponse({"success": False, "message": "Quest not found"})
 
-            items = Assignment.objects.filter(user=user, quest=quest, status="active")
-            if not items.exists():
+            item = Assignment.objects.filter(user=user, quest=quest, status="active").first()
+            if not item:
                 return JsonResponse({"success": False, "message": "You have no active quests"})
 
-            Assignment.objects.filter(user=user, quest=quest, status="active").update(
-                status="failed",
-                given_pts=-quest.penalty,
-                completed_at=datetime.now(),
-            )
-            if quest.penalty > 0:
-                profile = Profile.objects.get(user=user)
-                profile.pts -= quest.penalty
-                if profile.pts < 0:
-                    profile.pts = 0
-                profile.save()
+            item.fail()
 
             return JsonResponse({"success": True, "message": "Quest failed"})
         except Exception as e:
@@ -103,13 +93,13 @@ def complete_quest(request: HttpRequest):
             if not quest:
                 return JsonResponse({"success": False, "message": "Quest not found"})
 
-            items = Assignment.objects.filter(user=user, quest=quest, status="active")
-            if not items.exists():
+            item = Assignment.objects.filter(user=user, quest=quest, status="active")
+            if not item.exists():
                 return JsonResponse({"success": False, "message": "You have no active quests"})
 
             code = data.get("data") or ""
 
-            Assignment.objects.filter(user=user, quest=quest, status="active").update(
+            item.update(
                 status="completed",
                 completed_at=datetime.now(),
                 code=code,

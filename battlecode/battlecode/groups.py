@@ -3,8 +3,7 @@ from dataclasses import dataclass
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
-
-# Uncomment next lines and add to the group.perms_model if nessesary
+# Uncomment next lines and add to the BCGroup.perms_model if nessesary
 # from user.models import Profile
 # from peer_review.models import Assignment, Review, ReviewChecklistAnswer
 
@@ -16,8 +15,6 @@ from quests.models import Quest, Skill, Language, ChecklistItem, QuestReviewChec
 @dataclass
 class BCGroup:
     name: str
-    verbose_name: str
-    verbose_name_plural: str
     perms_models: list[object]
     exlude_perms: list[str] | None = None
 
@@ -59,14 +56,10 @@ ADMIN_GROUP = "admins"
 GROUPS: list[BCGroup] = [
     BCGroup(
         name=ADMIN_GROUP,
-        verbose_name="Администраторы",
-        verbose_name_plural="Администратор",
         perms_models=["all"],
     ),
     BCGroup(
         name=TEACHER_GROUP,
-        verbose_name="Преподаватели",
-        verbose_name_plural="Преподаватель",
         perms_models=[
             Badge,
             Course,
@@ -80,8 +73,6 @@ GROUPS: list[BCGroup] = [
     ),
     BCGroup(
         name=STUDENT_GROUP,
-        verbose_name="Студенты",
-        verbose_name_plural="Студент",
         perms_models=[],
     ),
 ]

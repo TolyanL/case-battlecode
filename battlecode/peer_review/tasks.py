@@ -3,7 +3,6 @@ from celery import shared_task
 
 from django.utils import timezone
 
-from user.models import Profile
 from peer_review.models import Assignment
 
 from logging import getLogger
@@ -22,13 +21,7 @@ def check_assignments() -> None:
         deadline = item.assigned_at + timedelta(hours=item.quest.work_time)
 
         if deadline < timezone.now():
-            item.status = "failed"
-
-            if penalty := item.quest.penalty:
-                profile = Profile.objects.get(user=item.user)
-                profile.pts -= penalty
-                profile.save()
-                logger.info("Granting penalty")
-
-            item.save()
+            item.fail()
+            if item.quest.penalty:
+                logger.info(f"Granting penalty to {item.user.username} cause of failed quest {item.quest.title}")
             logger.info(f"Assignment {item.id}-{item.user.username}-{item.quest.slug} failed")

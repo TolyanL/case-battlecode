@@ -54,6 +54,11 @@ class Profile(models.Model):
     def placement(self):
         return Profile.objects.filter(user__is_active=True, pts__gt=self.pts).count() + 1
 
+    def save(self, *args, **kwargs):
+        if self.pts < 0:
+            self.pts = 0
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Profile for {self.user.username}"
 

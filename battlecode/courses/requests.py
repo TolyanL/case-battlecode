@@ -66,14 +66,7 @@ def unenroll_course(request: HttpRequest):
                     .filter(Q(status="active") | Q(status="completed"))
                     .first()
                 ):
-                    a.status = "failed"
-                    a.save()
-                    p.pts -= a.quest.penalty * -1
-
-            if p.pts < 0:
-                p.pts = 0
-
-            p.save()
+                    a.fail()
 
             return JsonResponse({"success": True, "message": "Course unenrolled"})
         except Exception as e:

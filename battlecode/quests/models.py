@@ -20,7 +20,7 @@ class Quest(models.Model):
         verbose_name="Сложность",
     )
     base_pts = models.IntegerField(verbose_name="Баллы за победу (без множителя)", default=MIN_PTS)
-    penalty = models.IntegerField(verbose_name="Штраф за проигрыш", default=0)
+    penalty = models.PositiveIntegerField(verbose_name="Штраф за проигрыш", default=0)
     work_time = models.IntegerField(verbose_name="Время работы", default=3)
     task = models.TextField(verbose_name="Задача")
 
