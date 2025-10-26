@@ -58,8 +58,12 @@ def side_data() -> dict:
     return data
 
 
-def get_leaderboard_data(user) -> tuple[list, dict]:
-    top_profiles = Profile.objects.filter(user__is_active=True).order_by("-pts")[:10]
+def get_leaderboard_data(curr_user) -> tuple[list, dict]:
+    top_profiles = Profile.objects.filter(
+        user__is_staff=False,
+        user__is_superuser=False,
+        user__is_active=True,
+    ).order_by("-pts")[:10]
 
     leaderboard_list = []
     current_user_entry = None
@@ -77,20 +81,20 @@ def get_leaderboard_data(user) -> tuple[list, dict]:
         }
         leaderboard_list.append(entry)
 
-        if user.is_authenticated and profile.user == user:
+        if curr_user.is_authenticated and profile.user == curr_user:
             current_user_entry = entry
 
-    if user.is_authenticated and not current_user_entry:
-        curr_user_profile = Profile.objects.filter(user=user).first()
+    if curr_user.is_authenticated and not current_user_entry:
+        curr_user_profile = Profile.objects.filter(user=curr_user).first()
         if not curr_user_profile:
-            curr_user_profile = Profile.objects.create(user=user)
+            curr_user_profile = Profile.objects.create(user=curr_user)
 
         user_pts = curr_user_profile.pts
 
         user_rank = Profile.objects.filter(user__is_active=True, pts__gt=user_pts).count() + 1
 
         success_count = Assignment.objects.filter(
-            user=user,
+            user=curr_user,
             status="success",
         ).count()
 
