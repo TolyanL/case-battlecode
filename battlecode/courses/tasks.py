@@ -3,10 +3,17 @@ from celery import shared_task
 from courses.models import Course
 from peer_review.models import CourseProgress
 
+from logging import getLogger
+
+
+logger = getLogger(__name__)
+
 
 @shared_task()
 def check_finished_courses() -> None:
     courses = Course.objects.filter(active=True).all()
+
+    logger.info(f"Checking courses: {courses}")
 
     for c in courses:
         total_quests = c.quests.count()
@@ -14,9 +21,13 @@ def check_finished_courses() -> None:
             continue
 
         enrolled_users = c.enrolled_profiles.select_related("user").values_list("user", flat=True)
+        completed = 0
 
         for user_id in enrolled_users:
             progress = CourseProgress.objects.filter(user__id=user_id, course=c, status="active").first()
 
             if progress and progress.completed_quests_count == total_quests:
                 progress.complete()
+                completed += 1
+
+        logger.info(f"Course {c} completed: {completed}/{total_quests} ({len(enrolled_users)} users)")
