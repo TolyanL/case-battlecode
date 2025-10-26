@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from battlecode.defaults import DefaultBadges
+from battlecode.badges import DefaultBadges
 
 from badges.models import Badge
 

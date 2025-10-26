@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
-from battlecode.course_settings import COURSE_STATUS
 from battlecode.quest_settings import break_delta
+from battlecode.course_settings import COURSE_STATUS
 from battlecode.review_settings import ASSIGNMENT_STATUS_CHOICES
 
 from quests.models import Quest, ChecklistItem
@@ -49,8 +50,11 @@ class Assignment(models.Model):
             give_pts = self.quest.penalty * -1
 
         self.given_pts = give_pts
-
         user_profile.pts += give_pts
+
+        badges = self.quest.badges.all()
+        for badge in badges:
+            user_profile.badges.add(badge)
 
         user_profile.save()
         self.save()
@@ -124,6 +128,18 @@ class CourseProgress(models.Model):
 
         completed = self.completed_quests_count
         return int((completed / total) * 100)
+
+    def complete(self) -> None:
+        user_profile = self.user.profile
+
+        self.status = "success"
+        self.completed_at = timezone.now()
+        self.save()
+
+        badges = self.course.badges.all()
+        for badge in badges:
+            user_profile.badges.add(badge)
+        user_profile.save()
 
     def __str__(self):
         return f"{self.user.username} — {self.course.title} ({'✓' if self.completed_at else '○'})"

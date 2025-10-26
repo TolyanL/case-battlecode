@@ -143,7 +143,7 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": timedelta(minutes=1),
     },
     "check-finished-courses": {
-        "task": "your_app.tasks.check_finished_courses",
+        "task": "courses.tasks.check_finished_courses",
         "schedule": timedelta(minutes=10),
     },
 }

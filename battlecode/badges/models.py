@@ -1,7 +1,7 @@
 from slugify import slugify
 
-from colorfield.fields import ColorField
 from django.db import models
+from colorfield.fields import ColorField
 
 from quests.model_utils import get_contrast_color
 from quests.models import Quest
