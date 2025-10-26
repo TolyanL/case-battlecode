@@ -5,6 +5,7 @@ from django.db import models
 
 from quests.model_utils import get_contrast_color
 from quests.models import Quest
+from courses.models import Course
 
 
 class Badge(models.Model):
@@ -23,7 +24,8 @@ class Badge(models.Model):
         verbose_name="Цвет",
     )
 
-    rel_quests = models.ManyToManyField(Quest, blank=True)
+    rel_quests = models.ManyToManyField(Quest, related_name="badges", blank=True)
+    rel_courses = models.ManyToManyField(Course, related_name="badges", blank=True)
 
     active = models.BooleanField(default=True, verbose_name="Активен")
 

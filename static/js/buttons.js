@@ -45,10 +45,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 "unenroll": {
                     url: "/courses/rest/unenroll",
-                    successMsg: "🚀 Начать курс",
-                    newAction: "enroll",
+                    successMsg: "🕒 Курс на таймауте",
+                    newAction: "-",
                     oldColor: "gray",
-                    newColor: "cyan",
+                    newColor: "gray",
                     data: ""
                 }
             };

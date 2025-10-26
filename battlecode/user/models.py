@@ -18,7 +18,7 @@ class Profile(models.Model):
 
     pts = models.IntegerField(default=0, verbose_name="Очки")
 
-    badges = models.ManyToManyField(Badge, blank=True)
+    badges = models.ManyToManyField(Badge, related_name="profiles", blank=True)
     courses = models.ManyToManyField("courses.Course", related_name="enrolled_profiles", blank=True)
 
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")

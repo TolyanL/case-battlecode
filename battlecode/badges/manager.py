@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 from django.contrib.auth.forms import User
 
-from battlecode.redis import client
+from battlecode.redis_settings import client
 from battlecode.settings import REDIS_TTL
-from battlecode.defaults import DefaultBadges
+from battlecode.badges import DefaultBadges
 
 from peer_review.models import Assignment
 from user.models import Profile

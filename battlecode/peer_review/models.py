@@ -1,8 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from battlecode.course_settings import COURSE_STATUS
+from battlecode.quest_settings import break_delta
 from battlecode.review_settings import ASSIGNMENT_STATUS_CHOICES
+
 from quests.models import Quest, ChecklistItem
+from courses.models import Course
 
 
 class Assignment(models.Model):
@@ -76,6 +80,58 @@ class Assignment(models.Model):
         verbose_name = "Взятое задание"
         verbose_name_plural = "Взятые задания"
         ordering = ["-assigned_at"]
+
+
+class CourseProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс")
+
+    status = models.CharField(
+        max_length=20,
+        choices=COURSE_STATUS,
+        default="active",
+        verbose_name="Статус",
+    )
+    completed_at = models.DateTimeField(null=True, blank=True, verbose_name="Дата завершения")
+
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    @property
+    def completed_quests_count(self) -> int:
+        if self.course.quests.count() == 0:
+            return 0
+
+        count = (
+            Assignment.objects.filter(
+                user=self.user,
+                quest__in=self.course.quests.all(),
+                status__in=["success", "failed"],
+                completed_at__isnull=False,
+                completed_at__gte=break_delta(),
+            )
+            .values("quest")
+            .distinct()
+            .count()
+        )
+        return count
+
+    @property
+    def progress_percent(self) -> int:
+        total = self.course.quests.count()
+        if total == 0:
+            return 100
+
+        completed = self.completed_quests_count
+        return int((completed / total) * 100)
+
+    def __str__(self):
+        return f"{self.user.username} — {self.course.title} ({'✓' if self.completed_at else '○'})"
+
+    class Meta:
+        ordering = ["-updated_at"]
+        verbose_name = "Прогресс по курсу"
+        verbose_name_plural = "Прогресс по курсам"
 
 
 class Review(models.Model):

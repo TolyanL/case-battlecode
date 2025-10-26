@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 
 from battlecode.quest_settings import MAX_PICKED_QUESTS
 
-from user.models import Profile
 from quests.models import Quest
 from peer_review.models import Assignment
 

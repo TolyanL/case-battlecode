@@ -138,9 +138,13 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "Europe/Moscow"
 
 CELERY_BEAT_SCHEDULE = {
-    "check_expired_assigments": {
+    "check-expired-assigments": {
         "task": "peer_review.tasks.check_assignments",
         "schedule": timedelta(minutes=1),
+    },
+    "check-finished-courses": {
+        "task": "your_app.tasks.check_finished_courses",
+        "schedule": timedelta(minutes=10),
     },
 }
 

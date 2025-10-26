@@ -1,13 +1,11 @@
 from django.views.generic import ListView, DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin
-
-from django.db.models import Q
 
 from battlecode.pagedata import PageData
 from battlecode.quest_settings import break_delta
+from battlecode.course_settings import break_delta as break_delta_c
 
 from user.models import Profile
-from peer_review.models import Assignment
+from peer_review.models import Assignment, CourseProgress
 from courses.models import Course
 
 
@@ -28,17 +26,15 @@ class CoursesListView(ListView):
 
         if user.is_authenticated:
             for c in courses:
-                finished_quests = (
-                    c.quests.filter(
-                        assignments__user=user,
-                        assignments__assigned_at__gte=break_delta(),
+                cp = (
+                    CourseProgress.objects.filter(
+                        user=user,
+                        course=c,
                     )
-                    .filter(Q(assignments__status="success") | Q(assignments__status="failed"))
-                    .count()
+                    .order_by("-completed_at")
+                    .first()
                 )
-                c.progress = int(100 * finished_quests / c.quests.count())
-                if c.progress > 100:
-                    c.progress = 100
+                c.progress = cp.progress_percent if cp else 0
 
                 if user.profile.courses.filter(id=c.id).exists():
                     c.enrolled = True
@@ -56,18 +52,20 @@ class CoursesListView(ListView):
         return context
 
 
-class CourseDetailView(DetailView, LoginRequiredMixin):
+class CourseDetailView(DetailView):
     model = Course
     template_name = "course_detail.html"
 
     def get_object(self):
         c = super().get_object()
 
-        success_quests = c.quests.filter(
-            assignments__user=self.request.user,
-            assignments__status="success",
-        ).count()
-        c.progress = int(100 * success_quests / c.quests.count())
+        ct = CourseProgress.objects.filter(
+            user=self.request.user,
+            course=c,
+        ).first()
+
+        c.progress = ct.progress_percent if ct else 0
+        c.completed = ct.completed_at > break_delta_c() if ct.completed_at else False
 
         return c
 
@@ -81,23 +79,19 @@ class CourseDetailView(DetailView, LoginRequiredMixin):
             curr_page=curr_page,
         )
 
-        context["is_accepted"] = Profile.objects.filter(
-            user=user,
-            courses=self.object,
-        ).exists()
-
         if user.is_authenticated:
-            context["accepted"] = (
-                Assignment.objects.filter(user=user).filter(status="active").values_list("quest__slug", flat=True)
+            context["is_accepted"] = Profile.objects.filter(
+                user=user,
+                courses=self.object,
+            ).exists()
+
+            items = Assignment.objects.filter(user=user).filter(
+                quest__courses=self.object, completed_at__gte=break_delta()
             )
 
-            context["review"] = (
-                Assignment.objects.filter(user=user).filter(status="completed").values_list("quest__slug", flat=True)
-            )
-            context["completed"] = (
-                Assignment.objects.filter(user=user)
-                .filter(Q(status="success") | Q(status="failed"))
-                .values_list("quest__slug", flat=True)
-            )
+            context["accepted"] = items.filter(status="active").values_list("quest__slug", flat=True)
+            context["review"] = items.filter(status="completed").values_list("quest__slug", flat=True)
+            context["success"] = items.filter(status="success").values_list("quest__slug", flat=True)
+            context["failed"] = items.filter(status="failed").values_list("quest__slug", flat=True)
 
         return context

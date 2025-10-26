@@ -1,11 +1,13 @@
 import json
 
+from django.utils import timezone
 from django.db.models import Q
 from django.http import HttpRequest, JsonResponse
 from django.contrib.auth.decorators import login_required
 
+from battlecode.course_settings import break_delta
 from user.models import Profile
-from peer_review.models import Assignment
+from peer_review.models import Assignment, CourseProgress
 from courses.models import Course
 
 from logging import getLogger
@@ -28,6 +30,20 @@ def enroll_course(request: HttpRequest):
             course = Course.objects.get(slug=course_slug)
             if not course:
                 return JsonResponse({"success": False, "message": "Course not found"})
+
+            if ct := CourseProgress.objects.filter(
+                user=user,
+                course=course,
+            ).first():
+                if ct.status in ["success", "failed"] and ct.completed_at >= break_delta():
+                    print("already completed")
+                    return JsonResponse({"success": False, "message": "You have already completed this course"})
+
+            CourseProgress.objects.create(
+                user=user,
+                course=course,
+                status="active",
+            )
 
             p = Profile.objects.get(user=user)
             p.courses.add(course)
@@ -67,6 +83,13 @@ def unenroll_course(request: HttpRequest):
                     .first()
                 ):
                     a.fail()
+
+            CourseProgress.objects.update(
+                user=user,
+                course=course,
+                completed_at=timezone.now(),
+                status="failed",
+            )
 
             return JsonResponse({"success": True, "message": "Course unenrolled"})
         except Exception as e:

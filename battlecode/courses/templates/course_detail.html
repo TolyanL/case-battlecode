@@ -63,19 +63,26 @@
                 {% endfor %}
             </div>
         </div>
-
+        {% if user.is_authenticated %}
         <div class="mt-8 flex justify-center">
-            {% csrf_token %}
-            {% if is_accepted %}
-            <button data-action="unenroll" data-slug="{{ course.slug }}" class="action-btn px-8 py-3 text-base bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors duration-300">
-                <span>💀 Отписаться от курса</span>
+            {% if course.completed %}
+            <button class="px-8 py-3 text-base bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors duration-300">
+                <span>🕒 Курс на таймауте</span>
             </button>
             {% else %}
-            <button data-action="enroll" data-slug="{{ course.slug }}" class="action-btn w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
-                <span>🚀 Начать курс</span>
-            </button>
+                {% csrf_token %}
+                {% if is_accepted %}
+                <button data-action="unenroll" data-slug="{{ course.slug }}" class="action-btn px-8 py-3 text-base bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors duration-300">
+                    <span>💀 Отписаться от курса</span>
+                </button>
+                {% else %}
+                <button data-action="enroll" data-slug="{{ course.slug }}" class="action-btn w-full md:w-auto flex items-center justify-center space-x-3 px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
+                    <span>🚀 Начать курс</span>
+                </button>
+                {% endif %}
             {% endif %}
         </div>
+        {% endif %}
     </div>
 
     <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
@@ -124,10 +131,15 @@
                             <i data-feather="clock" class="w-4 h-4 mr-1"></i>
                             On Review
                         </span>
-                        {% elif quest.slug in completed %}
+                        {% elif quest.slug in success %}
                         <span class="flex items-center text-blue-500 text-xs mb-2">
                             <i data-feather="check" class="w-4 h-4 mr-1"></i>
                             Completed
+                        </span>
+                        {% elif quest.slug in failed %}
+                        <span class="flex items-center text-red-500 text-xs mb-2">
+                            <i data-feather="frown" class="w-4 h-4 mr-1"></i>
+                            failed
                         </span>
                         {% endif %}
                     </div>
