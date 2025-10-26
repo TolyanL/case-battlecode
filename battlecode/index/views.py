@@ -5,21 +5,25 @@ from battlecode.pagedata import PageData
 from quests.models import Quest
 from user.models import Profile
 
-current_page = "index"
+
+curr_page = "index"
 
 
 def index(request):
     pd = PageData(
         title="BattleCode — Learn by Doing",
         description="BattleCode — образовательная игровая платформа для программистов.",
-        curr_page=current_page,
+        curr_page=curr_page,
     )
 
-    featured_quests = Quest.objects.filter(active=True).order_by("-created_at")[:4]
+    active_quests = Quest.objects.filter(active=True)
+
+    course_quests = active_quests.filter(course_quests__course__enrolled_profiles__user=request.user)
+    free_quests = active_quests.filter(course_quests__isnull=True)
 
     context = {
         "pd": pd,
-        "featured_quests": featured_quests,
+        "featured_quests": (course_quests | free_quests)[:6],
     }
 
     if request.user.is_authenticated:

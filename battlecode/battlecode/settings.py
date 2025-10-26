@@ -190,6 +190,7 @@ SIMPLEUI_ICON = {
     "Peer_Review": "fa-solid fa-eye",
     "Взятые задания": "fa-solid fa-square-check",
     "Ревью": "fa-solid fa-tasks",
+    "Прогресс по курсам": "fa-solid fa-tasks",
     # User
     "User": "fa-solid fa-user",
     "Профили": "fa-solid fa-id-card",

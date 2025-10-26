@@ -41,12 +41,16 @@ class Profile(models.Model):
         assignments = Assignment.objects.filter(
             Q(status="success") | Q(status="failed"),
             user=self.user,
+            assigned_at__isnull=False,
+            completed_at__isnull=False,
         ).values("assigned_at", "completed_at")
 
         work_time = 0
         for item in assignments:
-            if item["completed_at"]:
-                work_time += (item["completed_at"] - item["assigned_at"]).total_seconds() / 3600
+            assigned = item["assigned_at"]
+            completed = item["completed_at"]
+            if completed and assigned and completed > assigned:
+                work_time += (completed - assigned).total_seconds() / 3600
 
         return round(work_time, 2)
 
