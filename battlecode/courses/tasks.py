@@ -13,7 +13,7 @@ logger = getLogger(__name__)
 def check_finished_courses() -> None:
     courses = Course.objects.filter(active=True).all()
 
-    logger.info(f"Checking courses: {courses}")
+    logger.info(f"Checking courses: {len(courses)}")
 
     for c in courses:
         total_quests = c.quests.count()
@@ -30,4 +30,4 @@ def check_finished_courses() -> None:
                 progress.complete()
                 completed += 1
 
-        logger.info(f"Course {c} completed: {completed}/{total_quests} ({len(enrolled_users)} users)")
+                logger.info(f"Course {c} completed: {progress.user.username}")

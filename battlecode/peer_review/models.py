@@ -43,6 +43,8 @@ class Assignment(models.Model):
         user_profile = self.user.profile
         give_pts = self.reviews_avg_pts
 
+        self.completed_at = timezone.now()
+
         if give_pts > 0:
             self.status = "success"
         else:
@@ -64,6 +66,7 @@ class Assignment(models.Model):
         user_profile.pts += self.quest.penalty * -1
 
         self.status = "failed"
+        self.completed_at = timezone.now()
 
         user_profile.save()
         self.save()
@@ -111,7 +114,6 @@ class CourseProgress(models.Model):
                 user=self.user,
                 quest__in=self.course.quests.all(),
                 status__in=["success", "failed"],
-                completed_at__isnull=False,
                 completed_at__gte=break_delta(),
             )
             .values("quest")

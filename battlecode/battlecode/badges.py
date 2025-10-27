@@ -22,5 +22,4 @@ class DefaultBadges:
     def ALL_BADGES(self) -> list[dict]:
         return self.RANK_BADGES + [
             self.COMPL_100_QUESTS,
-            self.ALL_TYPES_QUESTS,
         ]

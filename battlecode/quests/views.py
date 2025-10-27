@@ -108,6 +108,8 @@ class QuestDetailView(LoginRequiredMixin, DetailView):
             elif assignment.status in ["success", "failed"]:
                 if assignment.completed_at and assignment.completed_at > break_delta():
                     button_state = "to_reviews"
+                else:
+                    button_state = "on_timeout"
 
         context["button_state"] = button_state
 
