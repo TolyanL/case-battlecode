@@ -1,8 +1,11 @@
 from datetime import timedelta
-from django.utils import timezone
-from hypothesis import given
+
+from hypothesis import given, settings
 from hypothesis.extra import django
 
+from django.test import Client
+from django.utils import timezone
+from django.shortcuts import reverse
 from django.contrib.auth.models import Group, User
 
 from battlecode.stats_settings import RANKS
@@ -15,9 +18,9 @@ from user.models import Profile
 
 
 class TestProfileModel(django.TestCase):
-    @given(django.from_model(User))
-    def test_rank(self, instance: User):
-        profile = Profile.objects.create(user=instance)
+    def test_rank(self):
+        user = User.objects.create(username="worker")
+        profile = Profile.objects.create(user=user)
 
         rank_1 = RANKS[0][1][7:].lower().strip()
         rank_2 = RANKS[9][1][7:].lower().strip()
@@ -34,9 +37,9 @@ class TestProfileModel(django.TestCase):
         self.assertEqual(profile.rank, 10)
         self.assertEqual(profile.rank_as_str, rank_2)
 
-    @given(django.from_model(User))
-    def test_rank_neg(self, instance: User):
-        profile = Profile.objects.create(user=instance)
+    def test_rank_neg(self):
+        user = User.objects.create(username="worker")
+        profile = Profile.objects.create(user=user)
 
         profile.pts = -100
         profile.save()
@@ -93,3 +96,84 @@ class TestProfileModel(django.TestCase):
         work_time = profile.total_worktime
 
         self.assertAlmostEqual(work_time, 3.5, places=2)
+
+
+class TestUserProfileView(django.TestCase):
+    def test_user_profile_me(self):
+        user = User.objects.create_user(username="testuser", password="secret")
+        lang = Language.objects.create(name="Python", color="#3776ab")
+        checklist = QuestReviewChecklist.objects.create()
+        quest = Quest.objects.create(
+            title="Test Quest",
+            description="Desc",
+            difficulty="easy",
+            task="Code it",
+            language=lang,
+            checklist=checklist,
+        )
+
+        now = timezone.now()
+        assignment = Assignment(user=user, quest=quest, status="success")
+        assignment.save()
+        Assignment.objects.filter(pk=assignment.pk).update(assigned_at=now - timedelta(hours=1), completed_at=now)
+
+        client = Client()
+        client.login(username="testuser", password="secret")
+
+        response = client.get(reverse("user_profile", kwargs={"username": "me"}))
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(response.context["user"].username, "testuser")
+        self.assertIsInstance(response.context["profile"], Profile)
+        self.assertEqual(response.context["total_assignments"], 1)
+        self.assertEqual(len(response.context["recent_activities"]), 1)
+        self.assertEqual(len(response.context["preferred_languages_text"]), 1)
+
+    def test_user_profile_other_user(self):
+        User.objects.create_user(username="viewer", password="secret")
+        target = User.objects.create_user(username="target", password="secret2")
+
+        client = Client()
+        client.login(username="viewer", password="secret")
+
+        response = client.get(reverse("user_profile", kwargs={"username": "target"}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["user"].username, "target")
+        self.assertTrue(hasattr(target, "profile"))
+
+    @given(django.from_model(User))
+    @settings(deadline=None)
+    def test_user_profile_exists_for_any_user(self, user: User):
+        Profile.objects.get_or_create(user=user)
+
+        group, _ = Group.objects.get_or_create(name=STUDENT_GROUP)
+        user.groups.add(group)
+
+        lang = Language.objects.create(name="JS", color="#f1e05a")
+        checklist = QuestReviewChecklist.objects.create()
+        quest = Quest.objects.create(
+            title=f"Quest for {user.username}",
+            description="Auto",
+            difficulty="medium",
+            task="Return 42",
+            language=lang,
+            checklist=checklist,
+        )
+
+        now = timezone.now()
+        ass = Assignment(user=user, quest=quest, status="success")
+        ass.save()
+        Assignment.objects.filter(pk=ass.pk).update(assigned_at=now - timedelta(minutes=30), completed_at=now)
+
+        user.set_password("pass")
+        user.save()
+        client = Client()
+        client.login(username=user.username, password="pass")
+
+        response = client.get(reverse("user_profile", kwargs={"username": "me"}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["user"].id, user.id)
+        self.assertGreaterEqual(response.context["profile"].total_worktime, 0)
