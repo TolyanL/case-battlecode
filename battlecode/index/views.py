@@ -18,12 +18,17 @@ def index(request):
 
     active_quests = Quest.objects.filter(active=True)
 
-    course_quests = active_quests.filter(course_quests__course__enrolled_profiles__user=request.user)
-    free_quests = active_quests.filter(course_quests__isnull=True)
+    if request.user.is_authenticated:
+        course_quests = active_quests.filter(course_quests__course__enrolled_profiles__user=request.user)
+        free_quests = active_quests.filter(course_quests__isnull=True)
+
+        featured_courses = (course_quests | free_quests)[:6]
+    else:
+        featured_courses = active_quests.filter(course_quests__isnull=True)[:6]
 
     context = {
         "pd": pd,
-        "featured_quests": (course_quests | free_quests)[:6],
+        "featured_quests": featured_courses,
     }
 
     if request.user.is_authenticated:

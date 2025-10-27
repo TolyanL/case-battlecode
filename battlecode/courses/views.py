@@ -1,4 +1,5 @@
 from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from battlecode.pagedata import PageData
 from battlecode.quest_settings import break_delta
@@ -52,7 +53,7 @@ class CoursesListView(ListView):
         return context
 
 
-class CourseDetailView(DetailView):
+class CourseDetailView(LoginRequiredMixin, DetailView):
     model = Course
     template_name = "course_detail.html"
 
