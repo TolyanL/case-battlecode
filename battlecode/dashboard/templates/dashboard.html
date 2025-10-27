@@ -5,7 +5,8 @@
 {% block description %}{{ pd.description }}{% endblock description %}
 
 {% block content %}
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Добавлен класс `items-start` ниже -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
   <aside class="lg:col-span-1 bg-gray-900 rounded-2xl p-6 border border-gray-800">
     <div class="mb-8">
       <h3 class="text-lg font-semibold text-gray-400 mb-1">Ваши PTS</h3>
@@ -33,7 +34,8 @@
   </aside>
 
   <section class="lg:col-span-2 space-y-8">
-    <div>
+    <!-- В работе -->
+    <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-white">В работе</h2>
         <a href="{% url 'quests_all' %}?status=in_progress" class="text-primary text-sm hover:underline">Все</a>
@@ -41,9 +43,18 @@
 
       {% for item in in_progress %}
         <div class="bg-gray-800 rounded-xl p-4 mb-3 border border-gray-700">
-          <div class="flex justify-between">
+          <div class="flex justify-between items-start">
             <h4 class="font-bold text-white">{{ item.quest.title }}</h4>
-            <span class="text-cyan-400 text-sm">{{ item.quest.pts }} PTS</span>
+            <div class="flex items-center gap-1 flex-wrap justify-end">
+              {% if item.quest.language %}
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full"
+                      style="background-color: {{ item.quest.language.bg_color }};
+                             color: {{ item.quest.language.color }};">
+                  {{ item.quest.language.name }}
+                </span>
+              {% endif %}
+              <span class="text-cyan-400 text-sm">{{ item.quest.pts }} PTS</span>
+            </div>
           </div>
           <p class="text-gray-400 text-sm mt-1">{{ item.quest.description|truncatewords:12 }}</p>
           <a href="{% url 'quest_work' item.quest.slug %}" class="mt-3 inline-block text-primary hover:underline text-sm">Продолжить</a>
@@ -51,17 +62,29 @@
       {% empty %}
         <p class="text-gray-500">Нет активных квестов.</p>
       {% endfor %}
-
     </div>
 
-    <div>
+    <!-- На проверке -->
+    <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-white">На проверке</h2>
         <a href="{% url 'quests_all' %}?status=on_review" class="text-primary text-sm hover:underline">Все</a>
       </div>
       {% for item in on_review %}
-        <div class="bg-gray-800 rounded-xl p-4 mb-3 border border-gray-700">
-          <h4 class="font-bold text-white">{{ item.quest.title }}</h4>
+        <div class="bg-gray-900 rounded-xl p-4 mb-3 border border-gray-700">
+          <div class="flex justify-between items-start">
+            <h4 class="font-bold text-white">{{ item.quest.title }}</h4>
+            <div class="flex items-center gap-1">
+              {% if item.quest.language %}
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full"
+                      style="background-color: {{ item.quest.language.bg_color }};
+                             color: {{ item.quest.language.color }};">
+                  {{ item.quest.language.name }}
+                </span>
+              {% endif %}
+              <span class="text-cyan-400 text-sm">{{ item.quest.pts }} PTS</span>
+            </div>
+          </div>
           <p class="text-gray-400 text-sm mt-1">Ожидает проверки</p>
         </div>
       {% empty %}
@@ -69,20 +92,32 @@
       {% endfor %}
     </div>
 
-    <div>
+    <!-- Недавно завершено -->
+    <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
       <h2 class="text-xl font-bold text-white mb-4">Недавно завершено</h2>
       {% for item in completed_recent %}
-        <div class="flex justify-between items-center py-2 border-b border-gray-800">
-          <span class="text-white">{{ item.quest.title }}</span>
-          <span class="text-sm {% if item.status == 'success' %}text-green-400{% else %}text-red-400{% endif %}">
-            {% if item.status == 'success' %}
-            +{{ item.given_pts }}
-            {% else %}
-                {% if item.quest.penalty > 0 %}
-                -{{ item.quest.penalty }}
-                {% else %}0{% endif %}
-            {% endif %}
-          </span>
+        <div class="bg-gray-900 rounded-xl p-4 mb-3 border border-gray-700">
+          <div class="flex justify-between items-center">
+            <span class="text-white font-medium">{{ item.quest.title }}</span>
+            <div class="flex items-center gap-1">
+              {% if item.quest.language %}
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full"
+                      style="background-color: {{ item.quest.language.bg_color }};
+                             color: {{ item.quest.language.color }};">
+                  {{ item.quest.language.name }}
+                </span>
+              {% endif %}
+              <span class="text-sm {% if item.status == 'success' %}text-green-400{% else %}text-red-400{% endif %}">
+                {% if item.status == 'success' %}
+                  +{{ item.given_pts }}
+                {% else %}
+                  {% if item.quest.penalty > 0 %}
+                    -{{ item.quest.penalty }}
+                  {% else %}0{% endif %}
+                {% endif %}
+              </span>
+            </div>
+          </div>
         </div>
       {% empty %}
         <p class="text-gray-500">Нет завершённых квестов.</p>
