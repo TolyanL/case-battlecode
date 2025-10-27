@@ -1,14 +1,14 @@
 RANKS = (
-    ("1", "Lvl. 1 Noobius I"),
-    ("2", "Lvl. 2 Noobius II"),
-    ("3", "Lvl. 3 Strategist I"),
-    ("4", "Lvl. 4 Strategist II"),
-    ("5", "Lvl. 5 Innovator I"),
-    ("6", "Lvl. 6 Innovator II"),
-    ("7", "Lvl. 7 Zero Bug I"),
-    ("8", "Lvl. 8 Zero Bug II"),
-    ("9", "Lvl. 9 Code Father I"),
-    ("10", "Lvl. 10 Code Gather II"),
+    ("1", "Lvl. 1 Noobius II"),
+    ("2", "Lvl. 2 Noobius I"),
+    ("3", "Lvl. 3 Strategist II"),
+    ("4", "Lvl. 4 Strategist I"),
+    ("5", "Lvl. 5 Innovator II"),
+    ("6", "Lvl. 6 Innovator I"),
+    ("7", "Lvl. 7 Zero Bug II"),
+    ("8", "Lvl. 8 Zero Bug I"),
+    ("9", "Lvl. 9 Code Father II"),
+    ("10", "Lvl. 10 Code Father I"),
 )
 
 RANKS_COLORS = [
