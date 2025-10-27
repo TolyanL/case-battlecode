@@ -33,6 +33,7 @@
     {% endif %}
   </div>
 
+  {% if user.is_authenticated %}
   <div>
     <h2 class="text-2xl font-bold text-white mb-6">Новые квесты</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -52,5 +53,6 @@
       {% endfor %}
     </div>
   </div>
+  {% endif %}
 </div>
 {% endblock content %}

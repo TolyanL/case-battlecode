@@ -41,10 +41,14 @@ def side_data() -> dict:
 
     data["total_matches"] = Assignment.objects.filter(
         Q(status="success") | Q(status="failed"),
+        user__is_active=True,
+        user__is_staff=False,
     ).count()
 
     avg_pts = Assignment.objects.filter(
         Q(status="success") | Q(status="failed"),
+        user__is_active=True,
+        user__is_staff=False,
     ).aggregate(avg_given_pts=Avg("given_pts"))["avg_given_pts"]
     data["average_pts"] = avg_pts if avg_pts else 0
 

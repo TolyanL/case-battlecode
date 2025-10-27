@@ -25,15 +25,17 @@ class QuestsAllView(ListView, LoginRequiredMixin):
 
     def get_queryset(self):
         user = self.request.user
-        if not user.is_authenticated:
-            return Quest.objects.none()
-
-        quests_course = Quest.objects.filter(course_quests__course__enrolled_profiles__user=user)
-        quests_non_course = Quest.objects.filter(course_quests__isnull=True)
-
-        base_quests = (quests_course | quests_non_course).filter(active=True)
-
         status_filter = self.request.GET.get("status")
+
+        if not user.is_authenticated:
+            base_quests = Quest.objects.filter(course_quests__isnull=True, active=True)
+            return base_quests
+
+        quests_from_user_courses = Quest.objects.filter(
+            course_quests__course__enrolled_profiles__user=user, active=True
+        )
+        quests_without_courses = Quest.objects.filter(course_quests__isnull=True, active=True)
+        base_quests = (quests_from_user_courses | quests_without_courses).distinct()
 
         assignments = Assignment.objects.filter(user=user, quest__in=base_quests)
 
@@ -52,8 +54,8 @@ class QuestsAllView(ListView, LoginRequiredMixin):
         elif status_filter == "on_cooldown":
             return base_quests.filter(slug__in=completed_slugs)
         elif status_filter == "available":
-            all_filtered = accepted_slugs | review_slugs | completed_slugs
-            return base_quests.exclude(slug__in=all_filtered)
+            taken_slugs = accepted_slugs | review_slugs | completed_slugs
+            return base_quests.exclude(slug__in=taken_slugs)
         else:
             return base_quests
 
@@ -79,7 +81,7 @@ class QuestsAllView(ListView, LoginRequiredMixin):
         return context
 
 
-class QuestDetailView(DetailView, LoginRequiredMixin):
+class QuestDetailView(LoginRequiredMixin, DetailView):
     model = Quest
     template_name = "quest_detail.html"
 
