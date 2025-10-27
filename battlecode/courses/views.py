@@ -66,7 +66,7 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
         ).first()
 
         c.progress = ct.progress_percent if ct else 0
-        c.completed = ct.completed_at > break_delta_c() if ct.completed_at else False
+        c.completed = ct.completed_at > break_delta_c() if ct and ct.completed_at else False
 
         return c
 

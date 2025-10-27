@@ -31,7 +31,7 @@ class QuestsAllView(ListView, LoginRequiredMixin):
         quests_course = Quest.objects.filter(course_quests__course__enrolled_profiles__user=user)
         quests_non_course = Quest.objects.filter(course_quests__isnull=True)
 
-        base_quests = quests_course | quests_non_course
+        base_quests = (quests_course | quests_non_course).filter(active=True)
 
         status_filter = self.request.GET.get("status")
 
