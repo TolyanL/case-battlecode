@@ -54,10 +54,6 @@ class BadgeManager:
             key = self._quests_key + suffix
             setattr(self.__class__, prop_name, _make_quest_property(status, key))
 
-    @property
-    def all_quests(self) -> int:
-        return self.active_quests + self.successful_quests + self.completed_quests + self.failed_quests
-
     def _has_badge(self, badge_slug: str) -> bool:
         badge_key = f"{self._badges_key}:{badge_slug}"
 
@@ -92,24 +88,12 @@ class BadgeManager:
         if self.success_quests >= 100:
             self._grant_badge(DefaultBadges.COMPL_100_QUESTS["slug"])
 
-    def badge_all_quests(self):
-        if all(
-            [
-                self.active_quests > 0,
-                self.success_quests > 0,
-                self.completed_quests > 0,
-                self.failed_quests > 0,
-            ],
-        ):
-            self._grant_badge(DefaultBadges.ALL_TYPES_QUESTS["slug"])
-
     def badge_pts(self):
         slug = checkers.check_pts(self.user_profile)
         self._grant_badge(slug)
 
     def check_all_badges(self):
         self.badge_smartman()
-        self.badge_all_quests()
         self.badge_pts()
 
     def _flush(self):

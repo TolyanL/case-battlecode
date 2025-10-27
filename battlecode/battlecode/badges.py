@@ -8,12 +8,6 @@ class DefaultBadges:
         "slug": "smartman",
         "color": "#54f9ff",
     }
-    ALL_TYPES_QUESTS = {
-        "name": "На Все Руки Мастер",
-        "description": "Видел все типы квестов",
-        "slug": "jack_of_all_trades",
-        "color": "#ffbf00",
-    }
     RANK_BADGES = [
         {
             "name": RANKS[i][1][7:],
@@ -26,4 +20,7 @@ class DefaultBadges:
 
     @property
     def ALL_BADGES(self) -> list[dict]:
-        return self.RANK_BADGES + [self.COMPL_100_QUESTS, self.ALL_TYPES_QUESTS]
+        return self.RANK_BADGES + [
+            self.COMPL_100_QUESTS,
+            self.ALL_TYPES_QUESTS,
+        ]

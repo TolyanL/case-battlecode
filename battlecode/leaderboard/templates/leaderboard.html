@@ -79,7 +79,7 @@
                 </div>
                 <div class="md:col-span-3">
                     <span class="font-medium text-white">
-                        {{ entry.profile.user.username }}
+                        <a href="{{ entry.profile.get_absolute_url }}">{{ entry.profile.user.username }}</a>
                         {% if user.is_authenticated and entry.profile.user == user %}
                             <span class="text-primary">(you)</span>
                         {% endif %}

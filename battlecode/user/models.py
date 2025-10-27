@@ -1,8 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.db.models import Q
+from django.contrib.auth.models import Group, User
+from django.db.models import Q, Count
+from django.shortcuts import reverse
 
 from battlecode.stats_settings import RANKS, get_rank
+from battlecode.groups import STUDENT_GROUP
 
 from peer_review.models import Assignment
 from badges.models import Badge
@@ -55,13 +57,31 @@ class Profile(models.Model):
         return round(work_time, 2)
 
     @property
-    def placement(self):
-        return Profile.objects.filter(user__is_active=True, pts__gt=self.pts).count() + 1
+    def placement(self) -> int:
+        student_group = Group.objects.filter(name=STUDENT_GROUP).first()
+        if not student_group:
+            return 1
+
+        student_users = student_group.user_set.filter(
+            is_active=True,
+            is_staff=False,
+            is_superuser=False,
+        )
+
+        higher_pts_count = Profile.objects.filter(
+            user__in=student_users,
+            pts__gt=self.pts,
+        ).count()
+
+        return higher_pts_count + 1
 
     def save(self, *args, **kwargs):
         if self.pts < 0:
             self.pts = 0
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("user_profile", args=[self.user.username])
 
     def __str__(self):
         return f"Profile for {self.user.username}"
