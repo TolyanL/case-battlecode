@@ -18,7 +18,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: python:3.12-slim-bookworm
+    container: python:3.12
 
     steps:
       - uses: actions/checkout@v5
