@@ -8,6 +8,7 @@ from peer_review.models import Assignment
 from courses.models import Course
 from peer_review.models import CourseProgress
 
+
 curr_page = "dashboard"
 
 
@@ -36,21 +37,17 @@ def dashboard(request):
 
     enrolled_courses = Course.objects.filter(enrolled_profiles__user=request.user)
     course_progress = []
+
     for course in enrolled_courses:
-        progress_obj, _ = CourseProgress.objects.get_or_create(
-            user=request.user,
-            course=course,
-            defaults={"status": "active"}
-        )
+        progress_obj = CourseProgress.objects.filter(user=request.user, course=course).first()
+        if not progress_obj:
+            continue
+
         percent = progress_obj.progress_percent
         total = course.quests.count()
         done = progress_obj.completed_quests_count
-        course_progress.append({
-            "course": course,
-            "total": total,
-            "done": done,
-            "percent": percent
-        })
+
+        course_progress.append({"course": course, "total": total, "done": done, "percent": percent})
 
     pd = PageData(
         title="Dashboard",

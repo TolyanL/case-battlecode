@@ -5,7 +5,6 @@
 {% block description %}{{ pd.description }}{% endblock description %}
 
 {% block content %}
-<!-- Добавлен класс `items-start` ниже -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
   <aside class="lg:col-span-1 bg-gray-900 rounded-2xl p-6 border border-gray-800">
     <div class="mb-8">
@@ -20,7 +19,7 @@
       {% for item in course_progress %}
         <div class="mb-4">
           <div class="flex justify-between text-sm mb-1">
-            <span class="text-gray-400">{{ item.course.title }}</span>
+            <a href="{{ item.course.get_absolute_url }}" class="text-gray-400">{{ item.course.title }}</a>
             <span class="text-white">{{ item.done }} / {{ item.total }}</span>
           </div>
           <div class="w-full bg-gray-800 rounded-full h-2">
@@ -34,7 +33,6 @@
   </aside>
 
   <section class="lg:col-span-2 space-y-8">
-    <!-- В работе -->
     <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-white">В работе</h2>
@@ -64,7 +62,6 @@
       {% endfor %}
     </div>
 
-    <!-- На проверке -->
     <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold text-white">На проверке</h2>
@@ -92,7 +89,6 @@
       {% endfor %}
     </div>
 
-    <!-- Недавно завершено -->
     <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
       <h2 class="text-xl font-bold text-white mb-4">Недавно завершено</h2>
       {% for item in completed_recent %}
