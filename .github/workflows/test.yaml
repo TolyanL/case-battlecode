@@ -41,7 +41,7 @@ jobs:
       - name: 🧪 Run tests
         run: |
           sleep 10
-          docker compose exec -T case_web uv run python battlecode/manage.py test
+          docker compose exec -T case_web python manage.py test
 
       - name: 🧹 Stop containers
         if: always()
