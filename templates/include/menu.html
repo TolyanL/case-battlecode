@@ -59,11 +59,19 @@
         </nav>
     </div>
     <div class="flex items-center space-x-2">
+        {% if user.is_authenticated %}
         <a href="{% url 'logout' %}" 
            title="Выход"
            class="p-2 rounded-full hover:bg-gray-800 transition">
             <i data-feather="log-out" class="w-5 h-5"></i> 
         </a>
+        {% else %}
+        <a href="{% url 'login' %}" 
+           title="Вход"
+           class="p-2 rounded-full hover:bg-gray-800 transition">
+            <i data-feather="user" class="w-5 h-5"></i> 
+        </a>
+        {% endif %}
         <button id="mobile-menu-button" class="p-2 rounded-full hover:bg-gray-800 transition md:hidden">
             <i data-feather="menu" class="w-5 h-5"></i>
         </button>
