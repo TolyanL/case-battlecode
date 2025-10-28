@@ -1,0 +1,21 @@
+{
+  "name": "Code Battle",
+  "short_name": "Code Battle",
+  "icons": [
+    {
+      "src": "/favicon/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#26293d",
+  "background_color": "#191c22",
+  "display": "standalone"
+}

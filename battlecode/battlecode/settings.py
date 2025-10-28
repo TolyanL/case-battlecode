@@ -210,7 +210,7 @@ SIMPLEUI_ICON = {
 SIMPLEUI_LOGIN_PARTICLES = True
 
 # Custom home page (can be a link)
-# SIMPLEUI_LOGO = "/static/favicon/logo.png"
+SIMPLEUI_LOGO = "/static/favicon/logo_w.png"
 
 # SimpleUI Info
 SIMPLEUI_HOME_INFO = False
