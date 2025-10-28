@@ -163,9 +163,9 @@ class TestUserProfileView(django.TestCase):
         )
 
         now = timezone.now()
-        ass = Assignment(user=user, quest=quest, status="success")
-        ass.save()
-        Assignment.objects.filter(pk=ass.pk).update(assigned_at=now - timedelta(minutes=30), completed_at=now)
+        a = Assignment(user=user, quest=quest, status="success")
+        a.save()
+        Assignment.objects.filter(pk=a.pk).update(assigned_at=now - timedelta(minutes=30), completed_at=now)
 
         user.set_password("pass")
         user.save()
