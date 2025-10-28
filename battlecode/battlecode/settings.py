@@ -17,12 +17,6 @@ SECRET_KEY = "django-insecure-z-9wd4vh085_im9505wo_o7owy!kq)*kiavcls*60m9-k-r!x!
 # DEBUG = os.environ.get("DJANGO_ENV", "develop") == "develop"
 DEBUG = True
 
-if DEBUG:
-    print("DEBUG MODE")
-else:
-    print("PRODUCTION MODE")
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

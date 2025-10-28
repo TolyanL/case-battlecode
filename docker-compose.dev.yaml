@@ -42,6 +42,7 @@ services:
       - .env
     depends_on:
       - case_redis
+      - case_celery_beat
       - case_db
 
   case_celery_beat:
