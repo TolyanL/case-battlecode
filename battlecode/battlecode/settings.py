@@ -14,7 +14,13 @@ SECRET_KEY = "django-insecure-z-9wd4vh085_im9505wo_o7owy!kq)*kiavcls*60m9-k-r!x!
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = os.environ.get("DJANGO_ENV", "develop") == "develop"
 DEBUG = True
+
+if DEBUG:
+    print("DEBUG MODE")
+else:
+    print("PRODUCTION MODE")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,7 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv("../.env.dev" if DEBUG else ".env")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["case_web", "localhost", "127.0.0.1"]
+INTERNAL_IPS = ["localhost", "127.0.0.1"]
 CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1", "http://localhost"]
 
 
@@ -234,11 +241,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR.parent.joinpath("collected_static")
+STATIC_ROOT = BASE_DIR.joinpath("staticfiles")
 STATICFILES_DIRS = [
-    BASE_DIR.parent / "static",
+    BASE_DIR.parent.joinpath("static"),
 ]
 
 MEDIA_URL = "media/"

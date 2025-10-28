@@ -1,0 +1,35 @@
+name: main
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Install the latest version of uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: 📦 Install dependencies
+        run: uv sync
+
+      - name: 🧪 Lint with Ruff
+        run: uv run ruff check src
+
+      - name: 🧪 Run tests
+        run: uv run battlecode/manage.py test
+

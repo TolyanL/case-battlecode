@@ -16,5 +16,8 @@ python manage.py create_badges
 # Create user groups
 python manage.py create_user_groups
 
+# Collect static files
+python manage.py collectstatic --no-input --clear
+
 # Start the main process
 exec "$@"
