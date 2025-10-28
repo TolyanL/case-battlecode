@@ -1,4 +1,4 @@
-name: main
+name: test
 
 on:
   workflow_dispatch:
@@ -6,20 +6,11 @@ on:
     branches: [main]
 
 permissions:
-
   contents: read
-
-env:
-  DB_USER: ${{ secrets.POSTGRES_USER }}
-  DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-  DB_NAME: ${{ secrets.POSTGRES_DB }}
-  DB_PORT: ${{ secrets.DB_PORT }}
-  REDIS_PORT: ${{ secrets.REDIS_PORT }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
 
     steps:
       - uses: actions/checkout@v5
@@ -40,6 +31,9 @@ jobs:
 
       - name: 🧪 Lint with Ruff
         run: uv run ruff check battlecode
+
+      - name: ⚙️ Create .env file from example
+        run: cp .env.example .env
 
       - name: 🐳 Build and run containers
         run: docker compose up -d --build
