@@ -126,7 +126,7 @@ class CourseProgress(models.Model):
     def progress_percent(self) -> int:
         total = self.course.quests.count()
         if total == 0:
-            return 100
+            return 0
 
         completed = self.completed_quests_count
         return int((completed / total) * 100)
