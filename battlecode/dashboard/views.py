@@ -16,10 +16,7 @@ def dashboard(request):
     if not request.user.is_authenticated:
         return redirect("login")
 
-    try:
-        profile = request.user.profile
-    except Profile.DoesNotExist:
-        profile = Profile
+    profile, _ = Profile.objects.get_or_create(user=request.user)
 
     pts = profile.pts if profile else 0
     rank = profile.rank_as_str if profile else "—"

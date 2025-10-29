@@ -72,7 +72,7 @@ class Assignment(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        if self.status not in ["active", "completed"]:
+        if self.id and self.status not in ["active", "completed"]:
             give_pts = self.reviews_avg_pts
             if give_pts == 0:
                 user_profile = self.user.profile
