@@ -2,6 +2,8 @@
 
 BattleCode is a gamified coding education platform that combines structured learning paths with peer review evaluation. Users complete coding quests, participate in courses, earn badges, and compete on leaderboards. The platform enforces quality through a mandatory peer review system where submissions are evaluated by other participants using structured checklists.
 
+🎥 Video presentation: [Yandex Disk](https://disk.yandex.ru/i/9cwt2q3-kSVEEw)
+
 
 ## 📜 Table of Contents
 - [Overview](#-battlecode)
@@ -218,3 +220,4 @@ User advancement mechanics:
 *   `js/buttons.js`: Quest action handlers.
 
 *   `js/mobile-menu.js`: Responsive menu toggle.
+
