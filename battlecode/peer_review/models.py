@@ -26,7 +26,7 @@ class Assignment(models.Model):
 
     given_pts = models.IntegerField(verbose_name="Полученные баллы", default=0)
 
-    code = models.TextField(verbose_name="Код")
+    code = models.TextField(verbose_name="Код", blank=True, null=True)
     status = models.CharField(
         max_length=20,
         choices=ASSIGNMENT_STATUS_CHOICES,
@@ -71,6 +71,23 @@ class Assignment(models.Model):
         user_profile.save()
         self.save()
 
+    def save(self, *args, **kwargs):
+        if self.status not in ["active", "completed"]:
+            give_pts = self.reviews_avg_pts
+            if give_pts == 0:
+                
+                user_profile = self.user.profile
+                if self.status == "failed":
+                    give_pts = self.quest.penalty * -1
+                    user_profile.pts += give_pts
+                if self.status == "success":
+                    give_pts = self.quest.pts
+                    user_profile.pts += give_pts
+
+                user_profile.save()
+            self.given_pts = give_pts
+        super().save(*args, **kwargs)
+
     @property
     def reviews(self) -> int:
         return Review.objects.filter(assignment=self).count()
@@ -78,6 +95,8 @@ class Assignment(models.Model):
     @property
     def reviews_avg_pts(self) -> int:
         values = Review.objects.filter(assignment=self).values_list("give_pts", flat=True)
+        if not len(values):
+            return 0
         return int(sum(values) / len(values))
 
     def __str__(self):
