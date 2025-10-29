@@ -4,22 +4,22 @@ BattleCode is a gamified coding education platform that combines structured lear
 
 
 ## 📜 Table of Contents
-- [Overview](#overview)
-- [System Purpose](#system-purpose)
-- [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Steps](#steps)
-- [High-Level Architecture](#high-level-architecture)
-- [Core Data Model](#core-data-model)
-- [Application Flow](#application-flow)
-- [Technology Stack](#technology-stack)
-- [Key Features](#key-features)
-  - [Quest System](#quest-system)
-  - [Peer Review System](#peer-review-system)
-  - [Course System](#course-system)
-  - [Progression System](#progression-system)
-- [Navigation Structure](#navigation-structure)
-- [Template Inheritance](#template-inheritance)
+- [Overview](#-battlecode)
+- [System Purpose](#-system-purpose)
+- [Installation](#-installation)
+  - [Prerequisites](#-prerequisites)
+  - [Steps](#-steps)
+- [High-Level Architecture](#️-high-level-architecture)
+- [Core Data Model](#️-core-data-model)
+- [Application Flow](#-application-flow)
+- [Technology Stack](#-technology-stack)
+- [Key Features](#-key-features)
+  - [Quest System](#️-quest-system)
+  - [Peer Review System](#-peer-review-system)
+  - [Course System](#-course-system)
+  - [Progression System](#-progression-system)
+- [Navigation Structure](#-navigation-structure)
+- [Template Inheritance](#-template-inheritance)
 
 
 ## 🎯 System Purpose
@@ -216,4 +216,5 @@ User advancement mechanics:
 *   `css/styles.css`: Custom styles.
 *   `js/tailwind.js`: Tailwind configuration.
 *   `js/buttons.js`: Quest action handlers.
+
 *   `js/mobile-menu.js`: Responsive menu toggle.
