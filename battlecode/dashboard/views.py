@@ -19,7 +19,7 @@ def dashboard(request):
     try:
         profile = request.user.profile
     except Profile.DoesNotExist:
-        profile = None
+        profile = Profile
 
     pts = profile.pts if profile else 0
     rank = profile.rank_as_str if profile else "—"
