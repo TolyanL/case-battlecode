@@ -56,7 +56,7 @@ The platform provides:
 
 3.  **Build and run the Docker containers:**
     ```bash
-    docker compose -f docker-compose.dev.yaml up -d --build
+    docker compose -f docker-compose.yaml up -d --build
     ```
 
 4.  **Access the application:**
@@ -220,4 +220,5 @@ User advancement mechanics:
 *   `js/buttons.js`: Quest action handlers.
 
 *   `js/mobile-menu.js`: Responsive menu toggle.
+
 
