@@ -26,6 +26,7 @@ class CoursesListView(ListView):
         user = self.request.user
 
         if user.is_authenticated:
+            u_profile, _ = Profile.objects.get_or_create(user=user)
             for c in courses:
                 cp = (
                     CourseProgress.objects.filter(
@@ -37,7 +38,7 @@ class CoursesListView(ListView):
                 )
                 c.progress = cp.progress_percent if cp else 0
 
-                if user.profile.courses.filter(id=c.id).exists():
+                if u_profile.courses.filter(id=c.id).exists():
                     c.enrolled = True
 
         return courses

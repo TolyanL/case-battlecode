@@ -1,9 +1,28 @@
-# Overview
+# 🎮 BattleCode
 
 BattleCode is a gamified coding education platform that combines structured learning paths with peer review evaluation. Users complete coding quests, participate in courses, earn badges, and compete on leaderboards. The platform enforces quality through a mandatory peer review system where submissions are evaluated by other participants using structured checklists.
 
 
-## System Purpose
+## 📜 Table of Contents
+- [Overview](#overview)
+- [System Purpose](#system-purpose)
+- [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Steps](#steps)
+- [High-Level Architecture](#high-level-architecture)
+- [Core Data Model](#core-data-model)
+- [Application Flow](#application-flow)
+- [Technology Stack](#technology-stack)
+- [Key Features](#key-features)
+  - [Quest System](#quest-system)
+  - [Peer Review System](#peer-review-system)
+  - [Course System](#course-system)
+  - [Progression System](#progression-system)
+- [Navigation Structure](#navigation-structure)
+- [Template Inheritance](#template-inheritance)
+
+
+## 🎯 System Purpose
 
 The platform provides:
 
@@ -14,7 +33,38 @@ The platform provides:
 *   **Competitive Features**: Public leaderboards displaying user rankings and statistics.
 
 
-## High-Level Architecture
+## 🚀 Installation
+
+### ✅ Prerequisites
+*   [uv](https://github.com/astral-sh/uv)
+*   [Docker](https://www.docker.com/)
+*   Python >= 3.13
+
+### 📝 Steps
+1.  **Sync Python dependencies:**
+    ```bash
+    uv sync
+    ```
+
+2.  **Create and configure environment file:**
+    ```bash
+    cp .env.example .env
+    ```
+    *(Edit `.env` if necessary)*
+
+3.  **Build and run the Docker containers:**
+    ```bash
+    docker compose -f docker-compose.dev.yaml up -d --build
+    ```
+
+4.  **Access the application:**
+    The site will be available at: `http://127.0.0.1:8000`
+
+    *   **Superuser credentials** are defined in your `.env` file (default: `admin` / `123`).
+
+
+
+## 🏗️ High-Level Architecture
 
 ![alt text](/docs/img/high-level-architecture.png)
 
@@ -27,7 +77,7 @@ The platform provides:
 *   `case_celery_beat`: Periodic task scheduler.
 
 
-## Core Data Model
+## 🗃️ Core Data Model
 
 ![alt text](/docs/img/core-data-model.png)
 
@@ -42,7 +92,7 @@ The platform provides:
 *   **Badge**: Achievement awards linked to quests and courses.
 
 
-## Application Flow
+## 🔄 Application Flow
 
 ![alt text](/docs/img/application-flow.png)
 
@@ -59,7 +109,7 @@ The platform provides:
 *   `give_up_quest(slug)`: Sets `Assignment` to `status='failed'`, applies `quest.penalty` to user points.
 
 
-## Technology Stack
+## 💻 Technology Stack
 
 | Component | Technology | Purpose | Configuration |
 | :--- | :--- | :--- | :--- |
@@ -83,7 +133,7 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": timedelta(minutes=1)
     },
     "check-finished-courses": {
-        "task": "courses.tasks.check_finished_courses", 
+        "task": "courses.tasks.check_finished_courses",
         "schedule": timedelta(minutes=5)
     }
 }
@@ -95,9 +145,9 @@ CELERY_BEAT_SCHEDULE = {
 *   `check_finished_courses`: Detects course completions, awards course badges via `BadgeManager`.
 
 
-## Key Features
+## ✨ Key Features
 
-### Quest System
+### 🗺️ Quest System
 
 Coding challenges with configurable parameters:
 
@@ -108,7 +158,7 @@ Coding challenges with configurable parameters:
 *   **Skills**: Many-to-many relationship with `Skill` model.
 *   **Language**: Foreign key to `Language` model with `bg_color` and `color` fields.
 
-### Peer Review System
+### 👀 Peer Review System
 
 Community-driven evaluation process:
 
@@ -118,7 +168,7 @@ Community-driven evaluation process:
 *   Points calculated via `give_pts` field based on checklist answers.
 *   Average review score determines success/failure threshold.
 
-### Course System
+### 📚 Course System
 
 Structured learning paths:
 
@@ -128,7 +178,7 @@ Structured learning paths:
 *   Course-specific badges awarded upon completion.
 *   Enrollment controls quest visibility in `QuestsAllView`.
 
-### Progression System
+### 🏆 Progression System
 
 User advancement mechanics:
 
@@ -139,7 +189,7 @@ User advancement mechanics:
 *   **Statistics**: Total work time, preferred languages, recent activity.
 
 
-## Navigation Structure
+## 🧭 Navigation Structure
 
 ![alt text](/docs/img/navigation-structure-diagram.png)
 
@@ -148,7 +198,7 @@ User advancement mechanics:
 **Authentication**: All views except landing page require `LoginRequiredMixin` or `@login_required` decorator. Two-factor authentication enforced via `django_otp.middleware.OTPMiddleware`.
 
 
-## Template Inheritance
+## 🎨 Template Inheritance
 
 ![alt text](/docs/img/template-inheritance.png)
 
