@@ -75,7 +75,6 @@ class Assignment(models.Model):
         if self.status not in ["active", "completed"]:
             give_pts = self.reviews_avg_pts
             if give_pts == 0:
-                
                 user_profile = self.user.profile
                 if self.status == "failed":
                     give_pts = self.quest.penalty * -1

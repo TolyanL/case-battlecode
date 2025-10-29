@@ -116,7 +116,7 @@ class TestAssignmentModel(django.TestCase):
         self.assignment.fail()
 
         self.assertEqual(self.assignment.status, "failed")
-        self.assertEqual(self.assignment.given_pts, 0)
+        self.assertEqual(self.assignment.given_pts, -10)
 
         self.profile.refresh_from_db()
 
