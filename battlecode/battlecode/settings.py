@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "peer_review",
     "dashboard",
     "user_auth",
+    "calendar_",
     "courses",
     "quests",
     "badges",

@@ -44,6 +44,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{% url 'calendar' %}"
+                    class="font-medium {% if pd.curr_page == 'calendar' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
+                        Calendar
+                    </a>
+                </li>
+                <li>
                     <a href="{% url 'leaderboard' %}"
                     class="font-medium {% if pd.curr_page == 'leaderboard' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
                         Leaderboard
