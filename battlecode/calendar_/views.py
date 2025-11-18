@@ -86,4 +86,3 @@ def calendar(request):
     }
 
     return render(request, "calendar.html", context)
-
