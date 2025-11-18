@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load get_item %}
 
-{% block title %}Календарь Квестов{% endblock title %}
+{% block title %}{{ pd.title }}{% endblock title %}
+{% block description %}{{ pd.description }}{% endblock description %}
 
 {% block content %}
 <div class="p-4 md:p-6 text-gray-200">
@@ -42,15 +43,27 @@
                                                 {{ quest.language.name }}
                                             </span>
                                         </div>
-                                        <h4 class="mb-2 flex items-center gap-2 text-lg font-bold text-white">
+
+                                        <h4 class="mb-2 flex items-center gap-2 text-base font-bold text-white">
                                             <span>🔥</span>
                                             <span>{{ quest.title }}</span>
                                         </h4>
                                         
                                         {% if assignment.status == 'success' %}
-                                        <p class="mb-4 text-sm font-semibold text-green-400">Победа</p>
+                                        <span class="flex items-center mb-4 text-xs font-semibold text-red-400">
+                                            <i data-feather="check-circle" class="mr-1.5 h-4 w-4"></i>
+                                            <span>Победа</span>
+                                        </span>
                                         {% elif assignment.status == 'failed' %}
-                                        <p class="mb-4 text-sm font-semibold text-red-400">Провалено</p>
+                                        <span class="flex items-center mb-4 text-xs font-semibold text-red-400">
+                                            <i data-feather="x-circle" class="mr-1.5 h-4 w-4"></i>
+                                            <span>Провалено{% if assignment.given_pts %}: {{ assignment.given_pts }} PTS{% endif %}</span>
+                                        </span>
+                                        {% elif assignment.status == 'completed' %}
+                                        <span class="flex items-center mb-4 text-xs font-semibold text-orange-400">
+                                            <i data-feather="clock" class="mr-1.5 h-4 w-4"></i>
+                                            <span>На проверке {{ assignment.reviews }}/{{ pd.max_reviews }}</span>
+                                        </span>
                                         {% else %}
                                         <p class="mb-4 text-sm font-semibold text-red-400/80">Дедлайн: {{ item.deadline|time:"H:i" }}</p>
                                         {% endif %}
@@ -59,9 +72,18 @@
                                         <div class="flex items-center justify-between text-sm text-gray-400">
                                             <span class="flex flex-wrap items-center gap-1.5">
                                                 <i data-feather="award" class="h-4 w-4 text-gray-500"></i>
-                                                {% for skill in quest.skills.all|slice:":2" %}
-                                                    <span class="rounded-full bg-indigo-500/20 px-2 py-1 text-xs text-indigo-300">{{ skill.name }}</span>
+                                                {% with skills=quest.skills %}
+                                                {% for skill in skills.all|slice:":2" %}
+                                                    <span class="rounded-full bg-indigo-500/20 px-2 py-1 text-xs text-indigo-300">
+                                                        {{ skill.name }}
+                                                    </span>
+                                                    {% if forloop.last and skills.count > 2 %}
+                                                    <span class="rounded-full bg-gray-500/20 px-2 py-1 text-xs text-indigo-300">
+                                                        +{{ skills.count|add:"-2" }}
+                                                    </span>
+                                                    {% endif %}
                                                 {% endfor %}
+                                                {% endwith %}
                                             </span>
                                             <span class="flex items-center">
                                                 <i data-feather="clock" class="mr-1.5 h-4 w-4 text-gray-500"></i>

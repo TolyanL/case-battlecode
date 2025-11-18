@@ -1,10 +1,16 @@
-from django.shortcuts import render
-from django.utils import timezone
-from django.contrib.auth.decorators import login_required
 from datetime import timedelta
+
+from django.utils import timezone
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
 from django.db.models import Q
 
+from battlecode.pagedata import PageData
 from peer_review.models import Assignment
+
+
+curr_page = "calendar"
 
 
 @login_required
@@ -39,7 +45,7 @@ def calendar(request):
         Assignment.objects.filter(
             Q(user=request.user),
             (
-                Q(status__in=["active", "in_progress", "on_review"])
+                Q(status__in=["active", "completed"])
                 & Q(assigned_at__date__gte=fetch_start_date)
                 & Q(assigned_at__date__lte=end_date)
             )
@@ -56,7 +62,7 @@ def calendar(request):
 
     for assignment in assignments:
         utc_timestamp = None
-        if assignment.status in ["success", "failed"] and assignment.completed_at:
+        if assignment.status in ["success", "failed", "completed"] and assignment.completed_at:
             utc_timestamp = assignment.completed_at
         elif assignment.quest.work_time:
             utc_timestamp = assignment.assigned_at + timedelta(hours=assignment.quest.work_time)
@@ -81,6 +87,11 @@ def calendar(request):
             day_data["time_blocks"][block_start_hour].append(event_info)
 
     context = {
+        "pd": PageData(
+            title="Календарь Квестов",
+            description="Календарь по всем квестам и заданиям.",
+            curr_page=curr_page,
+        ),
         "week_days": week_days,
         "hours_range": major_hours,
     }
