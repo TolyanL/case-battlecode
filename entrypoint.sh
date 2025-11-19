@@ -7,14 +7,14 @@ set -e
 echo "Applying database migrations..."
 python manage.py migrate
 
-# Create a superuser
-python manage.py create_superuser
-
 # Create default badges
 python manage.py create_badges
 
 # Create user groups
 python manage.py create_user_groups
+
+# Create a superuser
+python manage.py create_superuser
 
 # Collect static files
 python manage.py collectstatic --no-input --clear

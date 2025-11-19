@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
-# Uncomment next lines and add to the BCGroup.perms_model if nessesary
+# INFO: Uncomment next lines and add to the BCGroup.perms_model if nessesary
 # from user.models import Profile
 # from peer_review.models import Assignment, Review, ReviewChecklistAnswer
 
