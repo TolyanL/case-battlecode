@@ -131,7 +131,11 @@ class QuestReviewChecklist(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Чек-лист для {self.quest.title}"
+        try:
+            quest = self.quest
+            return f"Чек-лист для {quest.title}"
+        except Exception:
+            return "Чек-лист для квеста"
 
     class Meta:
         verbose_name = "Чек-лист ревью квеста"
