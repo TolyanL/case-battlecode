@@ -71,32 +71,32 @@
                             <div>
                                 {% if assignment.status == 'success' %}
                                     <h4 class="flex items-center flex-wrap gap-2 text-base font-semibold text-light">
-                                        Победа в квесте {{ assignment.quest.title }}
+                                        Победа в квесте <a class="text-light hover:underline" href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a>
                                         <span class="bg-cyan-500/20 text-cyan-400 text-xs font-semibold px-2 py-1 rounded-full">
                                             +{{ assignment.given_pts }} PTS
                                         </span>
                                     </h4>
                                 {% elif assignment.status == 'failed' %}
                                     <h4 class="flex items-center flex-wrap gap-2 text-base font-semibold text-light">
-                                        Поражение в квесте {{ assignment.quest.title }}
+                                        Поражение в квесте <a class="text-light hover:underline" href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a>
                                         <span class="bg-red-500/20 text-red-400 text-xs font-semibold px-2 py-1 rounded-full">
                                             {{ assignment.given_pts }} PTS
                                         </span>
                                     </h4>
                                 {% elif assignment.status == 'active' %}
                                     <h4 class="text-base font-semibold text-light">
-                                        В процессе: {{ assignment.quest.title }}
+                                        В процессе: <a class="text-light hover:underline" href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a>
                                     </h4>
                                 {% elif assignment.status == 'completed' %}
                                     <h4 class="flex items-center flex-wrap gap-2 text-base font-semibold text-light">
-                                        Ожидает проверки: {{ assignment.quest.title }}
+                                        Ожидает проверки: <a class="text-light hover:underline" href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a>
                                         <span class="text-orange-400 text-sm font-medium">
                                             Статус: {{ assignment.reviews }}/{{ pd.max_reviews }}
                                         </span>
                                     </h4>
                                 {% else %}
                                     <h4 class="text-base font-semibold text-light">
-                                        Квест: {{ assignment.quest.title }}
+                                        Квест: <a class="text-light hover:underline" href="{{ assignment.quest.get_absolute_url }}">{{ assignment.quest.title }}</a>
                                         <span class="text-gray-400 text-sm font-medium">Статус: Неизвестен</span>
                                     </h4>
                                 {% endif %}

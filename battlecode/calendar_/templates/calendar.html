@@ -25,16 +25,16 @@
                         {% with quests_in_block=day.time_blocks|get_item:hour %}
                             {% for item in quests_in_block %}
                             {% with quest=item.quest assignment=item.assignment %}
-                            <a href="{{ quest.get_absolute_url }}" class="block w-full rounded-lg border border-gray-700 bg-gray-800 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-600 hover:shadow-lg hover:shadow-black/50">
+                            <a href="{{ quest.get_absolute_url }}" class="block w-full rounded-lg border border-gray-700 bg-gray-800 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-lg hover:shadow-black/50">
                                 <div class="flex h-full flex-col">
                                     <div class="flex-grow">
                                         <div class="mb-3 flex items-start justify-between">
                                             <div class="flex flex-wrap items-center gap-2">
-                                                <span class="rounded-full bg-blue-500/20 px-2.5 py-1 text-xs font-semibold text-blue-300">{{ quest.pts }} PTS</span>
+                                                <span class="rounded-full bg-blue-500/20 px-2.5 py-1 text-xs font-semibold text-blue-400">{{ quest.pts }} PTS</span>
                                                 {% if quest.difficulty == "easy" %}
-                                                    <span class="rounded-full bg-green-500/20 px-2.5 py-1 text-xs font-semibold text-green-300">{{ quest.difficulty|title }}</span>
+                                                    <span class="rounded-full bg-cyan-500/20 px-2.5 py-1 text-xs font-semibold text-cyan-400">{{ quest.difficulty|title }}</span>
                                                 {% elif quest.difficulty == "medium" %}
-                                                    <span class="rounded-full bg-orange-500/20 px-2.5 py-1 text-xs font-semibold text-orange-300">{{ quest.difficulty|title }}</span>
+                                                    <span class="rounded-full bg-orange-500/20 px-2.5 py-1 text-xs font-semibold text-orange-400">{{ quest.difficulty|title }}</span>
                                                 {% else %}
                                                     <span class="rounded-full bg-red-500/20 px-2.5 py-1 text-xs font-semibold text-red-300">🔥{{ quest.difficulty|title }}</span>
                                                 {% endif %}
@@ -45,7 +45,9 @@
                                         </div>
 
                                         <h4 class="mb-2 flex items-center gap-2 text-base font-bold text-white">
+                                            {% if not assignment.completed_at %}
                                             <span>🔥</span>
+                                            {% endif %}
                                             <span>{{ quest.title }}</span>
                                         </h4>
                                         
@@ -65,7 +67,10 @@
                                             <span>На проверке {{ assignment.reviews }}/{{ pd.max_reviews }}</span>
                                         </span>
                                         {% else %}
-                                        <p class="mb-4 text-sm font-semibold text-red-400/80">Дедлайн: {{ item.deadline|time:"H:i" }}</p>
+                                        <span class="flex items-center mb-4 text-xs font-semibold text-yellow-400">
+                                            <i data-feather="chevrons-down" class="mr-1.5 h-4 w-4"></i>
+                                            <span>Дедлайн: {{ item.deadline|time:"H:i" }}</span>
+                                        </span>
                                         {% endif %}
                                     </div>
                                     <div class="mt-auto border-t border-gray-700/50 pt-3">
