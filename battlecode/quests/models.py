@@ -34,6 +34,7 @@ class Quest(models.Model):
     checklist = models.OneToOneField(
         "QuestReviewChecklist",
         on_delete=models.PROTECT,
+        related_name="quest",
         verbose_name="Чек-лист ревью квеста",
     )
 
@@ -128,6 +129,9 @@ class Skill(models.Model):
 class QuestReviewChecklist(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Чек-лист для {self.quest.title}"
 
     class Meta:
         verbose_name = "Чек-лист ревью квеста"
