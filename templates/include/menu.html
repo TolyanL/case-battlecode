@@ -32,6 +32,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{% url 'pvp_dashboard' %}"
+                    class="flex gap-1 font-medium {% if pd.curr_page == 'pvp' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
+                        <i class="md:hidden" data-feather="divide"></i> PVP
+                    </a>
+                </li>
+                <li>
                     <a href="{% url 'courses_list' %}"
                     class="flex gap-1 font-medium {% if pd.curr_page == 'courses' %}text-primary border-b-2 border-primary pb-1{% else %}text-gray-400 hover:text-white{% endif %} transition">
                         <i class="md:hidden" data-feather="book"></i> Courses

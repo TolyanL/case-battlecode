@@ -8,6 +8,11 @@ DIFFICULTY_CHOICES = (
     ("hard", "Hard🔥"),
 )
 
+TASK_TYPE_CHOICES = (
+    ("task", "Задача"),
+    ("pvp", "PVP"),
+)
+
 MIN_PTS = 10
 
 MAX_PICKED_QUESTS = 5

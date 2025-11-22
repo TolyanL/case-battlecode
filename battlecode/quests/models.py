@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from colorfield.fields import ColorField
 
-from battlecode.quest_settings import DIFFICULTY_CHOICES, MIN_PTS
+from battlecode.quest_settings import DIFFICULTY_CHOICES, TASK_TYPE_CHOICES, MIN_PTS
 from .model_utils import count_quest_pts, get_contrast_color
 
 
@@ -36,6 +36,13 @@ class Quest(models.Model):
         on_delete=models.PROTECT,
         related_name="quest",
         verbose_name="Чек-лист ревью квеста",
+    )
+
+    task_type = models.CharField(
+        max_length=20,
+        verbose_name="Тип задания",
+        choices=TASK_TYPE_CHOICES,
+        default=TASK_TYPE_CHOICES[0][0],
     )
 
     active = models.BooleanField(default=True, verbose_name="Активен")

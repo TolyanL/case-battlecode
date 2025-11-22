@@ -75,6 +75,20 @@ class Profile(models.Model):
 
         return higher_pts_count + 1
 
+    @property
+    def wins(self):
+        return Assignment.objects.filter(
+            user=self.user,
+            status="success",
+        ).count()
+
+    @property
+    def losses(self):
+        return Assignment.objects.filter(
+            user=self.user,
+            status="failed",
+        ).count()
+
     def save(self, *args, **kwargs):
         if self.pts < 0:
             self.pts = 0

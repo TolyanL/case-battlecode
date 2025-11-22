@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "badges",
     "index",
     "user",
+    "pvp",
 ]
 
 MIDDLEWARE = [
@@ -66,6 +67,7 @@ MIDDLEWARE = [
     "django_otp.middleware.OTPMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "pvp.middleware.ActiveUserMiddleware",
 ]
 
 if DEBUG:

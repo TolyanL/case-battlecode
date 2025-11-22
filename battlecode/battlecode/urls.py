@@ -15,6 +15,7 @@ urlpatterns = [
     path("review/", include("peer_review.urls")),
     path("courses/", include("courses.urls")),
     path("calendar/", include("calendar_.urls")),
+    path("pvp/", include("pvp.urls")),
     path("", include("index.urls")),
 ]
 
