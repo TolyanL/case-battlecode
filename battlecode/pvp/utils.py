@@ -18,7 +18,7 @@ def last_users() -> list[User]:
         if not val:
             continue
 
-        last_login = float()
+        last_login = float(val)
         if last_login > now.timestamp():
             last_users.append(u)
 
@@ -36,7 +36,7 @@ def get_opponent(curr_user: User, users: list[User]) -> User | None:
         curr_p = Profile.objects.get(user=curr_user)
         p = Profile.objects.get(user=u)
 
-        if p.pts - LEVEL_DELTA <= curr_p.pts <= p.pts + LEVEL_DELTA:
+        if curr_p.pts - LEVEL_DELTA <= p.pts <= curr_p.pts + LEVEL_DELTA:
             fits.append(u)
 
     if not fits:

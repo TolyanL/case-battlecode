@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from battlecode.review_settings import ASSIGNMENT_STATUS_CHOICES
 from quests.models import Quest
 
 
@@ -16,6 +17,13 @@ class PvpAssignment(models.Model):
         on_delete=models.PROTECT,
         verbose_name="Квест",
         related_name="pvp_assignments",
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=ASSIGNMENT_STATUS_CHOICES,
+        default="active",
+        verbose_name="Статус",
     )
 
     given_pts = models.IntegerField(verbose_name="Полученные баллы", default=0)

@@ -223,6 +223,15 @@ SIMPLEUI_HOME_QUICK = True
 # SimpleUI Analysis (must be False)
 SIMPLEUI_ANALYSIS = False
 
+
+# AI
+ENABLE = os.environ.get("ENABLE", default=False)
+API_URL = os.environ.get("API_URL", default="http://localhost:11434/api")  # local ollama url
+API_KEY = os.environ.get("API_KEY", default="")
+THINKING_MODE = os.environ.get("THINKING_MODE", default=True)
+MODEL = os.environ.get("MODEL", default="qwen3:4b")  # default local ollama model
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 

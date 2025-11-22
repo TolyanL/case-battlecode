@@ -26,6 +26,7 @@ def dashboard(request: HttpRequest):
         "PvP",
         curr_page,
     )
+
     return render(
         request,
         "start.html",
