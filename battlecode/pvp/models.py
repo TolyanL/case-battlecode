@@ -50,8 +50,10 @@ class PvpAssignment(models.Model):
 
         if self.user.id == id:
             self.user.profile.pts += self.quest.penalty * -1
+            self.user.profile.save()
         else:
             self.opponent.profile.pts += self.quest.penalty * -1
+            self.opponent.profile.save()
 
         self.save()
 
