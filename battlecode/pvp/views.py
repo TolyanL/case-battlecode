@@ -1,5 +1,3 @@
-from random import choice
-
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -9,8 +7,8 @@ from pvp.models import PvpAssignment
 from user.models import Profile
 from battlecode.pagedata import PageData
 
-
 from pvp.utils import last_users, get_opponent
+
 
 curr_page = "pvp"
 
@@ -22,8 +20,6 @@ def dashboard(request: HttpRequest):
 
     lasts = last_users()
     opp = get_opponent(user, lasts)
-
-    print(opp)
 
     pd = PageData(
         "PvP Dashboard",
