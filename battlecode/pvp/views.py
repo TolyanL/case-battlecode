@@ -21,6 +21,8 @@ def dashboard(request: HttpRequest):
     lasts = last_users()
     opp = get_opponent(user, lasts)
 
+    curr_battle = PvpAssignment.objects.filter(user=user, status="active").first()
+
     pd = PageData(
         "PvP Dashboard",
         "PvP",
@@ -35,13 +37,33 @@ def dashboard(request: HttpRequest):
             "profile": profile,
             "opponents": len(lasts),
             "opponent": opp,
+            "curr_battle": curr_battle,
         },
     )
 
 
 @login_required
-def battle(request: HttpRequest):
+def battle(request: HttpRequest, code: str):
     user = request.user
+    profile, _ = Profile.objects.get_or_create(user=user)
 
-    if PvpAssignment.objects.filter(user=user).exists():
+    item = PvpAssignment.objects.filter(user=user, battle__code=code).first()
+    if not item:
         return redirect("pvp_dashboard")
+
+    pd = PageData(
+        "PVP Battle",
+        "PVP",
+        "pvp",
+    )
+
+    return render(
+        request,
+        "wait_ready.html",
+        {
+            "pd": pd,
+            "item": item,
+            "profile": profile,
+            "opponent": item.opponent,
+        },
+    )

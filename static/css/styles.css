@@ -265,3 +265,71 @@ body {
         width: 1400px;
     }
 }
+
+.match-card {
+    background-color: #111827;
+    border: 2px solid #1f2937;
+    border-radius: 1.5rem;
+    padding: 3rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.match-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+}
+
+.player-name {
+font-size: 3.5rem;
+font-weight: 800;
+color: white;
+margin-bottom: 1.5rem;
+}
+
+.player-stats-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.player-stats-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 1.25rem;
+}
+
+.ready-btn {
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.ready-btn.active {
+    background-color: #0ea5e9;
+    color: white;
+}
+
+.ready-btn.inactive {
+    background-color: #6b7280;
+    color: #d1d5db;
+    cursor: not-allowed;
+}
+
+.timer {
+    font-size: 6rem;
+    font-weight: 800;
+    color: white;
+    text-align: center;
+    line-height: 1;
+}
