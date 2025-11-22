@@ -55,7 +55,7 @@ def start_battle(request: HttpRequest):
 
 
 @login_required
-def ready(request: HttpRequest):
+def change_state(request: HttpRequest):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -72,6 +72,50 @@ def ready(request: HttpRequest):
             if state == "not-ready":
                 item.is_ready = False
             item.save()
+
+            return JsonResponse({"success": True, "message": "Battle changed"})
+
+        except Exception as e:
+            logger.error(e)
+            return JsonResponse({"success": False, "message": "Error has occurred"})
+
+    return JsonResponse({"success": False, "message": "Empty request"})
+
+
+@login_required
+def skip(request: HttpRequest):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            username = data.get("user")
+            if not username:
+                return JsonResponse({"success": False, "message": "Empty request"})
+
+            item = PvpAssignment.objects.filter(user__username=username, status="active").first()
+            item.skip()
+
+            return JsonResponse({"success": True, "message": "Battle changed"})
+
+        except Exception as e:
+            logger.error(e)
+            return JsonResponse({"success": False, "message": "Error has occurred"})
+
+    return JsonResponse({"success": False, "message": "Empty request"})
+
+
+@login_required
+def fail(request: HttpRequest):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            username = data.get("user")
+            if not username:
+                return JsonResponse({"success": False, "message": "Empty request"})
+
+            item = PvpAssignment.objects.filter(user__username=username, status="active").first()
+            item.fail()
 
             return JsonResponse({"success": True, "message": "Battle changed"})
 

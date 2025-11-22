@@ -6,4 +6,5 @@ ASSIGNMENT_STATUS_CHOICES = (
     ("completed", "Завершено"),
     ("failed", "Завалено"),
     ("success", "Успешно"),
+    ("skiped", "Пропущено"),
 )

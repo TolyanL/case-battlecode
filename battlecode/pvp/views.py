@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 from pvp.models import PvpAssignment
 
@@ -49,6 +50,10 @@ def battle(request: HttpRequest, code: str):
 
     item = PvpAssignment.objects.filter(user=user, battle__code=code).first()
     if not item:
+        return redirect("pvp_dashboard")
+
+    if item.created_at < timezone.now() - timezone.timedelta(minutes=10):
+        item.skip()
         return redirect("pvp_dashboard")
 
     pd = PageData(

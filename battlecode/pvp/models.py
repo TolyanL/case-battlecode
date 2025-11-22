@@ -41,6 +41,20 @@ class PvpAssignment(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
+    def skip(self):
+        self.status = "skiped"
+        self.save()
+
+    def fail(self, id: int):
+        self.status = "failed"
+
+        if self.user.id == id:
+            self.user.profile.pts += self.quest.penalty * -1
+        else:
+            self.opponent.profile.pts += self.quest.penalty * -1
+
+        self.save()
+
     def __str__(self):
         return f"PVP {self.user.username} vs {self.opponent.username} in {self.battle.quest.title}"
 
