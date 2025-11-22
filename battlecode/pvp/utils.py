@@ -14,7 +14,11 @@ def last_users() -> list[User]:
     now = timezone.now() - timezone.timedelta(minutes=REDIS_TTL / 60)
 
     for u in User.objects.filter().all():
-        last_login = float(client.get(f"user-last-active-{u.id}"))
+        val = client.get(f"user-last-active-{u.id}")
+        if not val:
+            continue
+
+        last_login = float()
         if last_login > now.timestamp():
             last_users.append(u)
 
@@ -25,6 +29,7 @@ def get_opponent(curr_user: User, users: list[User]) -> User | None:
     fits = []
 
     for u in users:
+        # WARN: uncomment this line in final version
         # if u.id == curr_user.id:
         #     continue
 
