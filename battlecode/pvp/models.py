@@ -1,4 +1,5 @@
 from secrets import token_hex
+from datetime import timedelta
 
 from django.db import models
 from django.shortcuts import reverse
@@ -46,9 +47,23 @@ class PvpAssignment(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
+    def complete(self):
+        self.status = "complete"
+        self.save()
+
     def skip(self):
         self.status = "skiped"
         self.save()
+
+    def self_fail(self):
+        self.status = "failed"
+        self.user.profile.pts += self.battle.quest.penalty * -1
+        self.user.profile.save()
+        self.save()
+
+    @property
+    def deadline(self):
+        return self.created_at + timedelta(hours=self.battle.quest.work_time)
 
     def fail(self, id: int):
         self.status = "failed"
@@ -73,6 +88,7 @@ class PvpAssignment(models.Model):
 
 class Battle(models.Model):
     code = models.CharField(max_length=100, blank=True, unique=True, verbose_name="Код")
+    started = models.BooleanField(default=False, verbose_name="Запущено")
 
     quest = models.ForeignKey(
         Quest,
@@ -83,6 +99,10 @@ class Battle(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    def start(self):
+        self.started = True
+        self.save()
 
     def get_absolute_url(self) -> str:
         return reverse("pvp_battle", kwargs={"code": self.code})

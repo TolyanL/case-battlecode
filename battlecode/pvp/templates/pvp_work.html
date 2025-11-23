@@ -44,21 +44,15 @@
     </div>
 
     <div class="mt-8 flex justify-center">
-        {% if quest.slug in completed %}
-        <button class="px-8 py-3 text-base bg-gray-600 text-white font-bold rounded-lg">
-            <span>🕒 Квест на таймауте</span>
-        </button>
-        {% else %}
         {% csrf_token %}
         <div class="flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
-            <button data-action="complete" data-slug="{{ quest.slug }}" class="action-btn px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
-                <span>Отправить Решение</span>
+            <button data-action="complete" data-code="{{ item.battle.code }}" class="action-btn px-8 py-3 text-base bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors duration-300">
+                <span>Отправить Решение</span>2
             </button>
-            <button data-action="give-up" data-slug="{{ quest.slug }}" class="action-btn px-8 py-3 text-base bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors duration-300">
+            <button data-action="give-up" data-code="{{ item.battle.code }}" class="action-btn px-8 py-3 text-base bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors duration-300">
                 <span>Сдаться</span>
             </button>
         </div>
-        {% endif %}
     </div>
 </div>
 {% endblock content %}
@@ -72,5 +66,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/{{ quest.language.name|lower }}/{{ quest.language.name|lower }}.min.js"></script>
 
 <script src="{% static "js/code-mirror/code-mirror.js" %}"></script>
-<script src="{% static "js/buttons.js" %}"></script>
+<script src="{% static "js/pvp-work-btns.js" %}"></script>
 {% endblock extra_js %}

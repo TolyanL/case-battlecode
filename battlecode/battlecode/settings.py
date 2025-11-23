@@ -150,6 +150,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "courses.tasks.check_finished_courses",
         "schedule": timedelta(minutes=5),
     },
+    "check-pvp-assignments": {
+        "task": "pvp.tasks.check_pvp_assignments",
+        "schedule": timedelta(minutes=2),
+    },
 }
 
 

@@ -2,7 +2,6 @@ import json
 
 from random import choice
 
-from django.db.models import Q
 from django.http import HttpRequest, JsonResponse
 from django.contrib.auth.forms import User
 from django.contrib.auth.decorators import login_required
@@ -76,6 +75,7 @@ def change_state(request: HttpRequest):
 
             battle = item.battle.pvp_assignments.all()
             if all([i.is_ready for i in battle]):
+                item.battle.start()
                 return JsonResponse({"success": True, "message": f"{item.battle.code}/do"})
 
             return JsonResponse({"success": True, "message": ""})
@@ -121,6 +121,33 @@ def fail(request: HttpRequest):
 
             item = PvpAssignment.objects.filter(user__username=username, status="active").first()
             item.fail(request.user.id)
+
+            return JsonResponse({"success": True, "message": "Battle changed"})
+
+        except Exception as e:
+            logger.error(e)
+            return JsonResponse({"success": False, "message": "Error has occurred"})
+
+    return JsonResponse({"success": False, "message": "Empty request"})
+
+
+@login_required
+def complete(request: HttpRequest):
+    if request.method == "POST":
+        user = request.user
+        try:
+            data = json.loads(request.body)
+
+            completed = data.get("action")
+            code = data.get("code")
+            if not code or not completed:
+                return JsonResponse({"success": False, "message": "Empty request"})
+
+            item = PvpAssignment.objects.filter(user=user, battle__code=code, status="active").first()
+            if not item:
+                return JsonResponse({"success": False, "message": "Battle not found"})
+
+            item.complete()
 
             return JsonResponse({"success": True, "message": "Battle changed"})
 

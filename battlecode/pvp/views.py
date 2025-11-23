@@ -48,10 +48,12 @@ def battle(request: HttpRequest, code: str):
     user = request.user
     profile, _ = Profile.objects.get_or_create(user=user)
 
-    b, _ = Battle.objects.get_or_create(code=code)
+    b = Battle.objects.filter(code=code).first()
+    if not b:
+        return redirect("pvp_dashboard")
 
-    item, exists = PvpAssignment.objects.get_or_create(user=user, battle=b)
-    if not exists:
+    item = PvpAssignment.objects.filter(user=user, battle=b).first()
+    if item.battle.started:
         return redirect("pvp_battle_do", code=item.battle.code)
 
     if item.created_at < timezone.now() - timezone.timedelta(minutes=10):
@@ -78,12 +80,49 @@ def battle(request: HttpRequest, code: str):
 
 @login_required
 def do_task(request: HttpRequest, code: str):
-    user = request.user
+    if request.method == "GET":
+        user = request.user
 
-    item = PvpAssignment.objects.filter(user=user, battle__code=code).first()
-    print(item)
-    if not item:
-        print("Not found")
+        item = PvpAssignment.objects.filter(
+            user=user,
+            battle__code=code,
+        ).first()
+        if not item:
+            return redirect("pvp_dashboard")
+
+        pd = PageData(
+            "PVP Battle",
+            "PVP",
+            "pvp",
+        )
+
+        return render(
+            request,
+            "pvp_work.html",
+            {
+                "pd": pd,
+                "quest": item.battle.quest,
+                "item": item,
+            },
+        )
+    if request.method == "POST":
+        user = request.user
+        item = PvpAssignment.objects.filter(user=user, battle__code=code).first()
+        if not item:
+            return redirect("pvp_dashboard")
+
+    return redirect("pvp_dashboard")
+
+
+@login_required
+def results(request: HttpRequest, code: str):
+    user = request.user
+    profile, _ = Profile.objects.get_or_create(user=user)
+
+    b, _ = Battle.objects.get_or_create(code=code)
+
+    item, exists = PvpAssignment.objects.get_or_create(user=user, battle=b)
+    if not exists:
         return redirect("pvp_dashboard")
 
     pd = PageData(
@@ -94,9 +133,11 @@ def do_task(request: HttpRequest, code: str):
 
     return render(
         request,
-        "pvp_work.html",
+        "pvp_results.html",
         {
             "pd": pd,
             "quest": item.battle.quest,
+            "item": item,
+            "profile": profile,
         },
     )
