@@ -44,13 +44,6 @@ def start_battle(request: HttpRequest):
             if not created:
                 return JsonResponse({"success": False, "message": "You have an active battle"})
 
-            item, created = PvpAssignment.objects.get_or_create(
-                user=opp,
-                opponent=user,
-                battle=battle,
-                status="active",
-            )
-
             url = battle.get_absolute_url()
 
             return JsonResponse({"success": True, "message": url})

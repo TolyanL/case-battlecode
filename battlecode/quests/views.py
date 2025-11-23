@@ -28,13 +28,13 @@ class QuestsAllView(ListView, LoginRequiredMixin):
         status_filter = self.request.GET.get("status")
 
         if not user.is_authenticated:
-            base_quests = Quest.objects.filter(course_quests__isnull=True, active=True)
+            base_quests = Quest.objects.filter(course_quests__isnull=True, active=True, task_type="task")
             return base_quests
 
         quests_from_user_courses = Quest.objects.filter(
             course_quests__course__enrolled_profiles__user=user, active=True
         )
-        quests_without_courses = Quest.objects.filter(course_quests__isnull=True, active=True)
+        quests_without_courses = Quest.objects.filter(course_quests__isnull=True, active=True, task_type="task")
         base_quests = (quests_from_user_courses | quests_without_courses).distinct()
 
         assignments = Assignment.objects.filter(user=user, quest__in=base_quests)

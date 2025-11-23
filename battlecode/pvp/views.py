@@ -126,6 +126,9 @@ def results(request: HttpRequest, code: str):
     opp = User.objects.get(username="Petya")
     time.sleep(3)
 
+    user.profile.pts += item.battle.quest.pts
+    user.profile.save()
+
     pd = PageData(
         "PVP Battle",
         "PVP",
