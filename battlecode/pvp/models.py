@@ -34,6 +34,11 @@ class PvpAssignment(models.Model):
         verbose_name="Статус",
     )
 
+    code = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name="Решение пользователя",
+    )
     is_ready = models.BooleanField(default=False, verbose_name="Готов")
 
     given_pts = models.IntegerField(verbose_name="Полученные баллы", default=0)
@@ -49,10 +54,10 @@ class PvpAssignment(models.Model):
         self.status = "failed"
 
         if self.user.id == id:
-            self.user.profile.pts += self.quest.penalty * -1
+            self.user.profile.pts += self.battle.quest.penalty * -1
             self.user.profile.save()
         else:
-            self.opponent.profile.pts += self.quest.penalty * -1
+            self.opponent.profile.pts += self.battle.quest.penalty * -1
             self.opponent.profile.save()
 
         self.save()

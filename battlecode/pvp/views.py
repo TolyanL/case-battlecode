@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
-from pvp.models import PvpAssignment
+from pvp.models import PvpAssignment, Battle
 
 from user.models import Profile
 from battlecode.pagedata import PageData
@@ -70,5 +70,31 @@ def battle(request: HttpRequest, code: str):
             "item": item,
             "profile": profile,
             "opponent": item.opponent,
+        },
+    )
+
+
+@login_required
+def do_task(request: HttpRequest, code: str):
+    user = request.user
+
+    item = PvpAssignment.objects.filter(user=user, battle__code=code).first()
+    print(item)
+    if not item:
+        print("Not found")
+        return redirect("pvp_dashboard")
+
+    pd = PageData(
+        "PVP Battle",
+        "PVP",
+        "pvp",
+    )
+
+    return render(
+        request,
+        "pvp_work.html",
+        {
+            "pd": pd,
+            "quest": item.battle.quest,
         },
     )

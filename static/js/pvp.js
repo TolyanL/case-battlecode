@@ -45,49 +45,55 @@ document.addEventListener("DOMContentLoaded", function () {
   );
 
   if (actionBtn) {
-    actionBtn.addEventListener("click", async function (e) {
-      e.preventDefault();
+      actionBtn.addEventListener("click", async function (e) {
+          e.preventDefault();
 
-      const currentState = this.getAttribute("data-state");
-      if (!currentState) return;
+          const currentState = this.getAttribute("data-state");
+          if (!currentState) return;
 
-      const username = getUsernameFromH3();
-      if (!username) return;
+          const username = getUsernameFromH3();
+          if (!username) return;
 
-      const payload = {
-        user: username,
-        state: currentState,
-      };
+          const payload = {
+              user: username,
+              state: currentState,
+          };
 
-      try {
-        const csrfToken =
-          document.querySelector("[name=csrfmiddlewaretoken]")?.value || "";
+          try {
+              const csrfToken =
+                  document.querySelector("[name=csrfmiddlewaretoken]")?.value || "";
 
-        const response = await fetch("/pvp/rest/battle/change-state", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
-          },
-          body: JSON.stringify(payload),
-        });
+              const response = await fetch("/pvp/rest/battle/change-state", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                      "X-CSRFToken": csrfToken,
+                  },
+                  body: JSON.stringify(payload),
+              });
 
-        if (!response.ok) return;
+              if (!response.ok) return;
 
-        const result = await response.json();
+              const result = await response.json();
 
-        if (result.success) {
-          const nextState = currentState === "ready" ? "not-ready" : "ready";
-          updateButtonUI(this, nextState, statusElement);
-        }
-      } catch (error) {
-        // silent fail
-      }
+              if (result.success) {
+                  if (result.message) {
+                      console.log(result.message)
+                      window.location.href = result.message;
+                  }
+                  else {
+                      const nextState = currentState === "ready" ? "not-ready" : "ready";
+                      updateButtonUI(this, nextState, statusElement);
+                  }
+              }
+          } catch (error) {
+              // silent fail
+          }
 
-      if (typeof feather !== "undefined") {
-        feather.replace();
-      }
-    });
+          if (typeof feather !== "undefined") {
+              feather.replace();
+          }
+      });
   }
 
   const battleButton = document.querySelector(".start-battle");
