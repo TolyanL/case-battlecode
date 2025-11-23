@@ -48,9 +48,11 @@ def battle(request: HttpRequest, code: str):
     user = request.user
     profile, _ = Profile.objects.get_or_create(user=user)
 
-    item = PvpAssignment.objects.filter(user=user, battle__code=code).first()
-    if not item:
-        return redirect("pvp_dashboard")
+    b, _ = Battle.objects.get_or_create(code=code)
+
+    item, exists = PvpAssignment.objects.get_or_create(user=user, battle=b)
+    if not exists:
+        return redirect("pvp_battle_do", code=item.battle.code)
 
     if item.created_at < timezone.now() - timezone.timedelta(minutes=10):
         item.skip()
