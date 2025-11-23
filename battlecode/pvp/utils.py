@@ -47,44 +47,42 @@ def get_opponent(curr_user: User, users: list[User]) -> User | None:
     return choice(fits)
 
 
-def evaluate_solution(user_code: str, opponent_code: str) -> int:
-    system_prompt = (
-        "Ты — эксперт по оценке кода в соревновательном программировании. "
-        "Твоя задача — объективно сравнить два решения одной и той же задачи. "
-        "Оцени каждое решение по совокупности: правильность, красота, лаконичность, "
-        "размер и время решения. "
-        "Вычисли, насколько каждое решение близко к 'идеальному' эталону: "
-        "идеальный код — это максимально лаконичный, читаемый, корректный и эффективный код. "
-        "Выведи ТОЛЬКО JSON без пояснений. Структура:\n"
-        "{\n"
-        '  "final_score_a": {\n'
-        '    "absolute": 0-100,\n'
-        '    "percentage": 0.0-100.0\n'
-        "  },\n"
-        '  "final_score_b": {\n'
-        '    "absolute": 0-100,\n'
-        '    "percentage": 0.0-100.0\n'
-        "  },\n"
-        '  "winner": "a" | "b" | "draw",\n'
-        '  "reason": "краткое обоснование",\n'
-        '  "severe_issues_a": true|false,\n'
-        '  "severe_issues_b": true|false\n'
-        "}"
+def evaluate_solution(user_code: str, opponent_code: str, max_pts: int) -> str:
+    prompt = """Ты — эксперт по оценке кода в соревновательном программировании.
+        Твоя задача — объективно сравнить два решения одной и той же задачи.
+        Оцени каждое решение по совокупности: правильность, красота, лаконичность, размер.
+        Вычисли, насколько каждое решение близко к 'идеальному' эталону:
+        идеальный код — это максимально лаконичный, читаемый, корректный и эффективный код.
+        Используй максимальный балл: {max_pts}. СТРОГО без своих комментариев.
+        Выведи ТОЛЬКО финальные баллы за задания в формате: <USER 1 PTS>|<USER 2 PTS>
+
+        Заданиие 1 пользователя:
+        ```
+        {task_1}
+        ```
+
+        Заданиие 2 пользователя:
+        ```
+        {task_2}
+        ```
+        """
+
+    print(
+        prompt.format(
+            max_pts=max_pts,
+            task_1=user_code,
+            task_2=opponent_code,
+        )
     )
+    return
 
-    prompt = f"""
-{system_prompt}
-
-Решение A:
-{user_code}
-
-Решение B:
-{opponent_code}
-
-JSON:
-"""
-
-    response = AIClient.chat_response(prompt)
+    response = AIClient.chat_response(
+        prompt.format(
+            max_pts=max_pts,
+            task_1=user_code,
+            task_2=opponent_code,
+        )
+    )
 
     import json
 

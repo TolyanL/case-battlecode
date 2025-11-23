@@ -47,8 +47,13 @@ class PvpAssignment(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
+    def finish(self):
+        self.status = "success"
+        self.user.profile.pts += self.battle.quest.pts
+        self.save()
+
     def complete(self):
-        self.status = "complete"
+        self.status = "completed"
         self.save()
 
     def skip(self):
