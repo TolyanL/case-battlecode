@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Проверка задания{% endblock title %}
+{% block description %}Ожидание проверки и соперника{% endblock description %}
+
+{% block extra_css %}
+<style>
+  .checking-card {
+    background-color: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 1.5rem;
+    padding: 3rem;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+  }
+  .checking-message {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin: 2rem 0;
+  }
+  .spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #0ea5e9;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-[70vh]">
+  <div class="checking-card" id="checking-card">
+    <div class="checking-message" id="message">Ваше задание проверяется</div>
+    <div class="spinner" id="spinner"></div>
+  </div>
+</div>
+
+<script>
+  // URL для проверки задания ИИ
+  const checkUrl = "{% url 'ai_check_submission' quest_id=quest.id %}";
+  const pollInterval = 2000; // опрашивать каждые 2 сек
+
+  async function checkSubmission() {
+    try {
+      const response = await fetch(checkUrl, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка при запросе к ИИ');
+      }
+
+      const data = await response.json();
+
+      // Убираем спиннер
+      document.getElementById('spinner').style.display = 'none';
+
+      if (data.status === 'complete') {
+        // Оба выполнили — редирект на результаты
+        window.location.href = "{% url 'match_results' match_id=match.id %}";
+      } else if (data.status === 'waiting_for_opponent') {
+        // Ждём противника
+        document.getElementById('message').textContent = 'Ждём противника…';
+        // Опционально: можно запустить опрос каждые N секунд
+        setTimeout(pollOpponentStatus, pollInterval);
+      } else {
+        // Неожиданный статус
+        document.getElementById('message').textContent = 'Что-то пошло не так…';
+      }
+    } catch (error) {
+      console.error(error);
+      document.getElementById('message').textContent = 'Ошибка проверки';
+      document.getElementById('spinner').style.display = 'none';
+    }
+  }
+
+  async function pollOpponentStatus() {
+    try {
+      const response = await fetch(checkUrl);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === 'complete') {
+          window.location.href = "{% url 'match_results' match_id=match.id %}";
+        } else {
+          setTimeout(pollOpponentStatus, pollInterval);
+        }
+      } else {
+        setTimeout(pollOpponentStatus, pollInterval);
+      }
+    } catch {
+      setTimeout(pollOpponentStatus, pollInterval);
+    }
+  }
+
+  // Запуск проверки сразу после загрузки страницы
+  document.addEventListener('DOMContentLoaded', () => {
+    checkSubmission();
+  });
+</script>
+{% endblock content %}
